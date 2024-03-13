@@ -1,4 +1,4 @@
-# sss
-Simulation starting sistem
+# sls
+Simulation launching sistem
 
-Start your simulations easilly
+Launch your simulations easilly
