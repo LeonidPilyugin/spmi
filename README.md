@@ -1,4 +1,4 @@
-# sls
-Simulation launching sistem
+# pls
+Process launching sistem
 
-Launch your simulations easilly
+Launch your processes with single interface via different procss managers

@@ -1,0 +1,2 @@
+class PlsException(Exception):
+    pass
