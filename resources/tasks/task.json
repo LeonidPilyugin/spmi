@@ -1,0 +1,12 @@
+{
+    "Task": {
+        "id": "task1",
+        "backend": {
+            "type": "screen"
+        }, 
+        "wrapper": {
+            "type": "default",
+            "command": "df -h"
+        }
+    }
+}

@@ -1,2 +1,0 @@
-class PlsException(Exception):
-    pass
