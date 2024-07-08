@@ -1,0 +1,12 @@
+{
+    "task": {
+        "id": "json_task",
+        "backend": {
+            "type": "screen"
+        },
+        "wrapper": {
+            "type": "default",
+            "command": "sleep 10"
+        }
+    }
+}

@@ -1,8 +1,17 @@
 Getting started
 ===============
 
+.. note::
+
+   This project is under active development.
+
+.. todo:: Create aliases for classes in documentation.
+
 What is SPMI
 ------------
+SPMI (Simple Process Manager Interface) is a Python package which provides an
+application and library to start processes via different process managers
+(e.g. `GNU screen <https://www.gnu.org/software/screen/>`_ and `SLURM <https://slurm.schedmd.com/overview.html>`_).
 
 Installation
 ------------
@@ -26,6 +35,31 @@ Install dependencies:
 
     (.venv) $ pip install -r requirements.txt
 
-Basics
-------
+Basic usage
+-----------
+The core object of SPMI is :class:`spmi.core.manageable.Manageable`.
+It describes process which can be managed by SPMI.
+:py:mod:`spmi.core.manageables` contains realisations of
+:class:`spmi.core.manageable.Manageable`.
+For example, :class:`spmi.core.manageables.task.TaskManageable` is a
+:class:`spmi.core.manageable.Manageable`
+which runs a single command via specific
+:class:`spmi.core.manageables.task.TaskManageable.Backend`.
+
+
+.. todo:: Write about manageable structure.
+
+Each :class:`spmi.core.manageable.Manageable` has a :py:attr:`spmi.core.manageable.Manageable.state` property which
+
+JSON descriptor example:
+
+.. literalinclude:: examples/task/task.json
+    :language: JSON
+
+
+Also it in TOML:
+
+.. literalinclude:: examples/task/task.toml
+    :language: TOML
+
 

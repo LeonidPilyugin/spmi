@@ -6,12 +6,6 @@
 Welcome to SPMI's documentation!
 ================================
 
-**SPMI** is a Python program which allows you to start processes via different backends such as `GNU screen <https://www.gnu.org/software/screen/>`_ and `SLURM <https://slurm.schedmd.com/overview.html>`_ with single systectl-like interface.
-
-.. note::
-
-   This project is under active development.
-
 .. toctree::
    :maxdepth: 2
    :caption: Contents:

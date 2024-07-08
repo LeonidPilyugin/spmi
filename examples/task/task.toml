@@ -1,0 +1,10 @@
+[task]
+id = "toml_task"
+
+[task.backend]
+type = "screen"
+
+[task.wrapper]
+type = "default"
+command = "sleep 10"
+
