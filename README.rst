@@ -51,9 +51,9 @@ which runs a single command via specific
 
 Each :class:`spmi.core.manageable.Manageable` has a :py:attr:`spmi.core.manageable.Manageable.state` property which
 
-JSON descriptor example:
 
 .. code-block:: JSON
+    :caption: JSON descriptor example
 
     {
         "task": {
@@ -69,9 +69,10 @@ JSON descriptor example:
     }
 
 
-Also it in TOML:
+The same in TOML:
 
 .. code-block:: TOML
+    :caption: TOML descriptor example
 
     [task]
     id = "toml_task"
