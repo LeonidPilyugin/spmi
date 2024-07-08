@@ -6,6 +6,7 @@
 
 """
 
+import copy
 from spmi.utils.io.io import Io
 
 class Ioable:
@@ -19,6 +20,10 @@ class Ioable:
         """
         self.io = io
         self.data = data if data else {}
+
+    def copy(self):
+        """Return a copy."""
+        return Ioable(data=copy.copy(self.data), io=None if not self.io else self.io.copy())
 
     def load(self):
         """Load"""

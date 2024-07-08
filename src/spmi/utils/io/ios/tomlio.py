@@ -12,6 +12,9 @@ from spmi.utils.io.io import Io
 class TomlIo(Io):
     """TOML formatted io"""
 
+    def copy(self):
+        return JsonIo(path=self.path, encoding=self.encoding)
+
     def load(self):
         with open(self.path, encoding=self.encoding) as f:
             result = toml.load(f)

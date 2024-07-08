@@ -9,52 +9,27 @@
 import inspect
 import shutil
 from abc import abstractmethod, ABCMeta
-from dataclasses import dataclass
 from pathlib import Path
-from spmi.utils.io.io import Io
 from spmi.utils.io.ioable import Ioable
-from spmi.utils.state import State
 from spmi.utils.load import load_module
-
-@dataclass(frozen=True)
-class ManageableState(State):
-    """Class containing immutable state of Manageable.
-
-    Args:
-        id (str): Unique identificator.
-        is_active (bool): True, if manageable is active.
-        path (str): Absolute path to manageable directory.
-        preferred_suffix (str): Preferred suffix for data files.
-    """
-    id: str
-    type: str
-    is_active: bool
-    path: str
-    prefered_suffix: str
-
-    def short_string(self) -> str:
-        return f"{self.type.capitalize()} manageable object {self.id}"
-
-    def full_string(self) -> str:
-        return rf"""{self.id}
-    type: {self.type}
-    is active: {self.is_active}
-    path: {self.path}
-    preferred suffix: {self.prefered_suffix}
-        """
+from spmi.utils.metadata import MetaData
 
 def manageable(cls):
     """Manageable decorator. All manageables should be decoratet with it."""
     def __new_init__(self, *args, data=None, meta=None, **kwargs):
         assert data
 
-        self._metadata = cls.MetaDataHelper(data=data, meta=meta, **kwargs)
+        if "_metadata" not in dir(self):
+            self._metadata = cls.MetaDataHelper(data=data, meta=meta, **kwargs)
+            self._metadata._outer_object = self
 
         if self.__old_init__:
             self.__old_init__(*args, data=data, meta=meta, **kwargs)
 
     assert "MetaDataHelper" in dir(cls)
     assert "FileSystemHelper" in dir(cls)
+
+    cls.FileSystemHelper._outer_class = cls
 
     cls.__old_init__ = cls.__init__
     cls.__init__ = __new_init__
@@ -63,180 +38,61 @@ def manageable(cls):
 
 @manageable
 class Manageable(metaclass=ABCMeta):
-    """This class describes object which can be managed.
-    
-    """
-    class MetaDataHelper:
+    """This class describes object which can be managed."""
+    class MetaDataHelper(MetaData):
         """Provides access to meta and data."""
-        def __init__(
-            self,
-            data: Ioable | dict | Path | None,
-            meta: Ioable | dict | Path | None = None,
-        ):
-            """Constructor.
-
-            Args:
-                data (:obj:`Union[Ioable, dict]`): data.
-                meta (:obj:`Union[Ioable, dict]`): meta.
-                prefered_suffix (str): preferred suffix.
-            """
-            def load(value) -> Ioable:
-                assert isinstance(value, (Ioable, dict, Path)) or value is None
-                if isinstance(value, Ioable):
-                    return value
-                if isinstance(value, Path):
-                    io = Ioable(io=Io.get_io(value))
-                    io.blocking_load()
-                    return io
-                return Ioable(data=value)
-
-            self._data = load(data)
-            self._meta = load(meta)
-
-            if self._data.io:
-                self.prefered_suffix = self._data.io.path.suffix
-            if "is_active" not in self._meta.data:
-                self.is_active = False
-            if "path" not in self._meta.data:
-                self.path = None
-
-            assert all([
-                "prefered_suffix" in self._meta.data,
-                len(self._data.data) == 1,
-                isinstance(list(self._data.data.values())[0], dict),
-                "id" in list(self._data.data.values())[0],
-                "is_active" in self._meta.data,
-                "path" in self._meta.data,
-            ])
-
         @property
         def prefered_suffix(self) -> str:
             """str. Prefered suffix."""
-            return self._meta.data["prefered_suffix"]
+            if "prefered_suffix" in self._meta:
+                return self._meta["prefered_suffix"]
+            assert self.data_path
+            return self.data_path.suffix
 
         @prefered_suffix.setter
         def prefered_suffix(self, value: str):
             assert isinstance(value, str)
-            self._meta.data["prefered_suffix"] = value
-
-        @property
-        def id(self) -> str:
-            """str. Id."""
-            return list(self._data.data.values())[0]["id"]
+            assert self.mutable
+            self._meta["prefered_suffix"] = value
 
         @property
         def type(self) -> str:
             """str. Type"""
-            return list(self._data.data.keys())[0]
+            keys = list(self._data.keys())
+            assert len(keys) == 1
+            key = keys[0]
+            assert isinstance(key, str)
+
+            return key
 
         @property
-        def is_active(self) -> bool:
-            """bool. True, if is active."""
-            return self._meta.data["is_active"]
-
-        @is_active.setter
-        def is_active(self, value: bool):
-            assert isinstance(value, bool)
-            self._meta.data["is_active"] = value
+        def m_data(self) -> dict:
+            """:obj:`dict`. Manageable data."""
+            return self._data[self.type]
 
         @property
-        def path(self) -> Path:
+        def id(self) -> str:
+            """str. Id."""
+            return str(self.m_data["id"])
+
+        @property
+        def path(self) -> Path | None:
             """:obj:`Path`. Path"""
-            res = self._meta.data["path"]
-            return res if not res else Path(res)
+            if "path" in self._meta:
+                res = self._meta["path"]
+                if not res is None:
+                    res = Path(res)
+                return res
+            return None
 
         @path.setter
-        def path(self, value: Path):
+        def path(self, value: Path | None):
             assert value is None or isinstance(value, Path)
-            self._meta.data["path"] = value if value is None else str(value)
+            assert self.mutable
+            self._meta["path"] = value if value is None else str(value)
 
-        @path.setter
-        def path_setter(self, value: Path):
-            assert value is None or all([
-                isinstance(value, Path),
-                value.exists(),
-                value.is_dir(),
-            ])
-            self._meta.data["path"] = value or str(value)
-
-        @property
-        def state(self) -> ManageableState:
-            """:obj:`ManageableState` Copy to immutable state."""
-            return ManageableState(
-                is_active=self.is_active,
-                id=self.id,
-                prefered_suffix=self.prefered_suffix,
-                path=self.path,
-                type=self.type,
-            )
-
-        def set_path(self, data_path: Path, meta_path: Path):
-            """Set data and meta pathes"""
-            assert isinstance(data_path, Path)
-            assert isinstance(meta_path, Path)
-            assert data_path.suffix == self.prefered_suffix
-            assert meta_path.suffix == self.prefered_suffix
-
-            self._data.io = Io.get_io(data_path)
-            self._meta.io = Io.get_io(meta_path)
-
-        def load(self):
-            """Load meta and data."""
-            assert self._data.io and self._meta.io
-            self._data.load()
-            self._meta.load()
-
-        def dump(self):
-            """Dump meta and data."""
-            assert self._data.io and self._meta.io
-            self._data.dump()
-            self._meta.dump()
-
-        def lock(self):
-            """Lock meta and data."""
-            assert self._data.io and self._meta.io
-            self._data.lock()
-            self._meta.lock()
-
-        def acquire(self):
-            """Acquire meta and data."""
-            assert self._data.io and self._meta.io
-            self._data.acquire()
-            self._meta.acquire()
-
-        def blocking_load(self):
-            """Blocking dump meta and data."""
-            assert self._data.io and self._meta.io
-            self._data.blocking_load()
-            self._meta.blocking_load()
-
-        def blocking_dump(self):
-            """Blocking dump meta and data."""
-            assert self._data.io and self._meta.io
-            self._data.blocking_dump()
-            self._meta.blocking_dump()
-
-        @classmethod
-        def is_correct_meta_data(
-            cls,
-            data: Ioable | dict | Path,
-            meta: Ioable | dict | Path = None
-        ) -> bool:
-            """Returns True if meta and data may be meta and data of manageable.
-
-            Args:
-                data (:obj:`Union[Ioable, dict, Path]`): data.
-                meta (:obj:`Uinon[Ioable, dict, Path]`): meta.
-
-            Returns:
-                bool.
-            """
-
-            try:
-                cls(data=data, meta=meta)
-                return True
-            except Exception:
-                return False
+        def __str__(self):
+            return self.id
 
     class FileSystemHelper:
         """Contains methods to work with filesystem."""
@@ -319,18 +175,17 @@ class Manageable(metaclass=ABCMeta):
             path.mkdir()
             manageable._metadata.path = path
 
-            data_path = path.joinpath(
+            manageable._metadata.data_path = path.joinpath(
                 Path(Manageable.FileSystemHelper.DATA_FILENAME).with_suffix(
                     manageable.state.prefered_suffix
                 )
             )
-            meta_path = path.joinpath(
+            manageable._metadata.meta_path = path.joinpath(
                 Path(Manageable.FileSystemHelper.META_FILENAME).with_suffix(
                     manageable.state.prefered_suffix
                 )
             )
 
-            manageable._metadata.set_path(data_path, meta_path)
             manageable._metadata.dump()
 
         @classmethod
@@ -348,7 +203,7 @@ class Manageable(metaclass=ABCMeta):
             shutil.rmtree(manageable.state.path)
 
         @classmethod
-        def is_correct_tree(cls, clz, path: Path):
+        def is_correct_tree(cls, path: Path):
             """Returns True if path is possible Manageable file tree.
 
             Args:
@@ -375,7 +230,7 @@ class Manageable(metaclass=ABCMeta):
                     data_path.is_file(),
                     meta_path.is_file(),
                     data_path.suffix == meta_path.suffix,
-                    clz.MetaDataHelper.is_correct_meta_data(
+                    cls._outer_class.MetaDataHelper.is_correct_meta_data(
                         data=data_path,
                         meta=meta_path
                     ),
@@ -384,7 +239,7 @@ class Manageable(metaclass=ABCMeta):
                 return False
 
         @classmethod
-        def from_tree(cls, clz, path: Path) -> dict:
+        def from_tree(cls, path: Path) -> dict:
             """Returns keyword arguments to create :obj:`Manageable` object.
 
             Args:
@@ -395,15 +250,27 @@ class Manageable(metaclass=ABCMeta):
                 :obj:`dict` kwargs
             """
             assert isinstance(path, Path)
-            assert cls.is_correct_tree(clz, path)
+            assert cls.is_correct_tree(path)
 
             return {
-                "data": clz.FileSystemHelper.data_path(path),
-                "meta": clz.FileSystemHelper.meta_path(path),
+                "data": cls.data_path(path),
+                "meta": cls.meta_path(path),
             }
 
-    class AbstractLoadHelper:
+    class LoadHelper:
         """Abstract load helper"""
+
+        @staticmethod
+        def get_class_name(string: str) -> str:
+            """Converts string to class name.
+
+            Args:
+                string (str): string.
+
+            Returns:
+                str.
+            """
+            return "".join([x.capitalize() for x in string.split()]) + "Manageable"
 
         @staticmethod
         def load_manageable_class(name: str):
@@ -417,13 +284,18 @@ class Manageable(metaclass=ABCMeta):
             """
             assert isinstance(name, str)
 
-            for path in Path(__file__).parent.iterdir():
-                if path.is_file() and path.stem not in ["manageable", ]:
+            for path in Path(__file__).parent.joinpath("manageables").iterdir():
+                if path.is_file():
                     module_name = f"__manageable_realisation_{path.stem}"
                     module = load_module(module_name, path)
 
                     classes = inspect.getmembers(module)
-                    classes = list(filter(lambda x: x[0] == name, classes))
+                    classes = list(
+                        filter(
+                            lambda x: x[0] == Manageable.LoadHelper.get_class_name(name),
+                            inspect.getmembers(module)
+                        )
+                    )
 
                     if len(classes) >= 1:
                         assert len(classes) == 1
@@ -452,7 +324,7 @@ class Manageable(metaclass=ABCMeta):
                 meta=Manageable.FileSystemHelper.meta_path(path)
             )
 
-            return Manageable.AbstractLoadHelper.load_manageable_class(metadata.type)(
+            return Manageable.LoadHelper.load_manageable_class(metadata.type)(
                 data=data_path, meta=meta_path
             )
 
@@ -472,7 +344,7 @@ class Manageable(metaclass=ABCMeta):
                 data=path
             )
 
-            return Manageable.AbstractLoadHelper.load_manageable_class(metadata.type)(
+            return Manageable.LoadHelper.load_manageable_class(metadata.type.capitalize())(
                 data=path
             )
 
@@ -487,7 +359,6 @@ class Manageable(metaclass=ABCMeta):
         Args:
             data (:obj:`Union[dict, Ioable, Path, None]`): Data
             meta (:obj:`Union[dict, Ioable, Path, None]`): Meta
-            _metadata (:obj:`Union[Manageable.MetaDataHelper, None]`): Metadata
         """
 
     @abstractmethod
@@ -501,16 +372,15 @@ class Manageable(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @property
-    def state(self) -> ManageableState:
-        """:obj:`ManageableState` state of this manageable"""
-        self._metadata.is_active = self.is_active
-        return self._metadata.state
+    @abstractmethod
+    def is_active(self) -> bool:
+        """bool. True if manageable is active."""
+        raise NotImplementedError()
 
     @property
-    @abstractmethod
-    def is_active(self):
-        """bool. True if this manageable is active."""
-        raise NotImplementedError()
+    def state(self):
+        """:obj:`ManageableState` state of this manageable"""
+        return self._metadata.state
 
     def destruct(self):
         """Free all resources (filesystem too)."""
@@ -531,7 +401,7 @@ class Manageable(metaclass=ABCMeta):
         Returns:
             bool.
         """
-        return not self._metadata.path is None
+        return not self._metadata.meta_path is None
 
     @classmethod
     def is_correct_meta_data(
@@ -561,7 +431,7 @@ class Manageable(metaclass=ABCMeta):
             bool.
         """
         assert isinstance(path, Path)
-        return cls.FileSystemHelper.is_correct_tree(cls, path)
+        return cls.FileSystemHelper.is_correct_tree(path)
 
     @classmethod
     def from_tree(cls, path: Path):
@@ -578,7 +448,7 @@ class Manageable(metaclass=ABCMeta):
         """
         assert isinstance(path, Path)
         assert cls.is_correct_tree(path)
-        return cls(**cls.FileSystemHelper.from_tree(cls, path))
+        return cls(**cls.FileSystemHelper.from_tree(path))
 
     @staticmethod
     def from_tree_unknown(path: Path):
@@ -591,7 +461,7 @@ class Manageable(metaclass=ABCMeta):
             :obj:`Manageable`.
         """
         assert isinstance(path, Path)
-        return Manageable.AbstractLoadHelper.from_tree_unknown(path)
+        return Manageable.LoadHelper.from_tree_unknown(path)
 
     @staticmethod
     def from_descriptor(path: Path):
@@ -604,4 +474,4 @@ class Manageable(metaclass=ABCMeta):
             :obj:`Manageable`.
         """
         assert isinstance(path, Path)
-        return Manageable.AbstractLoadHelper.from_descriptor(path)
+        return Manageable.LoadHelper.from_descriptor(path)

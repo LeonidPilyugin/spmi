@@ -29,6 +29,11 @@ class Io(metaclass=ABCMeta):
         self.path = path
         self.encoding = encoding
 
+    @abstractmethod
+    def copy(self):
+        """Return a copy."""
+        raise NotImplementedError()
+
     @property
     def path(self) -> str:
         """str. Path"""
@@ -40,7 +45,7 @@ class Io(metaclass=ABCMeta):
         assert not value.exists() or value.is_file()
 
         self._path = value
-        self._lock = FileLock(value.parent / (value.name + ".lock"))
+        self._lock = FileLock(value.parent.joinpath(value.name + ".lock"))
 
     def lock(self):
         """Lock."""

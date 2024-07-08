@@ -26,7 +26,7 @@ from spmi.core.pool import Pool
 from spmi.utils.logger import Logger
 from spmi.utils.io.io import Io
 from spmi.utils.pattern import PatternMatcher, SimplePatternMatcher
-from spmi.core.manageable.manageable import Manageable
+from spmi.core.manageable import Manageable
 
 HELP_MESSAGE = r"""
    _____ ____  __  _______

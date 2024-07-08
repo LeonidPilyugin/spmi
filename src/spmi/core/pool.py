@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import List
 from spmi.utils.pattern import PatternMatcher
 from spmi.utils.logger import Logger
-from spmi.core.manageable.manageable import Manageable
+from spmi.core.manageable import Manageable
 
 class Pool:
     """A class which helps to manage Manageables"""
@@ -142,7 +142,8 @@ class Pool:
         self._logger.debug(f"Restarting manageables by pattern: \"{pattern}\"")
 
         for m in self.find(pattern, detected=False):
-            assert not m.state.is_active
+            assert m.state.can_destruct
+            m.clean()
             m.start()
 
     def stop(self, pattern: str):
@@ -150,9 +151,6 @@ class Pool:
 
         Args:
             pattern (str): pattern.
-
-        Note:
-            All manageables should be active.
         """
         assert isinstance(pattern, str)
         assert self._pm.is_pattern(pattern)
@@ -160,7 +158,6 @@ class Pool:
         self._logger.debug(f"Stopping manageables by pattern: \"{pattern}\"")
 
         for m in self.find(pattern, detected=False):
-            assert m.state.is_active
             m.stop()
 
     def destruct(self, pattern: str):
@@ -168,9 +165,6 @@ class Pool:
 
         Arguments:
             pattern (str): pattern.
-
-        Note:
-            All manageables should be inactive.
         """
         assert isinstance(pattern, str)
         assert self._pm.is_pattern(pattern)
@@ -178,12 +172,6 @@ class Pool:
         self._logger.debug(f"Destructing manageables by pattern: \"{pattern}\"")
 
         to_remove = self.find(pattern, detected=False)
-
-        # find active tasks
-        active = [x for x in to_remove if x.state.is_active]
-
-        # throw exception here
-        assert not active
 
         for rem in to_remove:
             self._logger.debug(f"Destructing manageable \"{rem.state.id}\"")
@@ -206,7 +194,7 @@ class Pool:
 
         result = ""
         for m in self.find(pattern, detected=False):
-            result += m.state.full_string() + "\n"
+            result += str(m.state) + "\n"
 
         return result
 
@@ -220,8 +208,8 @@ class Pool:
 
         result = ""
         for d in self._detected:
-            result += "detected: " + d.state.short_string() + "\n"
+            result += "detected: " + d.state.id + " by path \"" + str(d.state.data_path) + "\"\n"
         for r in self._registered:
-            result += "registered: " + r.state.short_string() + "\n"
+            result += "registered: " + r.state.id + "\n"
 
         return result
