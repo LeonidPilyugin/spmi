@@ -53,13 +53,36 @@ Each :class:`spmi.core.manageable.Manageable` has a :py:attr:`spmi.core.manageab
 
 JSON descriptor example:
 
-.. literalinclude:: examples/task/task.json
-    :language: JSON
+.. code-block:: JSON
+
+    {
+        "task": {
+            "id": "json_task",
+            "backend": {
+                "type": "screen"
+            },
+            "wrapper": {
+                "type": "default",
+                "command": "sleep 10"
+            }
+        }
+    }
 
 
 Also it in TOML:
 
-.. literalinclude:: examples/task/task.toml
-    :language: TOML
+.. code-block:: TOML
+
+    [task]
+    id = "toml_task"
+
+    [task.backend]
+    type = "screen"
+
+    [task.wrapper]
+    type = "default"
+    command = "sleep 10"
+
+
 
 

@@ -7,4 +7,3 @@ type = "screen"
 [task.wrapper]
 type = "default"
 command = "sleep 10"
-
