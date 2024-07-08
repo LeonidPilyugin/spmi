@@ -16,7 +16,7 @@ Welcome to SPMI's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   getting_started/index
+   getting_started
    user_guide/index
    developer_guide/index
    api_reference/index
