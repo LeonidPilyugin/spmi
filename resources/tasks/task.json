@@ -6,7 +6,7 @@
         }, 
         "wrapper": {
             "type": "default",
-            "command": "df -h"
+            "command": "sleep 10"
         }
     }
 }

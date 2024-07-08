@@ -27,7 +27,6 @@ class ScreenBackend(TaskManageable.Backend):
         screen.send_commands(metadata.backend.command)
         screen.detach()
 
-
     def cancel(self, metadata: TaskManageable.MetaDataHelper):
         self.load_screens()
 

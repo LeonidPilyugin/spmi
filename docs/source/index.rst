@@ -16,9 +16,10 @@ Welcome to SPMI's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   usage
-
-
+   getting_started/index
+   user_guide/index
+   developer_guide/index
+   api_reference/index
 
 Indices and tables
 ==================

@@ -92,7 +92,7 @@ class Manageable(metaclass=ABCMeta):
             self._meta["path"] = value if value is None else str(value)
 
         def __str__(self):
-            return self.id
+            return f"{self.type}: {self.id}"
 
     class FileSystemHelper:
         """Contains methods to work with filesystem."""

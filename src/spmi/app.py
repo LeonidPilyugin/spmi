@@ -2,19 +2,18 @@
 
 """This is main executable module of SPMI.
 
-Example:
+    Example:
+        literal blocks::
+            $ spmi list
 
-    literal blocks::
-        $ spmi list
-
-        $ spmi start manageable
+            $ spmi start manageable
 
 
-Attributes:
-    VERSION (str): SPMI version
+    Attributes:
+        VERSION (str): SPMI version
 
-Todo:
-    * add module examples
+    Todo:
+        * add module examples
 """
 import os
 import sys
@@ -105,8 +104,7 @@ class Spmi:
 
         Settings are stored in environment variables:
         * SPMI_HOME is path to home directory of SPMI
-        * SPMI_PATH is string of pathes splitted by ':'
-          where SPMI tries to find descriptors of manageables
+        * SPMI_PATH is string of pathes splitted by ':' where SPMI tries to find descriptors of manageables
         """
 
         DEFAULTS = {
