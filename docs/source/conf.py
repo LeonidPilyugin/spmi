@@ -24,9 +24,11 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
     'sphinx.ext.todo',
+    'sphinx.ext.napoleon',
 ]
 
 todo_include_todos = True
+autoclass_content = "both"
 
 templates_path = ['_templates']
 exclude_patterns = []

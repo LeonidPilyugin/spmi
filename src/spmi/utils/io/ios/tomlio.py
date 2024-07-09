@@ -1,16 +1,11 @@
-"""
-.. module:: tomlio.py
-    :platform: Unix
-
-.. moduleauthor:: Leonid Pilyugin <l.pilyugin04@gmail.com>
-
+"""Provides class :class:`TomlIo`.
 """
 
 import toml
 from spmi.utils.io.io import Io
 
 class TomlIo(Io):
-    """TOML formatted io"""
+    """TOML formatted io."""
 
     def copy(self):
         return JsonIo(path=self.path, encoding=self.encoding)

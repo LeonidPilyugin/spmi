@@ -1,27 +1,34 @@
-"""
-.. module:: manageable.py
-    :platform: Unix
+"""Provides :class:`Manageable`.
 
-.. moduleauthor:: Leonid Pilyugin <l.pilyugin04@gmail.com>
-
+Todo:
+    Write documentation.
 """
 
 import inspect
 import shutil
 from abc import abstractmethod, ABCMeta
 from pathlib import Path
-from spmi.utils.io.ioable import Ioable
 from spmi.utils.load import load_module
 from spmi.utils.metadata import MetaData
+from spmi.utils.logger import Logger
 
 def manageable(cls):
-    """Manageable decorator. All manageables should be decoratet with it."""
+    """All manageables should be decorated with it.
+
+    Note:
+        Sets ``__old_init__`` attribute of class and
+        ``_metadata`` and ``_metadata._outer_object`` of object.
+    """
     def __new_init__(self, *args, data=None, meta=None, **kwargs):
         assert data
+
+        self._logger = Logger(self.__class__.__name__)
 
         if "_metadata" not in dir(self):
             self._metadata = cls.MetaDataHelper(data=data, meta=meta, **kwargs)
             self._metadata._outer_object = self
+
+        self._logger.debug(f"Creating \"{self.state.id}\"")
 
         if self.__old_init__:
             self.__old_init__(*args, data=data, meta=meta, **kwargs)
@@ -42,22 +49,22 @@ class Manageable(metaclass=ABCMeta):
     class MetaDataHelper(MetaData):
         """Provides access to meta and data."""
         @property
-        def prefered_suffix(self) -> str:
-            """str. Prefered suffix."""
+        def prefered_suffix(self):
+            """:obj:`str`. Prefered suffix."""
             if "prefered_suffix" in self._meta:
                 return self._meta["prefered_suffix"]
             assert self.data_path
             return self.data_path.suffix
 
         @prefered_suffix.setter
-        def prefered_suffix(self, value: str):
+        def prefered_suffix(self, value):
             assert isinstance(value, str)
             assert self.mutable
             self._meta["prefered_suffix"] = value
 
         @property
-        def type(self) -> str:
-            """str. Type"""
+        def type(self):
+            """:obj:`str`. Type"""
             keys = list(self._data.keys())
             assert len(keys) == 1
             key = keys[0]
@@ -66,18 +73,18 @@ class Manageable(metaclass=ABCMeta):
             return key
 
         @property
-        def m_data(self) -> dict:
+        def m_data(self):
             """:obj:`dict`. Manageable data."""
             return self._data[self.type]
 
         @property
-        def id(self) -> str:
-            """str. Id."""
+        def id(self):
+            """:obj:`str`. ID."""
             return str(self.m_data["id"])
 
         @property
-        def path(self) -> Path | None:
-            """:obj:`Path`. Path"""
+        def path(self):
+            """:obj:`pathlib.Path`. Path"""
             if "path" in self._meta:
                 res = self._meta["path"]
                 if not res is None:
@@ -86,7 +93,7 @@ class Manageable(metaclass=ABCMeta):
             return None
 
         @path.setter
-        def path(self, value: Path | None):
+        def path(self, value):
             assert value is None or isinstance(value, Path)
             assert self.mutable
             self._meta["path"] = value if value is None else str(value)
@@ -98,19 +105,19 @@ class Manageable(metaclass=ABCMeta):
         """Contains methods to work with filesystem."""
 
         DATA_FILENAME = "data"
-        """str: name of data file (without extention)"""
+        """:obj:`str`: name of data file (without extention)"""
         META_FILENAME = "meta"
-        """str: name of meta file (without extention)"""
+        """:obj:`str`: name of meta file (without extention)"""
 
         @staticmethod
-        def data_pathes(path: Path) -> list:
+        def data_pathes(path):
             """Return all potential data pathes.
 
             Args:
-                path (:obj:`Path`): Root path.
+                path (:obj:`pathlib.Path`): Directory path.
 
             Returns:
-                :obj:`list` of :obj:`Path`.
+                :obj:`list` of :obj:`pathlib.Path`.
             """
             return list(
                 filter(
@@ -120,14 +127,14 @@ class Manageable(metaclass=ABCMeta):
             )
 
         @staticmethod
-        def meta_pathes(path: Path) -> list:
+        def meta_pathes(path):
             """Return all potential meta pathes.
 
             Args:
-                path (:obj:`Path`): Root path.
+                path (:obj:`pathlib.Path`): Directory path.
 
             Returns:
-                :obj:`list` of :obj:`Path`.
+                :obj:`list` of :obj:`pathlib.Path`.
             """
             return list(
                 filter(
@@ -137,36 +144,36 @@ class Manageable(metaclass=ABCMeta):
             )
 
         @staticmethod
-        def data_path(path: Path) -> Path:
+        def data_path(path):
             """Returns path to data file.
 
             Args:
-                path (:obj:`Path`): Root path.
+                path (:obj:`pathlib.Path`): Directory path.
 
             Returns:
-                :obj:`Path`.
+                :obj:`pathlib.Path`.
             """
             return Manageable.FileSystemHelper.data_pathes(path)[0]
 
         @staticmethod
-        def meta_path(path: Path) -> Path:
+        def meta_path(path):
             """Returns path to meta file.
 
             Args:
-                path (:obj:`Path`): Root path.
+                path (:obj:`pathlib.Path`): Directory path.
 
             Returns:
-                :obj:`Path`.
+                :obj:`pathlib.Path`.
             """
             return Manageable.FileSystemHelper.meta_pathes(path)[0]
 
         @classmethod
-        def register(cls, manageable, path: Path):
+        def register(cls, manageable, path):
             """Registeres manageable by path.
 
             Args:
                 manageable (:obj:`Manageable`): Manageable to register.
-                path (:obj:`Path`): Path to use.
+                path (:obj:`pathlib.Path`): Path to use.
             """
             assert isinstance(manageable, Manageable)
             assert isinstance(path, Path)
@@ -194,24 +201,21 @@ class Manageable(metaclass=ABCMeta):
 
             Args:
                 manageable (:obj:`Manageable`): Manageable to destruct.
-
-            Note:
-                Manageable should be inactive.
             """
             assert isinstance(manageable, Manageable)
             assert not manageable.is_active
             shutil.rmtree(manageable.state.path)
 
         @classmethod
-        def is_correct_tree(cls, path: Path):
-            """Returns True if path is possible Manageable file tree.
+        def is_correct_directory(cls, path):
+            """Returns ``True`` if ``path`` may be a directory
+            where :obj:`Manageable` registered.
 
             Args:
-                clz (:obj:`class`): Outer class.
-                path (:obj:`Path`): Path to tree.
+                path (:obj:`pathlib.Path`): Path to directory.
 
             Returns:
-                bool.
+                :obj:`bool`.
             """
             assert isinstance(path, Path)
 
@@ -239,18 +243,17 @@ class Manageable(metaclass=ABCMeta):
                 return False
 
         @classmethod
-        def from_tree(cls, path: Path) -> dict:
+        def from_directory(cls, path):
             """Returns keyword arguments to create :obj:`Manageable` object.
 
             Args:
-                clz (:obj:`Manageable`): Outer class.
-                path (:obj:`Path`): Path to tree.
+                path (:obj:`pathlib.Path`): Path to directory.
 
             Returns:
-                :obj:`dict` kwargs
+                :obj:`dict`: Kwargs.
             """
             assert isinstance(path, Path)
-            assert cls.is_correct_tree(path)
+            assert cls.is_correct_directory(path)
 
             return {
                 "data": cls.data_path(path),
@@ -258,14 +261,14 @@ class Manageable(metaclass=ABCMeta):
             }
 
     class LoadHelper:
-        """Abstract load helper"""
+        """Abstract load helper."""
 
         @staticmethod
-        def get_class_name(string: str) -> str:
-            """Converts string to class name.
+        def get_class_name(string) -> str:
+            """Converts ``string`` to class name.
 
             Args:
-                string (str): string.
+                string (:obj:`str`): String.
 
             Returns:
                 str.
@@ -273,11 +276,11 @@ class Manageable(metaclass=ABCMeta):
             return "".join([x.capitalize() for x in string.split()]) + "Manageable"
 
         @staticmethod
-        def load_manageable_class(name: str):
+        def load_manageable_class(name):
             """Loads manageable class by name.
 
             Args:
-                name (str): classname.
+                name (:obj:`str`): Classname.
 
             Returns:
                 :obj:`class`.
@@ -304,17 +307,17 @@ class Manageable(metaclass=ABCMeta):
             raise NotImplementedError()
 
         @staticmethod
-        def from_tree_unknown(path: Path):
-            """Loads registered manageable from tree.
+        def from_directory_unknown(path):
+            """Loads registered manageable from directory.
             
             Args:
-                path (:obj:`Path`): Path to tree.
+                path (:obj:`pathlib.Path`): Path to directory.
 
             Returns:
                 :obj:`Manageable`.
             """
             assert isinstance(path, Path)
-            assert Manageable.is_correct_tree(path)
+            assert Manageable.is_correct_directory(path)
 
             data_path = Manageable.FileSystemHelper.data_path(path)
             meta_path = Manageable.FileSystemHelper.meta_path(path)
@@ -329,11 +332,11 @@ class Manageable(metaclass=ABCMeta):
             )
 
         @staticmethod
-        def from_descriptor(path: Path):
+        def from_descriptor(path):
             """Loads detected manageable from descriptor.
 
             Args:
-                path (:obj:`Path`): Path to tree.
+                path (:obj:`pathlib.Path`): Path to descriptor.
 
             Returns:
                 :obj:`Manageable`.
@@ -350,15 +353,11 @@ class Manageable(metaclass=ABCMeta):
 
 
     @abstractmethod
-    def __init__(self,
-        data: dict | Ioable | Path | None = None,
-        meta: dict | Ioable | Path | None = None
-    ):
-        """Constructor.
-
+    def __init__(self, data=None, meta=None):
+        """
         Args:
-            data (:obj:`Union[dict, Ioable, Path, None]`): Data
-            meta (:obj:`Union[dict, Ioable, Path, None]`): Meta
+            data (:obj:`Union[dict, pathlib.Path, None]`): Data.
+            meta (:obj:`Union[dict, pathlib.Path, None]`): Meta.
         """
 
     @abstractmethod
@@ -368,107 +367,97 @@ class Manageable(metaclass=ABCMeta):
 
     @abstractmethod
     def stop(self):
-        """Stops this manageable"""
-        raise NotImplementedError()
-
-    @property
-    @abstractmethod
-    def is_active(self) -> bool:
-        """bool. True if manageable is active."""
+        """Stops this manageable."""
         raise NotImplementedError()
 
     @property
     def state(self):
-        """:obj:`ManageableState` state of this manageable"""
+        """:obj:`Manageable.MetaDataHelper` state of this manageable."""
         return self._metadata.state
 
     def destruct(self):
         """Free all resources (filesystem too)."""
+        self._logger.debug(f"Destructing \"{self.state.id}\"")
         type(self).FileSystemHelper.destruct(self)
 
-    def register(self, path: Path):
-        """Creates filetree by path.
+    def register(self, path):
+        """Creates filedirectory by path.
 
         Args:
-            path (:obj:`Path`): Path where manageable should be registered.
+            path (:obj:`pathlib.Path`): Path where manageable should be registered.
         """
         assert isinstance(path, Path)
+        self._logger.debug(f"Registering \"{self.state.id}\"")
         type(self).FileSystemHelper.register(self, path)
 
-    def is_registered(self) -> bool:
-        """Returns True if this manageable is registered.
+    def is_registered(self):
+        """Returns ``True`` if this manageable is registered.
 
         Returns:
-            bool.
+            :obj:`bool`.
         """
         return not self._metadata.meta_path is None
 
     @classmethod
-    def is_correct_meta_data(
-        cls,
-        data: Ioable | dict | Path,
-        meta: Ioable | dict | Path = None
-    ) -> bool:
-        """Returns True if meta and data may be meta and data of manageable.
+    def is_correct_meta_data(cls, data, meta=None):
+        """Returns ``True`` if ``meta`` and ``data``
+        may be :class:`Manageable`'s meta and data.
 
         Args:
-            data (:obj:`Union[Ioable, dict, Path]`): data.
-            meta (:obj:`Uinon[Ioable, dict, Path]`): meta.
+            data (:obj:`Union[dict, pathlib.Path]`): Data.
+            meta (:obj:`Uinon[dict, pathlib.Path, None]`): Meta.
 
         Returns:
-            bool.
+            :obj:`bool`.
         """
         return cls.MetaDataHelper.is_correct_meta_data(data=data, meta=meta)
 
     @classmethod
-    def is_correct_tree(cls, path: Path) -> bool:
-        """Returns True if this manageable is registered.
+    def is_correct_directory(cls, path):
+        """Returns ``True`` if this manageable is registered.
 
         Args:
-            path (:obj:`Path`): Path to tree.
+            path (:obj:`pathlib.Path`): Path to directory.
 
         Returns:
-            bool.
+            :obj:`bool`.
         """
         assert isinstance(path, Path)
-        return cls.FileSystemHelper.is_correct_tree(path)
+        return cls.FileSystemHelper.is_correct_directory(path)
 
     @classmethod
-    def from_tree(cls, path: Path):
-        """Loads registered manageable from tree.
+    def from_directory(cls, path):
+        """Loads registered manageable from directory.
 
         Args:
-            path (:obj:`Path`): Path to tree.
-
-        Note:
-            Tree should be correct for class.
+            path (:obj:`pathlib.Path`): Path to directory.
 
         Returns:
             :obj:`Manageable`.
         """
         assert isinstance(path, Path)
-        assert cls.is_correct_tree(path)
-        return cls(**cls.FileSystemHelper.from_tree(path))
+        assert cls.is_correct_directory(path)
+        return cls(**cls.FileSystemHelper.from_directory(path))
 
     @staticmethod
-    def from_tree_unknown(path: Path):
-        """Loads registered manageable from tree.
+    def from_directory_unknown(path):
+        """Loads registered manageable from directory.
         
         Args:
-            path (:obj:`Path`): Path to tree.
+            path (:obj:`pathlib.Path`): Path to directory.
 
         Returns:
             :obj:`Manageable`.
         """
         assert isinstance(path, Path)
-        return Manageable.LoadHelper.from_tree_unknown(path)
+        return Manageable.LoadHelper.from_directory_unknown(path)
 
     @staticmethod
-    def from_descriptor(path: Path):
+    def from_descriptor(path):
         """Loads detected manageable from descriptor.
 
         Args:
-            path (:obj:`Path`): Path to tree.
+            path (:obj:`pathlib.Path`): Path to descriptor.
 
         Returns:
             :obj:`Manageable`.

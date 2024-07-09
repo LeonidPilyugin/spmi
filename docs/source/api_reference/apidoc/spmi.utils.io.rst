@@ -20,14 +20,6 @@ spmi.utils.io.io module
    :undoc-members:
    :show-inheritance:
 
-spmi.utils.io.ioable module
----------------------------
-
-.. automodule:: spmi.utils.io.ioable
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Module contents
 ---------------
 

@@ -1,20 +1,19 @@
 #!/usr/bin/env python3
 
-"""This is main executable module of SPMI.
+"""SPMI application module.
 
-    Example:
-        literal blocks::
-            $ spmi list
+Execute next command to get help message:
 
-            $ spmi start manageable
+.. code-block:: console
+
+    $ spmi --help
 
 
-    Attributes:
-        VERSION (str): SPMI version
-
-    Todo:
-        * add module examples
+Todo:
+    * Exceptions
+    * Error handling
 """
+
 import os
 import sys
 import traceback
@@ -39,84 +38,104 @@ Simple Process Management Interface
 SPMI is a program to maintain processes with systemctl-like interface.
 
 Usage:
-    spmi list
-    spmi start <pattern>
-    spmi stop <pattern>
-    spmi clean <pattern>
-    spmi status <pattern>
+    spmi list [-d | --debug]
+    spmi start <patterns>... [-d | --debug]
+    spmi stop <patterns>... [-d | --debug]
+    spmi clean <patterns>... [-d | --debug]
+    spmi status <patterns>... [-d | --debug]
 
 Options:
     -h --help       Show this screen
     -v --version    Show version
+    -d --debug      Run in debug mode
 
 """
 
 VERSION = "SPMI 0.0.1 test"
-"""str: version of SPMI"""
+"""str: Version of SPMI"""
 
 class Spmi:
-    """Main class"""
+    """Main aplication class.
+
+    Provides methods to start application.
+    """
     class ArgumentsHelper:
-        """Command line argument container"""
+        """Command line argument container.
+
+        Provides methods to work with ``docopt`` arguments
+        """
 
         def __init__(self, args):
-            """Constructor
-            
+            """
             Args:
-                args (:obj:`dict`): Dictionary, returned by docopt.docopt
+                args (:obj:`dict`): Dictionary, returned by ``docopt.docopt``.
             """
             assert isinstance(args, dict)
             self._args = args
 
         @property
         def is_start(self):
-            """bool: True if "start" is in args"""
+            """:obj:`bool`: ``True``, if should start."""
             return self._args["start"]
 
         @property
         def is_stop(self):
-            """bool: True if "stop" is in args"""
+            """:obj:`bool`: ``True``, if should stop."""
             return self._args["stop"]
 
         @property
         def is_clean(self):
-            """bool: True if "clean" is in args"""
+            """:obj:`bool`: ``True``, if should clean."""
             return self._args["clean"]
 
         @property
         def is_status(self):
-            """bool: True if "status" is in args"""
+            """:obj:`bool`: ``True``, if should show status."""
             return self._args["status"]
 
         @property
         def is_list(self):
-            """bool: True if "list" is in args"""
+            """:obj:`bool`: ``True``, if should show list."""
             return self._args["list"]
 
         @property
-        def pattern(self):
-            """:obj:`list` of :obj:`str`: List of patterns to operate"""
-            return self._args["<pattern>"]
+        def debug(self):
+            """:obj:`bool`: ``True`` if ``--debug`` in options."""
+            return self._args["--debug"]
+
+        @property
+        def patterns(self):
+            """:obj:`list` of :obj:`str`: List of patterns."""
+            return self._args["<patterns>"]
 
 
     class ConfigHelper:
-        """SPMI config class.
+        """Manages SPMI configuration.
 
-        Settings are stored in environment variables:
-        * SPMI_HOME is path to home directory of SPMI
-        * SPMI_PATH is string of pathes splitted by ':' where SPMI tries to find descriptors of manageables
+        Settings os SPMI are stored in environment variables:
+
+        * ``SPMI_HOME`` is path to SPMI home directory.
+        * ``SPMI_PATH`` is string of pathes splitted by ``:`` where SPMI tries to find descriptors.
         """
 
         DEFAULTS = {
             "SPMI_HOME": "/home/leonid/github.com/LeonidPilyugin/spmi/resources/test-spmi/",
-            "SPMI_PATH": "/home/leonid/github.com/LeonidPilyugin/spmi/resources/tasks",
+            "SPMI_PATH": ".:/home/leonid/github.com/LeonidPilyugin/spmi/resources/tasks",
         }
         """:obj:`dict` Default SPMI settings."""
 
-        def __init__(self):
-            """Constructor."""
-            self._dict = dict(Spmi.ConfigHelper.DEFAULTS)
+        def __init__(self, defaults = None):
+            """
+            Args:
+                defaults (:obj:`Union[dict, None]`): default settings.
+                    If None, defaults are set from ``DEFAULTS`` attribute.
+            """
+            assert defaults is None or isinstance(defaults, dict)
+            self._dict = defaults if not defaults is None else dict(Spmi.ConfigHelper.DEFAULTS)
             self.load()
+
+            assert "SPMI_HOME" in self._dict
+            assert "SPMI_PATH" in self._dict
 
         def load(self):
             """Loads system environment variables."""
@@ -124,29 +143,30 @@ class Spmi:
                 self._dict[key] = os.environ.get(key, self._dict[key])
 
         @property
-        def home(self) -> Path:
-            """:obj:`pathlib.Path` Path to SPMI home."""
+        def home(self):
+            """:obj:`pathlib.Path`: Path to SPMI home directory."""
             return Path(self._dict["SPMI_HOME"])
 
         @property
-        def path(self) -> List[Path]:
-            """:obj:`list` of :obj:`pathlib.Path` List of pathes."""
+        def path(self):
+            """:obj:`list` of :obj:`pathlib.Path`: List of pathes."""
             return list(map(Path, self._dict["SPMI_PATH"].split(":")))
 
 
-    def __init__(self, args: dict, pm: PatternMatcher):
-        """Constructor.
-
+    def __init__(self, args, pm):
+        """
         Args:
-            args (:obj:`dict`): docopt arguments.
-            pm (:obj:`spmi.utils.pattern.PatternMatcher`): pattern matcher.
+            args (:obj:`dict`): ``docopt`` arguments.
+            pm (:obj:`spmi.utils.pattern.PatternMatcher`): Pattern matcher.
         """
         assert isinstance(pm, PatternMatcher)
         assert isinstance(args, dict)
 
-        self._logger = Logger("SPMI")
+        self._logger = Logger("Spmi")
         self._logger.debug("Loading arguments")
         self._args = Spmi.ArgumentsHelper(args)
+
+        Logger.basic_config(loglevel="DEBUG" if self._args.debug else "INFO")
 
         self._logger.debug("Loading config")
         self._config = Spmi.ConfigHelper()
@@ -159,12 +179,12 @@ class Spmi:
         self._pool = Pool(path=self._config.home, pm=pm, dm=self.load_manageables())
 
 
-    def load_manageables(self) -> List[Manageable]:
+    def load_manageables(self):
         """Return list of found descriptors.
         
         Returns:
-            :obj:`list` of :obj:`spmi.manageable.Manageable`.
-            List of detected manageables.
+            :obj:`list` of :obj:`spmi.manageable.Manageable`:
+            :obj:`list` of detected manageables.
         """
 
         manageables = []
@@ -190,7 +210,7 @@ class Spmi:
 
         return manageables
 
-    def list(self):
+    def show_list(self):
         """Prints list of manageables."""
         self._logger.debug("Listing manageables")
         print(self._pool.get_list_string())
@@ -199,7 +219,7 @@ class Spmi:
         """Starts all manageables corresponding to pattern.
 
         Args:
-            pattern (str): Pattern string.
+            pattern (:obj:`str`): Pattern string.
         """
         assert isinstance(pattern, str)
 
@@ -210,7 +230,7 @@ class Spmi:
         """Retarts all manageables corresponding to pattern.
 
         Args:
-            pattern (str): Pattern string.
+            pattern (:obj:`str`): Pattern string.
         """
         assert isinstance(pattern, str)
 
@@ -221,7 +241,7 @@ class Spmi:
         """Starts all manageables corresponding to pattern.
 
         Args:
-            pattern (str): Pattern string.
+            pattern (:obj:`str`): Pattern string.
         """
         assert isinstance(pattern, str)
 
@@ -232,7 +252,7 @@ class Spmi:
         """Starts all manageables corresponding to pattern.
 
         Args:
-            pattern (str): Pattern string.
+            pattern (:obj:`str`): Pattern string.
         """
         assert isinstance(pattern, str)
 
@@ -243,7 +263,7 @@ class Spmi:
         """Starts all manageables corresponding to pattern.
 
         Args:
-            pattern (str): Pattern string.
+            pattern (:obj:`str`): Pattern string.
         """
         assert isinstance(pattern, str)
 
@@ -254,15 +274,15 @@ class Spmi:
         """Execute command from CLI."""
 
         if self._args.is_list:
-            self.list()
+            self.show_list()
         elif self._args.is_start:
-            self.start(self._args.pattern)
+            for p in self._args.patterns: self.start(p)
         elif self._args.is_status:
-            self.status(self._args.pattern)
+            for p in self._args.patterns: self.status(p)
         elif self._args.is_stop:
-            self.stop(self._args.pattern)
+            for p in self._args.patterns: self.stop(p)
         elif self._args.is_clean:
-            self.clean(self._args.pattern)
+            for p in self._args.patterns: self.clean(p)
 
 
 if __name__ == "__main__":

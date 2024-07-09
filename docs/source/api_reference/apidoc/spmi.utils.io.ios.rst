@@ -20,6 +20,14 @@ spmi.utils.io.ios.tomlio module
    :undoc-members:
    :show-inheritance:
 
+spmi.utils.io.ios.yamlio module
+-------------------------------
+
+.. automodule:: spmi.utils.io.ios.yamlio
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

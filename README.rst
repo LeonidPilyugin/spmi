@@ -1,11 +1,15 @@
 Getting started
 ===============
 
-.. note::
+.. warning::
 
    This project is under active development.
 
-.. todo:: Create aliases for classes in documentation.
+.. todo::
+
+    * Update this section.
+    * See API TODOs
+    * Update ``requirements.txt``
 
 What is SPMI
 ------------
@@ -16,74 +20,86 @@ application and library to start processes via different process managers
 Installation
 ------------
 
-First, clone git repository:
+Clone git repository:
 
 .. code-block:: console
 
     $ git clone https://github.com/LeonidPilyugin/spmi
     $ cd spmi
 
-Then, create a virtual python environment:
-
-.. code-block:: console
-
-    $ python -m venv .venv
-
 Install dependencies:
 
 .. code-block:: console
 
-    (.venv) $ pip install -r requirements.txt
+    $ pip install -r requirements.txt
 
 Basic usage
 -----------
 The core object of SPMI is :class:`spmi.core.manageable.Manageable`.
 It describes process which can be managed by SPMI.
 :py:mod:`spmi.core.manageables` contains realisations of
-:class:`spmi.core.manageable.Manageable`.
+:class:`Manageable`.
 For example, :class:`spmi.core.manageables.task.TaskManageable` is a
-:class:`spmi.core.manageable.Manageable`
+:class:`Manageable`
 which runs a single command via specific
-:class:`spmi.core.manageables.task.TaskManageable.Backend`.
+:class:`TaskManageable.Backend`. :class:`TaskManageable.Backend` is
+an interface to process manager (:class:`spmi.core.manageables.task_.backend.screen.ScreenBackend` is an interface to GNU Screen).
 
+Before starting :class:`Manageable`, create its descriptor file.
+SPMI supports several file formats and detects format based on file extention.
 
-.. todo:: Write about manageable structure.
-
-Each :class:`spmi.core.manageable.Manageable` has a :py:attr:`spmi.core.manageable.Manageable.state` property which
-
+Create a simple task descriptor:
 
 .. code-block:: JSON
-    :caption: JSON descriptor example
 
     {
-        "task": {
-            "id": "json_task",
-            "backend": {
-                "type": "screen"
+        "task": {                       // type of manageable to start
+            "id": "example_task",       // ID of manageable
+            "backend": {                // backend section
+                "type": "screen"        // type of backend
             },
-            "wrapper": {
-                "type": "default",
-                "command": "sleep 10"
+            "wrapper": {                // wrapper section
+                "type": "default",      // type of wrapper
+                "command": "sleep 10"   // command to execute
             }
         }
     }
 
 
-The same in TOML:
+Then, start a new task:
 
-.. code-block:: TOML
-    :caption: TOML descriptor example
+.. code-block:: console
 
-    [task]
-    id = "toml_task"
+    $ spmi list
+    detected: "example_task" by path "path/to/your/task.json"
 
-    [task.backend]
-    type = "screen"
+.. code-block:: console
 
-    [task.wrapper]
-    type = "default"
-    command = "sleep 10"
+    $ spmi start example_task
+    started: "example_task"
 
+.. code-block:: console
 
+    $ spmi list
+    detected: "example_task" by path "path/to/your/task.json"
+    registered: "example_task"
 
+.. code-block:: console
 
+    $ spmi status example_task
+
+.. code-block:: console
+
+    $ spmi stop example_task
+
+.. code-block:: console
+
+    $ spmi status example_task
+
+.. code-block:: console
+
+    $ spmi list
+
+.. code-block:: console
+
+    $ spmi clean example_task

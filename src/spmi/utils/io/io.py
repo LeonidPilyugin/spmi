@@ -1,9 +1,4 @@
-"""
-.. module:: io.py
-    :platform: Unix
-
-.. moduleauthor:: Leonid Pilyugin <l.pilyugin04@gmail.com>
-
+"""Provides :class:`Io`.
 """
 
 import inspect
@@ -13,14 +8,21 @@ from filelock import FileLock
 from spmi.utils.load import load_module
 
 class Io(metaclass=ABCMeta):
-    """Formatted input and output."""
+    """Formatted input and output.
 
-    def __init__(self, path: Path, encoding: str = "utf-8"):
-        """Constructor.
+    Each realisation of this class can load single file
+    extention and defined in :mod:`ios` package in single file.
+    Class and file name are based on file extention format.
 
+    For example, :class:`ios.jsonio.Json` can load only ``.json``
+    files.
+    """
+
+    def __init__(self, path, encoding="utf-8"):
+        """
         Args:
-            path (:obj:`Path`): path to file
-            encoding (str): encoding.
+            path (:obj:`pathlib.Path`): Path to file.
+            encoding (:obj:`str`): Encoding.
         """
         assert isinstance(path, Path)
         assert not path.exists() or path.is_file()
@@ -35,12 +37,12 @@ class Io(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @property
-    def path(self) -> str:
-        """str. Path"""
-        return self._path
+    def path(self):
+        """:obj:`pathlib.Path`: Path to file."""
+        return Path(self._path)
 
     @path.setter
-    def path(self, value: Path):
+    def path(self, value):
         assert isinstance(value, Path)
         assert not value.exists() or value.is_file()
 
@@ -48,19 +50,19 @@ class Io(metaclass=ABCMeta):
         self._lock = FileLock(value.parent.joinpath(value.name + ".lock"))
 
     def lock(self):
-        """Lock."""
+        """Lock file."""
         self._lock.lock()
 
     def acquire(self):
-        """Acquire."""
+        """Acquire file."""
         self._lock.acquire()
 
     @property
-    def is_locked(self) -> bool:
-        """bool. True if file is locked."""
+    def is_locked(self):
+        """:obj:`bool`: ``True`` if file is locked."""
         return self._lock.is_locked()
 
-    def blocking_load(self) -> dict:
+    def blocking_load(self):
         """Blocking load.
 
         Returns:
@@ -70,17 +72,17 @@ class Io(metaclass=ABCMeta):
             result = self.load()
         return result
 
-    def blocking_dump(self, data: dict):
+    def blocking_dump(self, data):
         """Blocking dump.
 
         Args:
-            data (:obj:`dict`): Dict to dump.
+            data (:obj:`dict`): Dictionary to dump.
         """
         with self._lock:
             self.dump(data)
 
     @abstractmethod
-    def load(self) -> dict:
+    def load(self):
         """Load.
 
         Returns:
@@ -93,16 +95,16 @@ class Io(metaclass=ABCMeta):
         """Dump.
 
         Args:
-            data (:obj:`dict`): Dict to dump.
+            data (:obj:`dict`): Dictionary to dump.
         """
         raise NotImplementedError()
 
     @staticmethod
-    def get_io_suffix(suffix: str):
+    def get_io_suffix(suffix):
         """Return io class by suffix.
 
         Args:
-            suffix (str): suffix of file.
+            suffix (:obj:`str`): suffix of file.
 
         Returns:
             :obj:`class`. Io realisation.
@@ -121,26 +123,26 @@ class Io(metaclass=ABCMeta):
         ))[0][1]
 
     @staticmethod
-    def has_io(path: Path) -> bool:
-        """Returns True if has loader for file by path.
+    def has_io(path: Path):
+        """Returns ``True`` if has loader for file by path.
 
         Args:
             path (:obj:`Path`): path.
 
         Returns:
-            bool.
+            :obj:`bool`.
         """
         ios = Path(__file__).parent.joinpath("ios").iterdir()
         return f"{path.suffix[1:]}io" in [x.stem for x in ios]
 
     @staticmethod
-    def get_io(path: Path):
+    def get_io(path):
         """Return io object by path.
         
         Args:
-            path (:obj:`Path`): path
+            path (:obj:`pathlib.Path`): path
 
         Returns:
-            :obj:`Io` class with this path.
+            :obj:`Io` class by this path.
         """
         return Io.get_io_suffix(path.suffix)(path)

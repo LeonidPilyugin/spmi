@@ -1,70 +1,63 @@
+"""Provides :class:`Logger`.
 """
-.. module:: logger.py
-    :platform: Unix
-
-.. moduleauthor:: Leonid Pilyugin <l.pilyugin04@gmail.com>
-
-"""
-
 
 import logging
 
 class Logger:
-    """Logger class."""
+    """Provides logging methods."""
 
     @staticmethod
-    def basic_config(loglevel="WARNING"):
+    def basic_config(loglevel="INFO"):
         """Sets up logging basic config.
 
         Args:
-            loglevel: log level.
+            loglevel: :py:mod:`logging` log level.
         """
         logging.basicConfig(level=loglevel)
 
-    def __init__(self, name: str):
-        """Constructor.
-
+    def __init__(self, name):
+        """
         Args:
-            name (str): logger name.
+            name (:obj:`str`): Logger name.
         """
         self.logger = logging.getLogger(name)
 
-    def debug(self, msg: str):
+    def debug(self, msg):
         """Debug a message.
 
         Args:
-            msg (str): messae to show.
+            msg (:obj:`str`): message to show.
         """
         self.logger.debug(msg)
 
-    def info(self, msg: str):
+    def info(self, msg):
         """Info a message.
 
         Args:
-            msg (str): messae to show.
+            msg (:obj:`str`): message to show.
         """
         self.logger.info(msg)
 
-    def warning(self, msg: str):
+    def warning(self, msg):
         """Warning a message.
 
         Args:
-            msg (str): messae to show.
+            msg (:obj:`str`): message to show.
         """
         self.logger.warning(msg)
 
-    def error(self, msg: str):
+    def error(self, msg):
         """Error a message.
 
         Args:
-            msg (str): messae to show.
+            msg (:obj:`str`): message to show.
         """
         self.logger.error(msg)
 
-    def critical(self, msg: str):
+    def critical(self, msg):
         """Critical a message.
 
         Args:
-            msg (str): messae to show.
+            msg (:obj:`str`): message to show.
         """
         self.logger.critical(msg)
