@@ -205,7 +205,6 @@ class Manageable(metaclass=ABCMeta):
                 manageable (:obj:`Manageable`): Manageable to destruct.
             """
             assert isinstance(manageable, Manageable)
-            assert not manageable.is_active
             shutil.rmtree(manageable.state.path)
 
         @classmethod

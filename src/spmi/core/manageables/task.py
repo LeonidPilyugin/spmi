@@ -406,16 +406,17 @@ class TaskManageable(Manageable):
     def __init__(self, *args, **kwargs):
         self._backend = TaskManageable.Backend.get_backend(self._metadata)
 
-    @property
-    def is_active(self):
-        return self._backend.is_active(self._metadata)
-
     def start(self):
         self._metadata.backend.command = TaskManageable.Cli.command(self._metadata)
         self._backend.submit(self._metadata)
 
     def stop(self):
         self._backend.cancel(self._metadata)
+
+    def destruct(self):
+        assert not self._backend.is_active(self._metadata)
+        super().destruct()
+
 
 def set_signal_handlers(wrapper):
     """Sets signal handlers."""
