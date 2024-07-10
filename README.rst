@@ -46,22 +46,19 @@ an interface to process manager (``ScreenBackend`` is an interface to GNU Screen
 Before starting ``Manageable``, create its descriptor file.
 SPMI supports several file formats and detects format based on file extention.
 
-Create a simple task descriptor:
+Create a simple task descriptor ``task.toml``:
 
-.. code-block:: JSON
+.. code-block:: TOML
 
-    {
-        "task": {
-            "id": "example_task",
-            "backend": {
-                "type": "screen"
-            },
-            "wrapper": {
-                "type": "default",
-                "command": "sleep 10"
-            }
-        }
-    }
+    [task]                  # type of manageable
+    id = "toml_task"        # ID of manageable
+
+    [task.backend]          # backend section
+    type = "screen"         # type of backend
+
+    [task.wrapper]          # wrapper section
+    type = "default"        # type of wrapper
+    command = "sleep 10"    # command to execute
 
 
 Then, start a new task:
