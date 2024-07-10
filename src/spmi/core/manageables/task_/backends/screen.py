@@ -36,17 +36,16 @@ class ScreenBackend(TaskManageable.Backend):
     def submit(self, metadata):
         self._logger.debug("Submitting a new task")
 
+        metadata.backend.log_path = metadata.path.joinpath("backend.log")
+
         self.load_screens()
         old_ids = self._screen_ids
 
-        assert os.system(f"screen -dmS 'SPMI screen' {metadata.backend.command}") == 0
+        assert os.system(f"screen -L -Logfile '{metadata.backend.log_path}' -dmS 'SPMI screen' {metadata.backend.command}") == 0
 
         self.load_screens()
-
         assert len(old_ids) + 1 == len(self._screen_ids)
-
         screen_id = list(self._screen_ids - old_ids)[0]
-
         metadata.backend.id = screen_id
 
         self._logger.debug(f"New screen ID: {screen_id}")
