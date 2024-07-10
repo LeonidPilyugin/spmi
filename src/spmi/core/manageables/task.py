@@ -16,6 +16,21 @@ from spmi.utils.load import load_module
 @manageable
 class TaskManageable(Manageable):
     """Manageable which handles a single command.
+
+    Basic descriptor in TOML format:
+
+    .. code-block:: TOML
+
+        [task]                  # type of manageable
+        id = "toml_task"        # ID of manageable
+
+        [task.backend]          # backend section
+        type = "screen"         # type of backend
+
+        [task.wrapper]          # wrapper section
+        type = "default"        # type of wrapper
+        command = "sleep 10"    # command to execute
+
     """
     class MetaDataHelper(Manageable.MetaDataHelper):
         @property
@@ -52,7 +67,12 @@ class TaskManageable(Manageable):
 
 
     class Backend(metaclass=ABCMeta):
-        """Backend"""
+        """Provides an interface to process manager.
+
+        Any realisation should be defined in :py:mod:`spmi.core.manageables.task_.backends`
+        package in own file.
+        Its name should be written in PascalCase and ended with "Backend".
+        """
         class MetaDataHelper(MetaDataNode):
             """Provides access to data."""
             @property
@@ -111,7 +131,7 @@ class TaskManageable(Manageable):
                 Returns:
                     :obj:`TaskManageable.Backend`.
                 """
-                for path in Path(__file__).parent.joinpath("task_/backend").iterdir():
+                for path in Path(__file__).parent.joinpath("task_/backends").iterdir():
                     if path.is_file():
                         module_name = f"_task_backend_realisation_{path.stem}"
                         module = load_module(module_name, path)
@@ -192,9 +212,13 @@ class TaskManageable(Manageable):
 
     @wrapper
     class Wrapper(metaclass=ABCMeta):
-        """Class which handles a command execution."""
+        """Class which handles a command execution.
+
+        Any realisation should be defined in :py:mod:`spmi.core.manageables.task_.wrappers`
+        package in own file and decorated with :func:`TaskManageable.wrapper`.
+        Its name should be written in PascalCase and ended with "Wrapper".
+        """
         class MetaDataHelper(MetaDataNode):
-            """Provides access to data."""
             @property
             def type(self) -> str:
                 """:obj:`str`: Wrapper type."""

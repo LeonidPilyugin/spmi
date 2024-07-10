@@ -7,8 +7,8 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
-   spmi.core.manageables.task_.backend
-   spmi.core.manageables.task_.wrapper
+   spmi.core.manageables.task_.backends
+   spmi.core.manageables.task_.wrappers
 
 Module contents
 ---------------

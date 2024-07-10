@@ -1,9 +1,4 @@
-"""
-.. module:: default.py
-    :platform: Unix
-
-.. moduleauthor:: Leonid Pilyugin <l.pilyugin04@gmail.com>
-
+"""Provides :class:`DefaultWrapper`.
 """
 
 import os

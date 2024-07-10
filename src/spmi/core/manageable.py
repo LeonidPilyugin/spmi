@@ -1,7 +1,4 @@
 """Provides :class:`Manageable`.
-
-Todo:
-    Write documentation.
 """
 
 import inspect
@@ -45,9 +42,13 @@ def manageable(cls):
 
 @manageable
 class Manageable(metaclass=ABCMeta):
-    """This class describes object which can be managed."""
+    """This class describes object which can be managed by SPMI.
+
+    Any realisation should be defined in :py:mod:`spmi.core.manageables`
+    package in own file and decorated with :func:`manageable`. Its name
+    should be written in PascalCase and ended with "Manageable".
+    """
     class MetaDataHelper(MetaData):
-        """Provides access to meta and data."""
         @property
         def prefered_suffix(self):
             """:obj:`str`. Prefered suffix."""
@@ -381,21 +382,23 @@ class Manageable(metaclass=ABCMeta):
         type(self).FileSystemHelper.destruct(self)
 
     def register(self, path):
-        """Creates filedirectory by path.
+        """Registers by path.
+
+        To register a :class:`Manageable` means to create
+        directory and save there meta and data files.
 
         Args:
-            path (:obj:`pathlib.Path`): Path where manageable should be registered.
+            path (:obj:`pathlib.Path`): Path where manageable
+                should be registered.
         """
+        assert not self.registered
         assert isinstance(path, Path)
         self._logger.debug(f"Registering \"{self.state.id}\"")
         type(self).FileSystemHelper.register(self, path)
 
-    def is_registered(self):
-        """Returns ``True`` if this manageable is registered.
-
-        Returns:
-            :obj:`bool`.
-        """
+    @property
+    def registered(self):
+        """:obj:`bool`: ``True`` if this manageable is registered."""
         return not self._metadata.meta_path is None
 
     @classmethod

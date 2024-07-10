@@ -15,7 +15,7 @@ What is SPMI
 ------------
 SPMI (Simple Process Manager Interface) is a Python package which provides an
 application and library to start processes via different process managers
-(e.g. `GNU screen <https://www.gnu.org/software/screen/>`_ and `SLURM <https://slurm.schedmd.com/overview.html>`_).
+(e.g. `GNU Screen <https://www.gnu.org/software/screen/>`_ and `SLURM <https://slurm.schedmd.com/overview.html>`_). It works only in UNIX-like systems.
 
 Installation
 ------------
@@ -60,13 +60,14 @@ Create a simple task descriptor ``task.toml``:
     type = "default"        # type of wrapper
     command = "sleep 10"    # command to execute
 
+Be sure that `GNU Screen <https://www.gnu.org/software/screen/>`_ is installed.
 
 Then, start a new task:
 
 .. code-block:: console
 
     $ spmi list
-    detected: "example_task" by path "path/to/your/task.json"
+    detected: "example_task" by path "task.toml"
 
 .. code-block:: console
 
@@ -76,7 +77,7 @@ Then, start a new task:
 .. code-block:: console
 
     $ spmi list
-    detected: "example_task" by path "path/to/your/task.json"
+    detected: "example_task" by path "/path/to/task.toml"
     registered: "example_task"
 
 .. code-block:: console

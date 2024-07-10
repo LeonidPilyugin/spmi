@@ -120,7 +120,7 @@ class Spmi:
 
         DEFAULTS = {
             "SPMI_HOME": "/home/leonid/github.com/LeonidPilyugin/spmi/resources/test-spmi/",
-            "SPMI_PATH": ".:/home/leonid/github.com/LeonidPilyugin/spmi/resources/tasks",
+            "SPMI_PATH": ".:/home/leonid/github.com/LeonidPilyugin/spmi/examples/tasks",
         }
         """:obj:`dict` Default SPMI settings."""
 

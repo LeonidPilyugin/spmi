@@ -1,16 +1,11 @@
-"""
-.. module:: screen.py
-    :platform: Unix
-
-.. moduleauthor:: Leonid Pilyugin <l.pilyugin04@gmail.com>
-
+"""Provides :class:`ScreenBackend`.
 """
 
 import screenutils
 from spmi.core.manageables.task import TaskManageable
 
 class ScreenBackend(TaskManageable.Backend):
-    """Screen backend."""
+    """GNU Screen backend."""
     def __init__(self):
         self._screens = []
         self.load_screens()
