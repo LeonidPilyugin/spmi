@@ -155,8 +155,8 @@ class Pool:
 
         self._logger.info(f"Restarted {len(to_remove)} manageable{'s' if len(to_remove) != 1 else ''}")
 
-    def stop(self, pattern):
-        """Stops registered manageables by pattern.
+    def term(self, pattern):
+        """Terminates registered manageables by pattern.
 
         Args:
             pattern (:obj:`str`): pattern.
@@ -164,14 +164,32 @@ class Pool:
         assert isinstance(pattern, str)
         assert self._pm.is_pattern(pattern)
 
-        self._logger.debug(f"Stopping manageables by pattern: \"{pattern}\"")
+        self._logger.debug(f"Terminated manageables by pattern: \"{pattern}\"")
 
-        to_stop = self.find(pattern, detected=False)
+        to_term = self.find(pattern, detected=False)
 
-        for m in to_stop:
-            m.stop()
+        for m in to_term:
+            m.term()
 
-        self._logger.info(f"Stopped {len(to_stop)} manageable{'s' if len(to_stop) != 1 else ''}")
+        self._logger.info(f"Terminated {len(to_term)} manageable{'s' if len(to_term) != 1 else ''}")
+
+    def kill(self, pattern):
+        """Kills registered manageables by pattern.
+
+        Args:
+            pattern (:obj:`str`): pattern.
+        """
+        assert isinstance(pattern, str)
+        assert self._pm.is_pattern(pattern)
+
+        self._logger.debug(f"Killing manageables by pattern: \"{pattern}\"")
+
+        to_kill = self.find(pattern, detected=False)
+
+        for m in to_kill:
+            m.kill()
+
+        self._logger.info(f"Killed {len(to_kill)} manageable{'s' if len(to_kill) != 1 else ''}")
 
     def destruct(self, pattern):
         """Destructs manageables by pattern.

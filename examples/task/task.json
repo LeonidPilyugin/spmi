@@ -6,7 +6,7 @@
         },
         "wrapper": {
             "type": "default",
-            "command": "df -h",
+            "command": "/home/leonid/github.com/LeonidPilyugin/spmi/examples/task/test.py",
             "mixed_stdout": false
         }
     }

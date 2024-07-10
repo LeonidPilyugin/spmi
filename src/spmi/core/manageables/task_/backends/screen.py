@@ -50,7 +50,8 @@ class ScreenBackend(TaskManageable.Backend):
 
         self._logger.debug(f"New screen ID: {screen_id}")
 
-    def cancel(self, metadata):
+    def _send(self, metadata, message):
+        assert isinstance(message, str)
         self._logger.debug(f"Canceling screen {metadata.backend.id}")
         self.load_screens()
 
@@ -58,7 +59,13 @@ class ScreenBackend(TaskManageable.Backend):
         assert screen_id
         assert self.is_active(metadata)
 
-        os.system(f"screen -x {screen_id} -X quit")
+        os.system(f"screen -x {screen_id} -X {message}")
+
+    def term(self, metadata):
+        self._send(metadata, "stuff '^C'")
+
+    def kill(self, metadata):
+        self._send(metadata, "quit")
 
     def is_active(self, metadata):
         self.load_screens()

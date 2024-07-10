@@ -194,8 +194,17 @@ log path: {self.log_path}
             raise NotImplementedError()
 
         @abstractmethod
-        def cancel(self, task_metadata):
-            """Canceles job.
+        def term(self, task_metadata):
+            """Terminates wrapper process.
+
+            Args:
+                task_metadata (:obj:`TaskManageable.MetaDataHelper`): Metadata.
+            """
+            raise NotImplementedError()
+
+        @abstractmethod
+        def kill(self, task_metadata):
+            """Kills wrapper process.
 
             Args:
                 task_metadata (:obj:`TaskManageable.MetaDataHelper`): Metadata.
@@ -447,8 +456,11 @@ exit_code: {self.exit_code}
         self._metadata.backend.command = TaskManageable.Cli.command(self._metadata)
         self._backend.submit(self._metadata)
 
-    def stop(self):
-        self._backend.cancel(self._metadata)
+    def term(self):
+        self._backend.term(self._metadata)
+
+    def kill(self):
+        self._backend.kill(self._metadata)
 
     def destruct(self):
         assert not self._backend.is_active(self._metadata)

@@ -35,12 +35,13 @@ HELP_MESSAGE = r"""
 
 Simple Process Management Interface
 
-SPMI is a program to maintain processes with systemctl-like interface.
+SPMI is a program to maintain processes.
 
 Usage:
     spmi list [-d | --debug]
     spmi start <patterns>... [-d | --debug]
     spmi stop <patterns>... [-d | --debug]
+    spmi kill <patterns>... [-d | --debug]
     spmi clean <patterns>... [-d | --debug]
     spmi status <patterns>... [-d | --debug]
 
@@ -82,6 +83,11 @@ class Spmi:
         def is_stop(self):
             """:obj:`bool`: ``True``, if should stop."""
             return self._args["stop"]
+
+        @property
+        def is_kill(self):
+            """:obj:`bool`: ``True``, if should kill."""
+            return self._args["kill"]
 
         @property
         def is_clean(self):
@@ -238,7 +244,7 @@ class Spmi:
         self._pool.restart(pattern)
 
     def stop(self, pattern):
-        """Starts all manageables corresponding to pattern.
+        """Stops all manageables corresponding to pattern.
 
         Args:
             pattern (:obj:`str`): Pattern string.
@@ -246,10 +252,21 @@ class Spmi:
         assert isinstance(pattern, str)
 
         self._logger.debug(f"Stopping manageables by pattern \"{pattern}\"")
-        self._pool.stop(pattern)
+        self._pool.term(pattern)
+
+    def kill(self, pattern):
+        """Kills all manageables corresponding to pattern.
+
+        Args:
+            pattern (:obj:`str`): Pattern string.
+        """
+        assert isinstance(pattern, str)
+
+        self._logger.debug(f"Stopping manageables by pattern \"{pattern}\"")
+        self._pool.kill(pattern)
 
     def status(self, pattern):
-        """Starts all manageables corresponding to pattern.
+        """Prints status all manageables corresponding to pattern.
 
         Args:
             pattern (:obj:`str`): Pattern string.
@@ -260,7 +277,7 @@ class Spmi:
         print(self._pool.get_status_string(pattern))
 
     def clean(self, pattern):
-        """Starts all manageables corresponding to pattern.
+        """Cleans all manageables corresponding to pattern.
 
         Args:
             pattern (:obj:`str`): Pattern string.
@@ -281,6 +298,8 @@ class Spmi:
             for p in self._args.patterns: self.status(p)
         elif self._args.is_stop:
             for p in self._args.patterns: self.stop(p)
+        elif self._args.is_kill:
+            for p in self._args.patterns: self.kill(p)
         elif self._args.is_clean:
             for p in self._args.patterns: self.clean(p)
 

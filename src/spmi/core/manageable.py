@@ -374,8 +374,13 @@ path: {self.path}
         raise NotImplementedError()
 
     @abstractmethod
-    def stop(self):
-        """Stops this manageable."""
+    def term(self):
+        """Terminate this manageable."""
+        raise NotImplementedError()
+
+    @abstractmethod
+    def kill(self):
+        """Kill this manageable."""
         raise NotImplementedError()
 
     @property
