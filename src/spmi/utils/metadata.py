@@ -242,8 +242,8 @@ class MetaData(MetaDataNode):
         self.__data_io.dump(self._data)
         self.__meta_io.dump(self._meta)
 
-    def lock(self):
-        """Locks meta and data files.
+    def acquire(self):
+        """Acquires meta and data files.
 
         Note:
             Should be mutable.
@@ -251,11 +251,11 @@ class MetaData(MetaDataNode):
         self._logger.debug("Locking")
         assert self.mutable
         assert self.__data_io and self.__meta_io
-        self.__data_io.lock()
-        self.__meta_io.lock()
+        self.__data_io.acquire()
+        self.__meta_io.acquire()
 
-    def acquire(self):
-        """Acquires meta and data files.
+    def release(self):
+        """Releases meta and data files.
 
         Note:
             Should be mutable.
@@ -263,8 +263,8 @@ class MetaData(MetaDataNode):
         self._logger.debug("Acquiring")
         assert self.mutable
         assert self.__data_io and self.__meta_io
-        self.__data_io.acquire()
-        self.__meta_io.acquire()
+        self.__data_io.release()
+        self.__meta_io.release()
 
     def blocking_load(self):
         """Blocks and loads meta and data from files.

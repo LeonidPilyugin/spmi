@@ -49,18 +49,13 @@ class Io(metaclass=ABCMeta):
         self._path = value
         self._lock = FileLock(value.parent.joinpath(value.name + ".lock"))
 
-    def lock(self):
-        """Lock file."""
-        self._lock.lock()
-
     def acquire(self):
-        """Acquire file."""
+        """Acquire lock."""
         self._lock.acquire()
 
-    @property
-    def is_locked(self):
-        """:obj:`bool`: ``True`` if file is locked."""
-        return self._lock.is_locked()
+    def release(self):
+        """Release lock."""
+        self._lock.release()
 
     def blocking_load(self):
         """Blocking load.
@@ -127,7 +122,7 @@ class Io(metaclass=ABCMeta):
         """Returns ``True`` if has loader for file by path.
 
         Args:
-            path (:obj:`Path`): path.
+            path (:obj:`Path`): Path.
 
         Returns:
             :obj:`bool`.
@@ -140,9 +135,19 @@ class Io(metaclass=ABCMeta):
         """Return io object by path.
         
         Args:
-            path (:obj:`pathlib.Path`): path
+            path (:obj:`pathlib.Path`): Path
 
         Returns:
             :obj:`Io` class by this path.
         """
         return Io.get_io_suffix(path.suffix)(path)
+
+    @staticmethod
+    def remove_lock(path):
+        """Removes lock file by this path if it exists.
+
+        Args:
+            path (:obj:`pathlib.Path`): Locked path.
+        """
+        assert isinstance(path, Path)
+        path.parent.joinpath(path.name + ".lock").unlink()

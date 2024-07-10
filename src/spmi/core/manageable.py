@@ -8,6 +8,7 @@ from pathlib import Path
 from spmi.utils.load import load_module
 from spmi.utils.metadata import MetaData
 from spmi.utils.logger import Logger
+from spmi.utils.io.io import Io
 
 def manageable(cls):
     """All manageables should be decorated with it.
@@ -348,9 +349,13 @@ class Manageable(metaclass=ABCMeta):
                 data=path
             )
 
-            return Manageable.LoadHelper.load_manageable_class(metadata.type.capitalize())(
+            manageable = Manageable.LoadHelper.load_manageable_class(metadata.type.capitalize())(
                 data=path
             )
+
+            Io.remove_lock(path)
+
+            return manageable
 
 
     @abstractmethod

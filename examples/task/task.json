@@ -6,7 +6,7 @@
         },
         "wrapper": {
             "type": "default",
-            "command": "sleep 10"
+            "command": "/tmp/test.py"
         }
     }
 }

@@ -12,6 +12,7 @@ from abc import ABCMeta, abstractmethod
 from spmi.core.manageable import Manageable, manageable
 from spmi.utils.metadata import MetaDataNode
 from spmi.utils.load import load_module
+from spmi.utils.logger import Logger
 
 @manageable
 class TaskManageable(Manageable):
@@ -106,6 +107,21 @@ class TaskManageable(Manageable):
                 assert value is None or isinstance(value, str)
                 self._meta["start_command"] = value
 
+            @property
+            def log_path(self):
+                """:obj:`Union[pathlib.Path, None]`: Path to backend log file.
+                ``None`` if there is no backend log file.
+                """
+                if "log_path" in self._meta and self._meta["log_path"]:
+                    return Path(self._meta["log_path"])
+                return None
+
+            @log_path.setter
+            def log_path(self, value):
+                assert self.mutable
+                assert value is None or isinstance(value, Path)
+                self._meta["log_path"] = None if value is None else str(value.resolve())
+
 
         class LoadHelper:
             """Helps to load classes."""
@@ -196,28 +212,19 @@ class TaskManageable(Manageable):
             """
             return TaskManageable.Backend.LoadHelper.get_backend(task_metadata)
 
-    @staticmethod
-    def wrapper(wrap_class):
-        """All wrappers should be decorated wtih it."""
-        def __new_init__(self, *args, metadata=None, **kwargs):
-            self._metadata = metadata
 
-            if self.__old_init__:
-                self.__old_init__(*args, metadata=metadata, **kwargs)
-
-        wrap_class.__old_init__ = wrap_class.__init__
-        wrap_class.__init__ = __new_init__
-
-        return wrap_class
-
-    @wrapper
     class Wrapper(metaclass=ABCMeta):
         """Class which handles a command execution.
 
         Any realisation should be defined in :py:mod:`spmi.core.manageables.task_.wrappers`
-        package in own file and decorated with :func:`TaskManageable.wrapper`.
+        package in own file.
         Its name should be written in PascalCase and ended with "Wrapper".
         """
+        @abstractmethod
+        def __init__(self, metadata=None):
+            self._logger = Logger(self.__class__.__name__)
+            self._metadata = metadata
+
         class MetaDataHelper(MetaDataNode):
             @property
             def type(self) -> str:
@@ -228,6 +235,82 @@ class TaskManageable(Manageable):
             def command(self):
                 """:obj:`str`: Wrapper type."""
                 return self._data["command"]
+
+            @property
+            def stdout_path(self):
+                """:obj:`Union[pathlib.Path, None]`: Path to backend stdout file.
+                ``None`` if there is no backend stdout file.
+                """
+                if "stdout_path" in self._meta and self._meta["stdout_path"]:
+                    return Path(self._meta["stdout_path"])
+                return None
+
+            @stdout_path.setter
+            def stdout_path(self, value):
+                assert self.mutable
+                assert value is None or isinstance(value, Path)
+                self._meta["stdout_path"] = None if value is None else str(value.resolve())
+
+            @property
+            def stderr_path(self):
+                """:obj:`Union[pathlib.Path, None]`: Path to wrapper stderr file.
+                ``None`` if there is no wrapper stderr file.
+                """
+                if "stderr_path" in self._meta and self._meta["stderr_path"]:
+                    return Path(self._meta["stderr_path"])
+                return None
+
+            @stderr_path.setter
+            def stderr_path(self, value):
+                assert self.mutable
+                assert value is None or isinstance(value, Path)
+                self._meta["stderr_path"] = None if value is None else str(value.resolve())
+
+
+            @property
+            def stdin_path(self):
+                """:obj:`Union[pathlib.Path, None]`: Path to wrapper stdin file.
+                ``None`` if there is no wrapper stdin file.
+                """
+                if "stdin_path" in self._meta and self._meta["stdin_path"]:
+                    return Path(self._meta["stdin_path"])
+                return None
+
+            @stdin_path.setter
+            def stdin_path(self, value):
+                assert self.mutable
+                assert value is None or isinstance(value, Path)
+                self._meta["stdin_path"] = None if value is None else str(value.resolve())
+
+            @property
+            def process_pid(self):
+                """:obj:`Union[int, None]`: PID of wrapped process.
+                ``None`` if process hasn't started.
+                """
+                if "process_pid" in self._meta and self._meta["process_pid"]:
+                    return self._meta["process_pid"]
+                return None
+
+            @process_pid.setter
+            def process_pid(self, value):
+                assert self.mutable
+                assert value is None or isinstance(value, int)
+                self._meta["process_pid"] = value
+
+            @property
+            def exit_code(self):
+                """:obj:`Union[int, None]`: Exit code of wrapped process.
+                ``None`` if process hasn't finished.
+                """
+                if "exit_code" in self._meta and self._meta["exit_code"]:
+                    return self._meta["exit_code"]
+                return None
+
+            @exit_code.setter
+            def exit_code(self, value):
+                assert self.mutable
+                assert value is None or isinstance(value, int)
+                self._meta["exit_code"] = value
 
 
         class LoadHelper:
@@ -246,15 +329,15 @@ class TaskManageable(Manageable):
 
             @staticmethod
             def get_wrapper(metadata):
-                """Returns backend.
+                """Returns Wrapper.
 
                 Args:
                     metadata (:obj:`TaskManageable.MetaDataHelper`): Metadata.
 
                 Returns:
-                    :obj:`TaskManageable.Backend`.
+                    :obj:`TaskManageable.Wrapper`.
                 """
-                for path in Path(__file__).parent.joinpath("task_/wrapper").iterdir():
+                for path in Path(__file__).parent.joinpath("task_/wrappers").iterdir():
                     if path.is_file():
                         module_name = f"_task_wrapper_realisation_{path.stem}"
                         module = load_module(module_name, path)
@@ -262,7 +345,7 @@ class TaskManageable(Manageable):
                         classes = list(
                             filter(
                                 lambda x: x[0] == TaskManageable.Wrapper.LoadHelper.get_class_name(
-                                    metadata.backend.type
+                                    metadata.wrapper.type
                                 ),
                                 inspect.getmembers(module)
                             )
@@ -293,7 +376,7 @@ class TaskManageable(Manageable):
         @staticmethod
         def get_wrapper(metadata):
             """Loads wrapper."""
-            TaskManageable.Wrapper.LoadHelper.get_wrapper(metadata)
+            return TaskManageable.Wrapper.LoadHelper.get_wrapper(metadata)
 
     class Cli:
         """CLI for wrapper."""
@@ -340,16 +423,12 @@ def set_signal_handlers(wrapper):
         try:
             signum = getattr(signal, i)
             signal.signal(signum, wrapper.on_signal)
-        except OSError:
+        except (OSError, ValueError):
             continue
 
 if __name__ == "__main__":
-    print("Main function")
-    import os
-    os.system("sleep 100")
     metadata = TaskManageable.Cli.from_args()
     wrapper = TaskManageable.Wrapper.get_wrapper(metadata)
     set_signal_handlers(wrapper)
     wrapper.start()
     wrapper.finish()
-    print("finished")
