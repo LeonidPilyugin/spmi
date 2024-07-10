@@ -17,4 +17,4 @@ class JsonIo(Io):
 
     def dump(self, data):
         with open(self.path, "w", encoding=self.encoding) as f:
-            json.dump(data, f)
+            json.dump(data, f, indent=4)

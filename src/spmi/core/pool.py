@@ -43,7 +43,6 @@ class Pool:
                 manageable (:obj:`spmi.core.manageable.Manageable`): manageable to register.
             """
             assert isinstance(manageable, Manageable)
-            assert not manageable.is_registered()
 
             path = self._path.joinpath(manageable.state.id)
             assert not path.exists()
@@ -129,7 +128,7 @@ class Pool:
         for m in to_start:
             m.start()
 
-        self._logger.info(f"Started {len(to_remove)} manageable{'s' if len(to_remove) != 1 else ''}")
+        self._logger.info(f"Started {len(to_start)} manageable{'s' if len(to_start) != 1 else ''}")
 
 
     def restart(self, pattern):
@@ -172,7 +171,7 @@ class Pool:
         for m in to_stop:
             m.stop()
 
-        self._logger.info(f"Stopped {len(to_remove)} manageable{'s' if len(to_remove) != 1 else ''}")
+        self._logger.info(f"Stopped {len(to_stop)} manageable{'s' if len(to_stop) != 1 else ''}")
 
     def destruct(self, pattern):
         """Destructs manageables by pattern.
@@ -234,3 +233,8 @@ class Pool:
         self._logger.info(f"{len(self._detected)} manageable{'s' if len(self._detected) != 1 else ''} detected and {len(self._registered)} registered")
 
         return result
+
+    def finish(self):
+        """Finishes all registered manageables."""
+        for m in self._registered:
+            m.finish()

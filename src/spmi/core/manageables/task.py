@@ -328,7 +328,7 @@ class TaskManageable(Manageable):
         return self._backend.is_active(self._metadata)
 
     def start(self):
-        self._metadata.backend.command = Manageable.Cli.command(self._metadata)
+        self._metadata.backend.command = TaskManageable.Cli.command(self._metadata)
         self._backend.submit(self._metadata)
 
     def stop(self):
@@ -345,6 +345,8 @@ def set_signal_handlers(wrapper):
 
 if __name__ == "__main__":
     print("Main function")
+    import os
+    os.system("sleep 100")
     metadata = TaskManageable.Cli.from_args()
     wrapper = TaskManageable.Wrapper.get_wrapper(metadata)
     set_signal_handlers(wrapper)

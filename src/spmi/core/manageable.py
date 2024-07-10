@@ -401,6 +401,12 @@ class Manageable(metaclass=ABCMeta):
         """:obj:`bool`: ``True`` if this manageable is registered."""
         return not self._metadata.meta_path is None
 
+    def finish(self):
+        """Dumps metadata."""
+        assert self.registered
+        self._logger.debug(f"Saving \"{self.state.id}\"")
+        self._metadata.blocking_dump()
+
     @classmethod
     def is_correct_meta_data(cls, data, meta=None):
         """Returns ``True`` if ``meta`` and ``data``

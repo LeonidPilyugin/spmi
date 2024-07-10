@@ -1,43 +1,66 @@
 """Provides :class:`ScreenBackend`.
 """
 
-import screenutils
+import os
+import subprocess
 from spmi.core.manageables.task import TaskManageable
+from spmi.utils.logger import Logger
 
 class ScreenBackend(TaskManageable.Backend):
     """GNU Screen backend."""
     def __init__(self):
-        self._screens = []
+        self._logger = Logger(self.__class__.__name__)
+        self._logger.debug("Creating backend")
+        self._screen_ids = set()
         self.load_screens()
 
     def load_screens(self):
         """Loads all screen sessions."""
-        self._screens = screenutils.list_screens()
+        self._logger.debug("Loading IDs of screens")
 
-    def submit(self, metadata: TaskManageable.MetaDataHelper):
-        screen = screenutils.Screen("SPMI task", True)
-        screen_id = screen.id
+        # modified code from
+        # https://github.com/Christophe31/screenutils
+        screen_ids = [
+            l.split(".")[0].strip()
+            for l in subprocess.getoutput("screen -ls").split('\n')
+            if "\t" in l and ".".join(l.split(".")[1:]).split("\t")[0]
+        ]
+
+        self._screen_ids = set(screen_ids)
+
+        assert len(self._screen_ids) == len(screen_ids)
+
+        self._logger.debug(f"Loaded {len(screen_ids)} IDs")
+            
+
+    def submit(self, metadata):
+        self._logger.debug("Submitting a new task")
+
+        self.load_screens()
+        old_ids = self._screen_ids
+
+        assert os.system(f"screen -dmS 'SPMI screen' {metadata.backend.command}") == 0
+
+        self.load_screens()
+
+        assert len(old_ids) + 1 == len(self._screen_ids)
+
+        screen_id = list(self._screen_ids - old_ids)[0]
 
         metadata.backend.id = screen_id
-        screen.send_commands(metadata.backend.command)
-        screen.detach()
 
-    def cancel(self, metadata: TaskManageable.MetaDataHelper):
+        self._logger.debug(f"New screen ID: {screen_id}")
+
+    def cancel(self, metadata):
+        self._logger.debug(f"Canceling screen {metadata.backend.id}")
         self.load_screens()
 
         screen_id = metadata.backend.id
         assert screen_id
         assert self.is_active(metadata)
 
-        screen = list(
-            filter(
-                lambda x: x.id == screen_id,
-                self._screens
-            )
-        )[0]
+        os.system(f"screen -x {screen_id} -X quit")
 
-        screen.kill()
-
-    def is_active(self, metadata: TaskManageable.MetaDataHelper):
+    def is_active(self, metadata):
         self.load_screens()
-        return metadata.backend.id in map(lambda x: x.id, self._screens)
+        return metadata.backend.id in self._screen_ids
