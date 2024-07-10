@@ -35,17 +35,15 @@ Install dependencies:
 
 Basic usage
 -----------
-The core object of SPMI is :class:`spmi.core.manageable.Manageable`.
+The core object of SPMI is ``Manageable``.
 It describes process which can be managed by SPMI.
-:py:mod:`spmi.core.manageables` contains realisations of
-:class:`Manageable`.
-For example, :class:`spmi.core.manageables.task.TaskManageable` is a
-:class:`Manageable`
-which runs a single command via specific
-:class:`TaskManageable.Backend`. :class:`TaskManageable.Backend` is
-an interface to process manager (:class:`spmi.core.manageables.task_.backend.screen.ScreenBackend` is an interface to GNU Screen).
+``spmi.core.manageables`` contains realisations of
+``Manageable``. For example, ``TaskManageable`` is a
+``Manageable`` which runs a single command via specific
+``TaskManageable.Backend``. ``TaskManageable.Backend`` is
+an interface to process manager (``ScreenBackend`` is an interface to GNU Screen).
 
-Before starting :class:`Manageable`, create its descriptor file.
+Before starting ``Manageable``, create its descriptor file.
 SPMI supports several file formats and detects format based on file extention.
 
 Create a simple task descriptor:
@@ -53,14 +51,14 @@ Create a simple task descriptor:
 .. code-block:: JSON
 
     {
-        "task": {                       // type of manageable to start
-            "id": "example_task",       // ID of manageable
-            "backend": {                // backend section
-                "type": "screen"        // type of backend
+        "task": {
+            "id": "example_task",
+            "backend": {
+                "type": "screen"
             },
-            "wrapper": {                // wrapper section
-                "type": "default",      // type of wrapper
-                "command": "sleep 10"   // command to execute
+            "wrapper": {
+                "type": "default",
+                "command": "sleep 10"
             }
         }
     }
