@@ -35,21 +35,30 @@ class DefaultWrapper(TaskManageable.Wrapper):
     def start(self):
         self._logger.info(f"Starting \"{self._metadata.wrapper.command}\" process")
 
-        stdout_path = self._metadata.path.joinpath("process.stdout")
-        stderr_path = self._metadata.path.joinpath("process.stderr")
-        stdin_path = self._metadata.path.joinpath("process.stdin")
-
-        self._to_unlink.append(stdin_path)
-
-        stdout_path.touch()
-        stderr_path.touch()
-
         self._logger.debug("Acquiring metadata")
         self._metadata.acquire()
         self._metadata.load()
 
+        self._logger.debug("Opening stdout on write")
+        stdout_path = self._metadata.path.joinpath("process.stdout")
         self._metadata.wrapper.stdout_path = stdout_path
-        self._metadata.wrapper.stderr_path = stderr_path
+        stdout_path.touch()
+        stdout_write = os.open(stdout_path, os.O_WRONLY)
+        self._to_close.append(stdout_write)
+
+        if self._metadata.wrapper.mixed_stdout:
+            stderr_path = stdout_path
+            stderr_write = stdout_write
+        else:
+            stderr_path = self._metadata.path.joinpath("process.stderr")
+            self._metadata.wrapper.stderr_path = stderr_path
+            stderr_path.touch()
+            self._logger.debug("Opening stderr on write")
+            stderr_write = os.open(stderr_path, os.O_WRONLY)
+            self._to_close.append(stderr_write)
+
+        stdin_path = self._metadata.path.joinpath("process.stdin")
+        self._to_unlink.append(stdin_path)
         self._metadata.wrapper.stdin_path = stdin_path
 
         self._logger.debug(f"Creating FIFO \"{stdin_path}\"")
@@ -61,14 +70,6 @@ class DefaultWrapper(TaskManageable.Wrapper):
         self._logger.debug("Opening FIFO on read")
         fifo_read = os.open(stdin_path, os.O_RDONLY)
         self._to_close.append(fifo_read)
-
-        self._logger.debug("Opening stdout on write")
-        stdout_write = os.open(stdout_path, os.O_WRONLY)
-        self._to_close.append(stdout_write)
-
-        self._logger.debug("Opening stderr on write")
-        stderr_write = os.open(stderr_path, os.O_WRONLY)
-        self._to_close.append(stderr_write)
 
         self._logger.debug("Starting wrapped process")
         process = subprocess.Popen(

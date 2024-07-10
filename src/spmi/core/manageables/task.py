@@ -66,6 +66,14 @@ class TaskManageable(Manageable):
                 mutable=self.mutable
             )
 
+        def __str__(self):
+            return rf"""{super().__str__()}
+backend:
+{self.backend}
+wrapper:
+{self.wrapper}
+"""
+
 
     class Backend(metaclass=ABCMeta):
         """Provides an interface to process manager.
@@ -121,6 +129,12 @@ class TaskManageable(Manageable):
                 assert self.mutable
                 assert value is None or isinstance(value, Path)
                 self._meta["log_path"] = None if value is None else str(value.resolve())
+
+            def __str__(self):
+                return rf"""type: {self.type}
+job id: {self.id}
+log path: {self.log_path}
+"""
 
 
         class LoadHelper:
@@ -237,6 +251,17 @@ class TaskManageable(Manageable):
                 return self._data["command"]
 
             @property
+            def mixed_stdout(self):
+                """:obj:`bool`: ``True`` if stdout and stderr are one file."""
+                return self._data["mixed_stdout"]
+
+            @mixed_stdout.setter
+            def mixed_stdout(self, value):
+                assert self.mutable
+                assert isinstance(value, bool)
+                self._data["mixed_stdout"] = value
+
+            @property
             def stdout_path(self):
                 """:obj:`Union[pathlib.Path, None]`: Path to backend stdout file.
                 ``None`` if there is no backend stdout file.
@@ -256,6 +281,8 @@ class TaskManageable(Manageable):
                 """:obj:`Union[pathlib.Path, None]`: Path to wrapper stderr file.
                 ``None`` if there is no wrapper stderr file.
                 """
+                if self.mixed_stdout:
+                    return self.stdout_path
                 if "stderr_path" in self._meta and self._meta["stderr_path"]:
                     return Path(self._meta["stderr_path"])
                 return None
@@ -311,6 +338,16 @@ class TaskManageable(Manageable):
                 assert self.mutable
                 assert value is None or isinstance(value, int)
                 self._meta["exit_code"] = value
+
+            def __str__(self):
+                return rf"""type: {self.type}
+command: {self.command}
+stdin path: {self.stdin_path}
+stdout path: {self.stdout_path}
+stderr path: {self.stderr_path}
+PID: {self.process_pid}
+exit_code: {self.exit_code}
+"""
 
 
         class LoadHelper:

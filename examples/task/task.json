@@ -6,7 +6,8 @@
         },
         "wrapper": {
             "type": "default",
-            "command": "/tmp/test.py"
+            "command": "df -h",
+            "mixed_stdout": false
         }
     }
 }
