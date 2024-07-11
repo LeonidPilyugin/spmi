@@ -9,7 +9,6 @@ Getting started
 
     * Update this section.
     * See API TODOs
-    * Make ``Pool`` to lock and release ``Manageable`` metadata.
 
 What is SPMI
 ------------

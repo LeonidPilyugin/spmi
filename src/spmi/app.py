@@ -44,6 +44,7 @@ Usage:
     spmi kill <patterns>... [-d | --debug]
     spmi clean <patterns>... [-d | --debug]
     spmi status <patterns>... [-d | --debug]
+    spmi connect <task_id> [-d | --debug]
 
 Options:
     -h --help       Show this screen
@@ -105,6 +106,11 @@ class Spmi:
             return self._args["list"]
 
         @property
+        def is_connect(self):
+            """:obj:`bool`: ``True``, if should connect to task."""
+            return self._args["connect"]
+
+        @property
         def debug(self):
             """:obj:`bool`: ``True`` if ``--debug`` in options."""
             return self._args["--debug"]
@@ -113,6 +119,11 @@ class Spmi:
         def patterns(self):
             """:obj:`list` of :obj:`str`: List of patterns."""
             return self._args["<patterns>"]
+
+        @property
+        def task_id(self):
+            """:obj:`str`: ID of task."""
+            return self._args["<task_id>"]
 
 
     class ConfigHelper:
@@ -287,6 +298,29 @@ class Spmi:
         self._logger.debug(f"Cleaning manageables by pattern \"{pattern}\"")
         self._pool.destruct(pattern)
 
+    def connect(self, task_id):
+        """Prints stdout of task and prints to it stdin.
+
+        Args:
+            task_id (:obj:`str`): ID of task to connect.
+        """
+        tasks = self._pool.find(task_id, detected=False)
+        assert len(tasks) == 1
+        task = tasks[0]
+
+        with task:
+            stdout_path = task.state.wrapper.stdout_path
+
+            assert stdout_path and stdout_path.exists()
+
+            with open(stdout_path) as f:
+                print(f.read(), end="")
+
+            stdin_path = task.state.wrapper.stdin_path
+            if stdin_path and stdin_path.exists():
+                with open(stdin_path, "w") as pipe:
+                    pipe.write(input() + "\n")
+
     def execute(self):
         """Execute command from CLI."""
 
@@ -302,6 +336,8 @@ class Spmi:
             for p in self._args.patterns: self.kill(p)
         elif self._args.is_clean:
             for p in self._args.patterns: self.clean(p)
+        elif self._args.is_connect:
+            self.connect(self._args.task_id)
 
 
 if __name__ == "__main__":
