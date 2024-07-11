@@ -10,7 +10,7 @@ class PatternMatcher(metaclass=ABCMeta):
     """Provides methods to match pattern strings."""
 
     @abstractmethod
-    def is_pattern(self, string) -> bool:
+    def is_pattern(self, string):
         """Returns ``True`` if ``string`` is pattern.
 
         Args:
@@ -41,10 +41,15 @@ class SimplePatternMatcher(PatternMatcher):
         pass
 
     def is_pattern(self, string):
-        assert isinstance(string, str)
+        if not isinstance(string, str):
+            raise TypeError(f"string must be a str, not {type(string)}")
+
         return True
 
     def match(self, pattern, string):
-        assert isinstance(pattern, str)
-        assert isinstance(string, str)
+        if not isinstance(pattern, str):
+            raise TypeError(f"pattern must be a str, not {type(pattern)}")
+        if not isinstance(string, str):
+            raise TypeError(f"string must be a str, not {type(string)}")
+
         return string == pattern

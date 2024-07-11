@@ -6,6 +6,7 @@ from abc import ABCMeta, abstractmethod
 from pathlib import Path
 from filelock import FileLock
 from spmi.utils.load import load_module
+from spmi.utils.exception import *
 
 class Io(metaclass=ABCMeta):
     """Formatted input and output.
@@ -23,10 +24,12 @@ class Io(metaclass=ABCMeta):
         Args:
             path (:obj:`pathlib.Path`): Path to file.
             encoding (:obj:`str`): Encoding.
+
+        Raises:
+            :class:`TypeError`.
         """
-        assert isinstance(path, Path)
-        assert not path.exists() or path.is_file()
-        assert isinstance(encoding, str)
+        if not isinstance(encoding, str):
+            raise TypeError(f"encoding must be a str, not {type(encoding)}")
 
         self.path = path
         self.encoding = encoding
@@ -38,13 +41,19 @@ class Io(metaclass=ABCMeta):
 
     @property
     def path(self):
-        """:obj:`pathlib.Path`: Path to file."""
+        """:obj:`pathlib.Path`: Path to file.
+
+        Raises:
+            :class:`TypeError`.
+        """
         return Path(self._path)
 
     @path.setter
     def path(self, value):
-        assert isinstance(value, Path)
-        assert not value.exists() or value.is_file()
+        if not isinstance(value, Path):
+            raise TypeError(f"path must be a pathlib.Path, not {type(value)}")
+        if value.exists() and not value.is_file():
+            raise TypeError(f"path \"{path}\" must be a file")
 
         self._path = value
         self._lock = FileLock(value.parent.joinpath(value.name + ".lock"))
@@ -95,40 +104,29 @@ class Io(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @staticmethod
-    def get_io_suffix(suffix):
-        """Return io class by suffix.
+    def has_io(suffix):
+        """Returns ``True`` if has loader for file with suffix.
 
         Args:
-            suffix (:obj:`str`): suffix of file.
-
-        Returns:
-            :obj:`class`. Io realisation.
-        """
-        suffix = suffix[1:]
-        assert suffix not in ["io", "ioable"]
-
-        module = load_module(
-            f"__spmi_{suffix}_io_realisation",
-            Path(__file__).parent.joinpath(f"ios/{suffix}io.py")
-        )
-
-        return list(filter(
-            lambda x: inspect.isclass(x[1]) and issubclass(x[1], Io) and x[1] is not Io,
-            inspect.getmembers(module)
-        ))[0][1]
-
-    @staticmethod
-    def has_io(path: Path):
-        """Returns ``True`` if has loader for file by path.
-
-        Args:
-            path (:obj:`Path`): Path.
+            suffix (:obj:`str`): Suffix.
 
         Returns:
             :obj:`bool`.
+
+        Raises:
+            TypeError
         """
+        if not isinstance(suffix, str):
+            raise TypeError(f"suffix must be a str, not {type(suffix)}")
+
+        if not suffix:
+            return False
+        if suffix[0] == ".":
+            suffix = suffix[1:]
+
         ios = Path(__file__).parent.joinpath("ios").iterdir()
-        return f"{path.suffix[1:]}io" in [x.stem for x in ios]
+
+        return f"{suffix}io" in [x.stem for x in ios]
 
     @staticmethod
     def get_io(path):
@@ -139,8 +137,27 @@ class Io(metaclass=ABCMeta):
 
         Returns:
             :obj:`Io` class by this path.
+
+        Raises:
+            :class:`TypeError`
+            :class:`ValueError`
         """
-        return Io.get_io_suffix(path.suffix)(path)
+        if not isinstance(path, Path):
+            raise TypeError(f"path must be a Path, not {type(suffix)}")
+        if not Io.has_io(path.suffix):
+            raise ValueError(f"Unsupported suffix: {path.suffix}")
+
+        suffix = path.suffix[1:]
+
+        module = load_module(
+            f"__spmi_{suffix}_io_realisation",
+            Path(__file__).parent.joinpath(f"ios/{suffix}io.py")
+        )
+
+        return list(filter(
+            lambda x: inspect.isclass(x[1]) and issubclass(x[1], Io) and x[1] is not Io,
+            inspect.getmembers(module)
+        ))[0][1](path)
 
     @staticmethod
     def remove_lock(path):
@@ -148,6 +165,10 @@ class Io(metaclass=ABCMeta):
 
         Args:
             path (:obj:`pathlib.Path`): Locked path.
+
+        Raises:
+            :class:`TypeError`
         """
-        assert isinstance(path, Path)
+        if not isinstance(path, Path):
+            raise TypeError(f"path must be a Path, not {type(suffix)}")
         path.parent.joinpath(path.name + ".lock").unlink()

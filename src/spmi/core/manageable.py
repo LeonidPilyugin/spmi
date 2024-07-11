@@ -6,9 +6,13 @@ import shutil
 from abc import abstractmethod, ABCMeta
 from pathlib import Path
 from spmi.utils.load import load_module
-from spmi.utils.metadata import MetaData
+from spmi.utils.metadata import MetaData, MetaDataError
 from spmi.utils.logger import Logger
 from spmi.utils.io.io import Io
+from spmi.utils.exception import SpmiException
+
+class ManageableException(SpmiException):
+    pass
 
 def manageable(cls):
     """All manageables should be decorated with it.
@@ -16,9 +20,13 @@ def manageable(cls):
     Note:
         Sets ``__old_init__`` attribute of class and
         ``_metadata`` and ``_metadata._outer_object`` of object.
+
+    Raises:
+        :class:`AttributeError`
     """
     def __new_init__(self, *args, data=None, meta=None, **kwargs):
-        assert data
+        if not data:
+            raise ValueError("Cannot create Manageable with empty data")
 
         self._logger = Logger(self.__class__.__name__)
 
@@ -31,8 +39,10 @@ def manageable(cls):
         if self.__old_init__:
             self.__old_init__(*args, data=data, meta=meta, **kwargs)
 
-    assert "MetaDataHelper" in dir(cls)
-    assert "FileSystemHelper" in dir(cls)
+    if not "MetaDataHelper" in dir(cls):
+        raise AttributeError("Each manageable must have a nested \"MetaDataHelper\" class")
+    if not "FileSystemHelper" in dir(cls):
+        raise AttributeError("Each manageable must have a nested \"FileSystemHelper\" class")
 
     cls.FileSystemHelper._outer_class = cls
 
@@ -52,25 +62,38 @@ class Manageable(metaclass=ABCMeta):
     class MetaDataHelper(MetaData):
         @property
         def prefered_suffix(self):
-            """:obj:`str`. Prefered suffix."""
+            """:obj:`str`. Prefered suffix.
+
+            Raises:
+                :class:`TypeError`
+                :class:`ValueError`
+            """
             if "prefered_suffix" in self._meta:
                 return self._meta["prefered_suffix"]
-            assert self.data_path
             return self.data_path.suffix
 
         @prefered_suffix.setter
         def prefered_suffix(self, value):
-            assert isinstance(value, str)
-            assert self.mutable
+            if not isinstance(value, str):
+                raise TypeError(f"value must be a string, not {type(value)}")
+            if not self.mutable:
+                raise MetaDataError("Must be mutable")
             self._meta["prefered_suffix"] = value
 
         @property
         def type(self):
-            """:obj:`str`. Type"""
+            """:obj:`str`. Type.
+
+            Raises:
+                :class:`ValueError`
+                :class:`TypeError`
+            """
             keys = list(self._data.keys())
-            assert len(keys) == 1
+            if len(keys) != 1:
+                raise ValueError(f"Data dictionary must contain 1 element, not {len(keys)}")
             key = keys[0]
-            assert isinstance(key, str)
+            if not isinstance(key, str):
+                raise TypeError(f"Type of key in data dictionary must be str, not {type(key)}")
 
             return key
 
@@ -81,12 +104,21 @@ class Manageable(metaclass=ABCMeta):
 
         @property
         def id(self):
-            """:obj:`str`. ID."""
+            """:obj:`str`. ID.
+
+            Raises:
+                :class:`KeyError`
+            """
             return str(self.m_data["id"])
 
         @property
         def path(self):
-            """:obj:`pathlib.Path`. Path"""
+            """:obj:`pathlib.Path`. Path.
+
+            Raises:
+                :class:`MetaDataError`
+                :class:`TypeError`
+            """
             if "path" in self._meta:
                 res = self._meta["path"]
                 if not res is None:
@@ -96,8 +128,10 @@ class Manageable(metaclass=ABCMeta):
 
         @path.setter
         def path(self, value):
-            assert value is None or isinstance(value, Path)
-            assert self.mutable
+            if not self.mutable:
+                raise MetaDataError("Must be mutable")
+            if not (value is None or isinstance(value, Path)):
+                raise TypeError(f"value must be None or Path, not {type(value)}")
             self._meta["path"] = value if value is None else str(value)
 
         def __str__(self):
@@ -179,10 +213,18 @@ path: {self.path}
             Args:
                 manageable (:obj:`Manageable`): Manageable to register.
                 path (:obj:`pathlib.Path`): Path to use.
+
+            Raises:
+                :class:`TypeError`
+                :class:`ManageableException`
+                :class:`OSError`
             """
-            assert isinstance(manageable, Manageable)
-            assert isinstance(path, Path)
-            assert not path.exists()
+            if not isinstance(manageable, Manageable):
+                raise TypeError(f"manageable must be a Manageable, not {type(manageable)}")
+            if not isinstance(path, Path):
+                raise TypeError(f"path must be a pathlib.Path, not {type(path)}")
+            if path.exists():
+                raise ManageableException(f"Path \"{path}\" should not exist")
 
             path.mkdir()
             manageable._metadata.path = path
@@ -207,7 +249,8 @@ path: {self.path}
             Args:
                 manageable (:obj:`Manageable`): Manageable to destruct.
             """
-            assert isinstance(manageable, Manageable)
+            if not isinstance(manageable, Manageable):
+                raise TypeError(f"manageable must be a Manageable, not {type(manageable)}")
             shutil.rmtree(manageable.state.path)
 
         @classmethod
@@ -220,8 +263,12 @@ path: {self.path}
 
             Returns:
                 :obj:`bool`.
+
+            Raises:
+                :class:`TypeError`
             """
-            assert isinstance(path, Path)
+            if not isinstance(path, Path):
+                raise TypeError(f"path must be a [athlib.Path, not {type(path)}")
 
             try:
                 data_pathes = cls.data_pathes(path)
@@ -255,9 +302,15 @@ path: {self.path}
 
             Returns:
                 :obj:`dict`: Kwargs.
+
+            Raises:
+                :class:`TypeError`
+                :class:`ManageableException`
             """
-            assert isinstance(path, Path)
-            assert cls.is_correct_directory(path)
+            if not isinstance(path, Path):
+                raise TypeError(f"path must be a [athlib.Path, not {type(path)}")
+            if not cls.is_correct_directory(path):
+                raise ManageableException(f"Attempting to load from incorrect path \"{path}\"")
 
             return {
                 "data": cls.data_path(path),
@@ -288,8 +341,13 @@ path: {self.path}
 
             Returns:
                 :obj:`class`.
+
+            Raises:
+                :class:`TypeError`
+                :class:`NotImplementedError`
             """
-            assert isinstance(name, str)
+            if not isinstance(name, str):
+                raise TypeError(f"name must be a str, not {type(name)}")
 
             for path in Path(__file__).parent.joinpath("manageables").iterdir():
                 if path.is_file():
@@ -304,11 +362,10 @@ path: {self.path}
                         )
                     )
 
-                    if len(classes) >= 1:
-                        assert len(classes) == 1
+                    if len(classes) == 1:
                         return classes[0][1]
 
-            raise NotImplementedError()
+            raise NotImplementedError(f"Could not find manageable type \"{name}\"")
 
         @staticmethod
         def from_directory_unknown(path):
@@ -319,9 +376,16 @@ path: {self.path}
 
             Returns:
                 :obj:`Manageable`.
+
+            Raises:
+                :class:`TypeError`
+                :class:`ManageableException`
+                :class:`NotImplementedError`
             """
-            assert isinstance(path, Path)
-            assert Manageable.is_correct_directory(path)
+            if not isinstance(path, Path):
+                raise TypeError(f"path must be a pthlib.Path, not {type(path)}")
+            if not Manageable.is_correct_directory(path):
+                raise ManageableException(f"Cannot load Manageable from path \"{path}\"")
 
             data_path = Manageable.FileSystemHelper.data_path(path)
             meta_path = Manageable.FileSystemHelper.meta_path(path)
@@ -344,8 +408,14 @@ path: {self.path}
 
             Returns:
                 :obj:`Manageable`.
+
+            Raises:
+                :class:`TypeError`
+                :class:`NotImplementedError`
+                :class:`MetaDataError`
             """
-            assert isinstance(path, Path)
+            if not isinstance(path, Path):
+                raise TypeError(f"path must be a pathlib.Path, not \"{type(path)}\"")
 
             metadata = Manageable.MetaDataHelper(
                 data=path
@@ -370,17 +440,29 @@ path: {self.path}
 
     @abstractmethod
     def start(self):
-        """Starts this manageable."""
+        """Starts this manageable.
+
+        Raises:
+            :class:`ManageableException`
+        """
         raise NotImplementedError()
 
     @abstractmethod
     def term(self):
-        """Terminate this manageable."""
+        """Terminate this manageable.
+
+        Raises:
+            :class:`ManageableException`
+        """
         raise NotImplementedError()
 
     @abstractmethod
     def kill(self):
-        """Kill this manageable."""
+        """Kill this manageable.
+
+        Raises:
+            :class:`ManageableException`
+        """
         raise NotImplementedError()
 
     @property
@@ -389,7 +471,11 @@ path: {self.path}
         return self._metadata.state
 
     def destruct(self):
-        """Free all resources (filesystem too)."""
+        """Free all resources (filesystem too).
+        
+        Raises:
+            :class:`TaskManageableException`
+        """
         self._logger.debug(f"Destructing \"{self.state.id}\"")
         type(self).FileSystemHelper.destruct(self)
         del self._metadata.meta_path
@@ -404,11 +490,24 @@ path: {self.path}
         Args:
             path (:obj:`pathlib.Path`): Path where manageable
                 should be registered.
+
+        Raises:
+            :class:`ManageableException`
+            :class:`TypeError`
         """
-        assert not self.registered
-        assert isinstance(path, Path)
+        if not isinstance(path, Path):
+            raise TypeError(f"path must be a pathlib.Path, not {type(path)}")
+        if self.registered:
+            raise ManageableException("Already registered")
         self._logger.debug(f"Registering \"{self.state.id}\"")
-        type(self).FileSystemHelper.register(self, path)
+
+        existed = path.exists()
+        try:
+            type(self).FileSystemHelper.register(self, path)
+        except ManageableException:
+            if not existed:
+                shutil.rmtree(path)
+            raise
 
     @property
     def registered(self):
@@ -445,8 +544,12 @@ path: {self.path}
 
         Returns:
             :obj:`bool`.
+
+        Raises:
+            :class:`TypeError`
         """
-        assert isinstance(path, Path)
+        if not isinstance(path, Path):
+            raise TypeError(f"path must be a pathlib.Path, not {type(path)}")
         return cls.FileSystemHelper.is_correct_directory(path)
 
     @classmethod
@@ -458,9 +561,15 @@ path: {self.path}
 
         Returns:
             :obj:`Manageable`.
+
+        Raises:
+            :class:`TypeError`
+            :class:`ManageableException`
+            :class:`MetaDataError`
         """
-        assert isinstance(path, Path)
-        assert cls.is_correct_directory(path)
+        if not isinstance(path, Path):
+            raise TypeError(f"path must be a pathlib.Path, not {type(path)}")
+
         return cls(**cls.FileSystemHelper.from_directory(path))
 
     @staticmethod
@@ -472,8 +581,15 @@ path: {self.path}
 
         Returns:
             :obj:`Manageable`.
+
+        Raises:
+            :class:`TypeError`
+            :class:`ManageableException`
+            :class:`MetaDataError`
         """
-        assert isinstance(path, Path)
+        if not isinstance(path, Path):
+            raise TypeError(f"path must be a pathlib.Path, not {type(path)}")
+
         return Manageable.LoadHelper.from_directory_unknown(path)
 
     @staticmethod
@@ -485,6 +601,13 @@ path: {self.path}
 
         Returns:
             :obj:`Manageable`.
+
+        Raises:
+            :class:`TypeError`
+            :class:`ManageableException`
+            :class:`MetaDataError`
         """
-        assert isinstance(path, Path)
+        if not isinstance(path, Path):
+            raise TypeError(f"path must be a pathlib.Path, not {type(path)}")
+
         return Manageable.LoadHelper.from_descriptor(path)

@@ -20,11 +20,13 @@ import traceback
 from typing import List
 from pathlib import Path
 from docopt import docopt
-from spmi.core.pool import Pool
+from spmi.core.pool import Pool, PoolException
 from spmi.utils.logger import Logger
 from spmi.utils.io.io import Io
 from spmi.utils.pattern import PatternMatcher, SimplePatternMatcher
-from spmi.core.manageable import Manageable
+from spmi.core.manageable import Manageable, ManageableException
+from spmi.utils.exception import SpmiException
+from spmi.utils.metadata import MetaDataError
 
 HELP_MESSAGE = r"""
    _____ ____  __  _______
@@ -167,7 +169,7 @@ class Spmi:
         @property
         def path(self):
             """:obj:`list` of :obj:`pathlib.Path`: List of pathes."""
-            return list(map(Path, self._dict["SPMI_PATH"].split(":")))
+            return list(map(lambda x: Path(x).expanduser(), self._dict["SPMI_PATH"].split(":")))
 
 
     def __init__(self, args, pm):
@@ -193,55 +195,50 @@ class Spmi:
             self._config.home.mkdir(parents=True)
 
         self._logger.debug("Creating pool")
-        self._pool = Pool(path=self._config.home, pm=pm, dm=self.load_manageables())
+        self._pool = Pool(home=self._config.home, path = self._config.path, pm=pm)
 
-
-    def load_manageables(self):
-        """Return list of found descriptors.
-        
-        Returns:
-            :obj:`list` of :obj:`spmi.manageable.Manageable`:
-            :obj:`list` of detected manageables.
-        """
-
-        manageables = []
-        self._logger.debug("Loading manageables")
-
-        for root in self._config.path:
-            self._logger.debug(f"Loading from \"{root}\"")
-            for path_object in root.rglob("*"):
-                if path_object.is_file() and Io.has_io(path_object):
-                    self._logger.debug(f"Trying to load \"{path_object}\"")
-
-                    try:
-                        new_manageable = Manageable.from_descriptor(path_object)
-                    except Exception as e:
-                        self._logger.warning(
-                            f"Cannot load descriptor \"{path_object}\": {traceback.format_exc(e)}"
-                        )
-                        continue
-
-                    manageables.append(new_manageable)
-
-        self._logger.debug(f"Loaded {len(manageables)} detected manageables")
-
-        return manageables
 
     def show_list(self):
         """Prints list of manageables."""
         self._logger.debug("Listing manageables")
-        print(self._pool.get_list_string())
+        
+        for manageable in self._pool.detected:
+            self._logger.info(f"Detected \"{manageable.state.id}\" of type \"{manageable.state.type}\" by path \"{manageable.state.data_path}\"")
 
-    def start(self, pattern: str):
+        for manageable in self._pool.registered:
+            with manageable:
+                self._logger.info(f"Registered \"{manageable.state.id}\" of type \"{manageable.state.type}\"")
+
+        self._logger.info(f"Detected {len(self._pool.detected)}")
+        self._logger.info(f"Registered {len(self._pool.registered)}")
+
+    def start(self, pattern):
         """Starts all manageables corresponding to pattern.
 
         Args:
             pattern (:obj:`str`): Pattern string.
         """
-        assert isinstance(pattern, str)
-
         self._logger.debug(f"Starting manageables by pattern \"{pattern}\"")
-        self._pool.start(pattern)
+
+        to_start = self._pool.find(pattern, registered=False)
+        started = 0
+        
+        if len(to_start) == 0:
+            self._logger.warning("Nothing to start")
+        else:
+            for manageable in to_start:
+                try:
+                    self._logger.info(f"Starting manageable \"{manageable.state.id}\"")
+                    self._pool.register(manageable)
+                    with manageable:
+                        manageable.start()
+                    started += 1
+                except (ManageableException, MetaDataError, PoolException) as e:
+                    self._logger.warning(f"Failed to start \"{manageable.state.id}\": {e}")
+                    if self._args.debug:
+                        raise
+
+        self._logger.info(f"Started {started} manageables")
 
     def restart(self, pattern):
         """Retarts all manageables corresponding to pattern.
@@ -249,6 +246,7 @@ class Spmi:
         Args:
             pattern (:obj:`str`): Pattern string.
         """
+        raise NotImplementedError()
         assert isinstance(pattern, str)
 
         self._logger.debug(f"Restarting manageables by pattern \"{pattern}\"")
@@ -260,10 +258,24 @@ class Spmi:
         Args:
             pattern (:obj:`str`): Pattern string.
         """
-        assert isinstance(pattern, str)
+        to_stop = self._pool.find(pattern, detected=False)
+        stopped = 0
 
-        self._logger.debug(f"Stopping manageables by pattern \"{pattern}\"")
-        self._pool.term(pattern)
+        if len(to_stop) == 0:
+            self._logger.warning("Nothing to stop")
+        else:
+            for manageable in to_stop:
+                try:
+                    self._logger.info(f"Stopping manageable \"{manageable.state.id}\"")
+                    with manageable:
+                        manageable.term()
+                    stopped += 1
+                except (ManageableException, MetaDataError) as e:
+                    self._logger.warning(f"Failed to stop \"{manageable.state.id}\": {e}")
+                    if self._args.debug:
+                        raise
+
+        self._logger.info(f"Stopped {stopped} manageables")
 
     def kill(self, pattern):
         """Kills all manageables corresponding to pattern.
@@ -271,10 +283,24 @@ class Spmi:
         Args:
             pattern (:obj:`str`): Pattern string.
         """
-        assert isinstance(pattern, str)
+        to_kill = self._pool.find(pattern, detected=False)
+        killed = 0
 
-        self._logger.debug(f"Stopping manageables by pattern \"{pattern}\"")
-        self._pool.kill(pattern)
+        if len(to_kill) == 0:
+            self._logger.warning("Nothing to kill")
+        else:
+            for manageable in to_kill:
+                try:
+                    self._logger.info(f"Killing manageable \"{manageable.state.id}\"")
+                    with manageable:
+                        manageable.kill()
+                    killed += 1
+                except (ManageableException, MetaDataError) as e:
+                    self._logger.warning(f"Failed to kill \"{manageable.state.id}\": {e}")
+                    if self._args.debug:
+                        raise
+
+        self._logger.info(f"Killed {killed} manageables")
 
     def status(self, pattern):
         """Prints status all manageables corresponding to pattern.
@@ -282,10 +308,17 @@ class Spmi:
         Args:
             pattern (:obj:`str`): Pattern string.
         """
-        assert isinstance(pattern, str)
+        to_show = self._pool.find(pattern, detected=False)
 
-        self._logger.debug(f"Printing status of manageables by pattern \"{pattern}\"")
-        print(self._pool.get_status_string(pattern))
+        if len(to_show) == 0:
+            self._logger.warning("Nothing to show")
+        else:
+            for manageable in to_show:
+                with manageable:
+                    print(manageable.state)
+
+        self._logger.info(f"Showed {len(to_show)} manageables")
+
 
     def clean(self, pattern):
         """Cleans all manageables corresponding to pattern.
@@ -293,10 +326,24 @@ class Spmi:
         Args:
             pattern (:obj:`str`): Pattern string.
         """
-        assert isinstance(pattern, str)
+        to_clean = self._pool.find(pattern, detected=False)
+        cleaned = 0
 
-        self._logger.debug(f"Cleaning manageables by pattern \"{pattern}\"")
-        self._pool.destruct(pattern)
+        if len(to_clean) == 0:
+            self._logger.warning("Nothing to clean")
+        else:
+            for manageable in to_clean:
+                try:
+                    self._logger.info(f"Cleaning manageable \"{manageable.state.id}\"")
+                    with manageable:
+                        manageable.destruct()
+                    cleaned += 1
+                except (ManageableException, MetaDataError) as e:
+                    self._logger.warning(f"Failed to clean \"{manageable.state.id}\": {e}")
+                    if self._args.debug:
+                        raise
+
+        self._logger.info(f"Cleaned {cleaned} manageables")
 
     def connect(self, task_id):
         """Prints stdout of task and prints to it stdin.
@@ -345,5 +392,4 @@ if __name__ == "__main__":
         spmi = Spmi(docopt(HELP_MESSAGE, version=VERSION), SimplePatternMatcher())
         spmi.execute()
     except Exception as e:
-        print(f"Unknown error: {traceback.format_exc(e)}")
-        sys.exit(1)
+        raise

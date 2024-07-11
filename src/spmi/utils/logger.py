@@ -15,6 +15,11 @@ class Logger:
         """
         logging.basicConfig(level=loglevel)
 
+    @staticmethod
+    def log_level():
+        """Returns global log level."""
+        return logging.root.level
+
     def __init__(self, name):
         """
         Args:

@@ -5,6 +5,13 @@ from copy import deepcopy
 from pathlib import Path
 from spmi.utils.io.io import Io
 from spmi.utils.logger import Logger
+from spmi.utils.exception import SpmiException
+
+class MetaDataError(SpmiException):
+    pass
+
+class IncorrectProperty(MetaDataError):
+    pass
 
 def dontcheck(prop):
     """Decorate properties you don't want to check.
@@ -15,6 +22,10 @@ def dontcheck(prop):
     again if it is not wrapped by this decorator). Wrap
     these properties with ``@dontcheck`` to prevent their
     check on :obj:`MetaData` creation.
+
+    Rasies:
+        :class:`TypeError`
+        :class:`AttributeError`
 
     Note:
         :func:`dontcheck` sets ``_spmi_metadata_dontcheck`` attribute of
@@ -43,8 +54,10 @@ def dontcheck(prop):
             def example_property2(self, value):
                 pass
     """
-    assert isinstance(prop, property)
-    assert prop.fget
+    if not isinstance(prop, property):
+        raise TypeError(f"Must decorate a property, not {type(prop)}")
+    if not prop.fget:
+        raise AttributeError("Property object must have a getter method")
 
     setattr(prop.fget, "_spmi_metadata_dontcheck", True)
 
@@ -67,6 +80,10 @@ class MetaDataNode:
 
         Note:
             You can set meta and data or metadata flags at once
+
+        Raises:
+            :class:`ValueError`
+            :class:`IncorrectProperty`
         """
         self._logger = Logger(self.__class__.__name__)
         self.__mutable = mutable
@@ -78,21 +95,22 @@ class MetaDataNode:
             self._meta = meta if not copy else deepcopy(meta)
             self._data = data if not copy else deepcopy(data)
 
-            assert self.check_properties()
+            self.check_properties()
         else:
-            assert meta is None and data is None
+            if not (meta is None and data is None):
+                raise ValueError(f"metadata is not None, so meta and data must be None, not {meta} and {data}")
             self._meta = metadata._meta if not copy else deepcopy(metadata._meta)
             self._data = metadata._data if not copy else deepcopy(metadata._data)
 
     def check_properties(self):
-        """Returns ``True`` if all properties of object are correct.
+        """Raises :class:`IncorrectProperty` exception if properties are incorrect..
 
         Iterates throw all properties and tries to get them or
         set with default value if. Skips properties which are
         wrapped with :func:`dontcheck`.
 
-        Returns:
-            :obj:`bool`.
+        Raises:
+            :class:`IncorrectProperty`
         """
 
         # Check that meta and data is correct:
@@ -122,19 +140,17 @@ class MetaDataNode:
                         # Try to get property.
                         getattr(self, p)
             self._logger.debug("All attributes are correct")
-            return True
-        except Exception:
-            self._logger.debug(f"Failed \"{failed_attr}\" attribute")
-            raise # TODO: Remove
-            return False
+        except Exception as e:
+            self._logger.debug(f"Failed \"{p}\" attribute")
+            raise IncorrectProperty(str(e)) from e
 
     @property
-    def mutable(self) -> bool:
+    def mutable(self):
         """:obj:`bool`: True if this object is mutable."""
         return self.__mutable
 
     @property
-    def meta(self) -> dict:
+    def meta(self):
         """:obj:`dict`. Meta dictionary.
 
         Note:
@@ -144,7 +160,7 @@ class MetaDataNode:
         return self._meta if self.mutable else deepcopy(self._meta)
 
     @property
-    def data(self) -> dict:
+    def data(self):
         """:obj:`dict`. Data dictionary.
 
         Note:
@@ -190,39 +206,57 @@ class MetaData(MetaDataNode):
     @dontcheck
     @property
     def meta_path(self):
-        """:obj:`Union[pathlib.Path, None]`. Path to meta file. ``None`` if not exist."""
+        """:obj:`Union[pathlib.Path, None]`. Path to meta file. ``None`` if not exist.
+
+        Raises:
+            :class:`MetaDataError`
+            :class:`TypeError`
+        """
         return None if not self.__meta_io else self.__meta_io.path.resolve()
 
     @meta_path.setter
     def meta_path(self, value):
-        assert not self.__entered
-        assert self.mutable
-        assert value is None or isinstance(value, Path)
+        if self.__entered:
+            raise MetaDataError("Cannot change meta path, entered a \"with\" statement")
+        if not self.mutable:
+            raise MetaDataError("Cannot change meta path, object is immutable")
+        if not (value is None or isinstance(value, Path)):
+            raise TypeError(f"value must be a None or pathlib.Path, not {type(value)}")
 
         self.__meta_io = None if value is None else Io.get_io(value)
 
     @meta_path.deleter
     def meta_path(self):
-        assert self.mutable
+        if not self.mutable:
+            raise MetaDataError("Cannot reset meta path, object is immutable")
         self.__meta_io = None
 
     @dontcheck
     @property
     def data_path(self):
-        """:obj:`Union[pathlib.Path, None]`. Path to data file. ``None`` if not exist."""
+        """:obj:`Union[pathlib.Path, None]`. Path to data file. ``None`` if not exist.
+
+        Raises:
+            :class:`MetaDataError`
+            :class:`TypeError`
+        """
         return None if not self.__data_io else self.__data_io.path.resolve()
 
     @data_path.setter
     def data_path(self, value):
-        assert not self.__entered
-        assert self.mutable
-        assert value is None or isinstance(value, Path)
+        if self.__entered:
+            raise MetaDataError("Cannot change data path, entered a \"with\" statement")
+        if not self.mutable:
+            raise MetaDataError("Cannot change data path, object is immutable")
+        if not (value is None or isinstance(value, Path)):
+            raise TypeError(f"value must be a None or pathlib.Path, not {type(value)}")
 
         self.__data_io = None if value is None else Io.get_io(value)
 
     @data_path.deleter
     def data_path(self):
-        assert self.mutable
+        if not self.mutable:
+            raise MetaDataError("Cannot reset data path, object is immutable")
         self.__data_io = None
 
     @dontcheck
@@ -236,10 +270,17 @@ class MetaData(MetaDataNode):
 
         Note:
             Should be mutable.
+
+        Raises:
+            :class:`MetaDataError`
         """
         self._logger.debug("Loading")
-        assert self.mutable
-        assert self.__data_io and self.__meta_io
+        if not self.mutable:
+            raise MetaDataError("Must be mutable")
+        if not self.__data_io:
+            raise MetaDataError("Data path must be specified")
+        if not self.__meta_io:
+            raise MetaDataError("Meta path must be specified")
         self._data = self.__data_io.load()
         self._meta = self.__meta_io.load()
 
@@ -248,10 +289,17 @@ class MetaData(MetaDataNode):
 
         Note:
             Should be mutable.
+
+        Raises:
+            :class:`MetaDataError`
         """
         self._logger.debug("Dumping")
-        assert self.mutable
-        assert self.__data_io and self.__meta_io
+        if not self.mutable:
+            raise MetaDataError("Must be mutable")
+        if not self.__data_io:
+            raise MetaDataError("Data path must be specified")
+        if not self.__meta_io:
+            raise MetaDataError("Meta path must be specified")
         self.__data_io.dump(self._data)
         self.__meta_io.dump(self._meta)
 
@@ -260,11 +308,19 @@ class MetaData(MetaDataNode):
 
         Note:
             Should be mutable.
+
+        Raises:
+            :class:`MetaDatarror`
         """
-        assert not self.__entered
         self._logger.debug("Locking")
-        assert self.mutable
-        assert self.__data_io and self.__meta_io
+        if self.__entered:
+            raise MetaDataError("Cannot acquire inside \"with\" statement")
+        if not self.mutable:
+            raise MetaDataError("Must be mutable")
+        if not self.__data_io:
+            raise MetaDataError("Data path must be specified")
+        if not self.__meta_io:
+            raise MetaDataError("Meta path must be specified")
         self.__data_io.acquire()
         self.__meta_io.acquire()
 
@@ -274,10 +330,15 @@ class MetaData(MetaDataNode):
         Note:
             Should be mutable.
         """
-        assert not self.__entered
-        self._logger.debug("Acquiring")
-        assert self.mutable
-        assert self.__data_io and self.__meta_io
+        self._logger.debug("Releasing")
+        if self.__entered:
+            raise MetaDataError("Cannot release inside \"with\" statement")
+        if not self.mutable:
+            raise MetaDataError("Must be mutable")
+        if not self.__data_io:
+            raise MetaDataError("Data path must be specified")
+        if not self.__meta_io:
+            raise MetaDataError("Meta path must be specified")
         self.__data_io.release()
         self.__meta_io.release()
 
@@ -286,11 +347,19 @@ class MetaData(MetaDataNode):
 
         Note:
             Should be mutable.
+
+        Raises:
+            :class:`MetaDataError`
         """
-        assert not self.__entered
         self._logger.debug("Procesing blocking load.")
-        assert self.mutable
-        assert self.__data_io and self.__meta_io
+        if self.__entered:
+            raise MetaDataError("Cannot process blocking load inside \"with\" statement")
+        if not self.mutable:
+            raise MetaDataError("Must be mutable")
+        if not self.__data_io:
+            raise MetaDataError("Data path must be specified")
+        if not self.__meta_io:
+            raise MetaDataError("Meta path must be specified")
         self._data = self.__data_io.blocking_load()
         self._meta = self.__meta_io.blocking_load()
 
@@ -299,21 +368,33 @@ class MetaData(MetaDataNode):
 
         Note:
             Should be mutable.
+
+        Raises:
+            :class:`MetaDataError`
         """
-        assert not self.__entered
         self._logger.debug("Processing blocking dump.")
-        assert self.mutable
-        assert self.__data_io and self.__meta_io
+        if self.__entered:
+            raise MetaDataError("Cannot process blocking dump inside \"with\" statement")
+        if not self.mutable:
+            raise MetaDataError("Must be mutable")
+        if not self.__data_io:
+            raise MetaDataError("Data path must be specified")
+        if not self.__meta_io:
+            raise MetaDataError("Meta path must be specified")
         self.__data_io.blocking_dump(self._data)
         self.__meta_io.blocking_dump(self._meta)
 
     def __enter__(self):
+        self._logger.debug("Entering \"with\" statement")
+        if self.__entered:
+            raise MetaDataError("Already entered \"with\" statement")
         self.acquire()
         self.__entered = True
         self.load()
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
+        self._logger.debug("Exiting \"with\" statement")
         self.__entered = False
         if self.__meta_io and self.__data_io:
             self.dump()
@@ -329,14 +410,18 @@ class MetaData(MetaDataNode):
 
         Returns:
             :obj:`bool`.
+
+        Raises:
+            :class:`TypeError`
         """
 
-        assert isinstance(data, (dict, Path)) or data is None
-        assert isinstance(meta, (dict, Path)) or meta is None
+        if not (isinstance(data, (dict, Path)) or data is None):
+            raise TypeError(f"Data must be dict, pathlib.Path or None, not {type(data)}.")
+        if not (isinstance(meta, (dict, Path)) or meta is None):
+            raise TypeError(f"Meta must be dict, pathlib.Path or None, not {type(meta)}.")
 
         try:
             cls(data=data, meta=meta)
             return True
         except Exception:
             return False
-

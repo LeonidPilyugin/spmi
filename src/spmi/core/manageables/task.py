@@ -7,12 +7,20 @@ Todo:
 import sys
 import signal
 import inspect
+import logging
 from pathlib import Path
 from abc import ABCMeta, abstractmethod
-from spmi.core.manageable import Manageable, manageable
-from spmi.utils.metadata import MetaDataNode
+from spmi.core.manageable import Manageable, manageable, ManageableException
+from spmi.utils.metadata import MetaDataNode, MetaDataError
 from spmi.utils.load import load_module
 from spmi.utils.logger import Logger
+from spmi.utils.exception import SpmiException
+
+class TaskManageableException(ManageableException):
+    pass
+
+class BackendException(TaskManageableException):
+    pass
 
 @manageable
 class TaskManageable(Manageable):
@@ -36,9 +44,16 @@ class TaskManageable(Manageable):
     class MetaDataHelper(Manageable.MetaDataHelper):
         @property
         def backend(self):
-            """:obj:`TaskManageable.Backend.MetaDataHelper`: Backend data."""
-            assert "backend" in self.m_data
-            assert isinstance(self.m_data["backend"], dict)
+            """:obj:`TaskManageable.Backend.MetaDataHelper`: Backend data.
+
+            Raises:
+                :class:`ValueError`
+                :class:`TypeError`
+            """
+            if "backend" not in self.m_data:
+                raise ValueError("Data should contain \"backend\" dictionary")
+            if not isinstance(self.m_data["backend"], dict):
+                raise TypeError(f"\"backend\" must be a dict, not {type(self.m_data['backend'])}")
 
             if "backend" not in self._meta:
                 self._meta["backend"] = {}
@@ -52,9 +67,16 @@ class TaskManageable(Manageable):
 
         @property
         def wrapper(self):
-            """:obj:`TaskManageable.Wrapper.MetaDataHelper`: Wrapper data."""
-            assert "wrapper" in self.m_data
-            assert isinstance(self.m_data["wrapper"], dict)
+            """:obj:`TaskManageable.Wrapper.MetaDataHelper`: Wrapper data.
+
+            Raises:
+                :class:`ValueError`
+                :class:`TypeError`
+            """
+            if "wrapper" not in self.m_data:
+                raise ValueError("Data should contain \"wrapper\" dictionary")
+            if not isinstance(self.m_data["wrapper"], dict):
+                raise TypeError(f"\"wrapper\" must be a dict, not {type(self.m_data['wrapper'])}")
 
             if "wrapper" not in self._meta:
                 self._meta["wrapper"] = {}
@@ -91,34 +113,52 @@ wrapper:
 
             @property
             def id(self):
-                """:obj:`str`: ID of backend proces."""
+                """:obj:`str`: ID of backend proces.
+
+                Raises:
+                    :class:`TypeError`
+                    :class:`MetaDataError`
+                """
                 if "id" in self._meta:
                     return self._meta["id"]
                 return None
 
             @id.setter
             def id(self, value):
-                assert self.mutable
-                assert value is None or isinstance(value, str)
+                if not self.mutable:
+                    raise MetaDataError("Must be mutable")
+                if not (value is None or isinstance(value, str)):
+                    raise TypeError(f"value must be None or str, not {type(value)}")
                 self._meta["id"] = value
 
             @property
             def command(self):
-                """:obj:`str`: Start command."""
+                """:obj:`str`: Start command.
+
+                Raises:
+                    :class:`TypeError`
+                    :class:`MetaDataError`
+                """
                 if "start_command" in self._meta:
                     return self._meta["start_command"]
                 return None
 
             @command.setter
             def command(self, value):
-                assert self.mutable
-                assert value is None or isinstance(value, str)
+                if not self.mutable:
+                    raise MetaDataError("Must be mutable")
+                if not (value is None or isinstance(value, str)):
+                    raise TypeError(f"value must be None or str, not {type(value)}")
                 self._meta["start_command"] = value
 
             @property
             def log_path(self):
                 """:obj:`Union[pathlib.Path, None]`: Path to backend log file.
                 ``None`` if there is no backend log file.
+
+                Raises:
+                    :class:`TypeError`
+                    :class:`MetaDataError`
                 """
                 if "log_path" in self._meta and self._meta["log_path"]:
                     return Path(self._meta["log_path"])
@@ -126,8 +166,10 @@ wrapper:
 
             @log_path.setter
             def log_path(self, value):
-                assert self.mutable
-                assert value is None or isinstance(value, Path)
+                if not self.mutable:
+                    raise MetaDataError("Must be mutable")
+                if not (value is None or isinstance(value, Path)):
+                    raise TypeError(f"value must be None or pathlib.Path, not {type(value)}")
                 self._meta["log_path"] = None if value is None else str(value.resolve())
 
             def __str__(self):
@@ -160,6 +202,9 @@ log path: {self.log_path}
 
                 Returns:
                     :obj:`TaskManageable.Backend`.
+
+                Raises:
+                    :class:`NotImplementedError`
                 """
                 for path in Path(__file__).parent.joinpath("task_/backends").iterdir():
                     if path.is_file():
@@ -175,8 +220,7 @@ log path: {self.log_path}
                             )
                         )
 
-                        if len(classes) >= 1:
-                            assert len(classes) == 1
+                        if len(classes) == 1:
                             return classes[0][1]()
 
                 raise NotImplementedError()
@@ -190,6 +234,9 @@ log path: {self.log_path}
 
             Returns:
                 :obj:`str`. ID of submitted task.
+
+            Raises:
+                :class:`BackendException`
             """
             raise NotImplementedError()
 
@@ -199,6 +246,9 @@ log path: {self.log_path}
 
             Args:
                 task_metadata (:obj:`TaskManageable.MetaDataHelper`): Metadata.
+
+            Raises:
+                :class:`BackendException`
             """
             raise NotImplementedError()
 
@@ -208,6 +258,9 @@ log path: {self.log_path}
 
             Args:
                 task_metadata (:obj:`TaskManageable.MetaDataHelper`): Metadata.
+
+            Raises:
+                :class:`BackendException`
             """
             raise NotImplementedError()
 
@@ -220,6 +273,9 @@ log path: {self.log_path}
             
             Returns:
                 :obj:`bool`.
+
+            Raises:
+                :class:`BackendException`
             """
             raise NotImplementedError()
 
@@ -232,6 +288,9 @@ log path: {self.log_path}
 
             Returns:
                 :obj:`TaskManageable.Backend`.
+
+            Raises:
+                :class:`NotImplementedError`
             """
             return TaskManageable.Backend.LoadHelper.get_backend(task_metadata)
 
@@ -261,19 +320,30 @@ log path: {self.log_path}
 
             @property
             def mixed_stdout(self):
-                """:obj:`bool`: ``True`` if stdout and stderr are one file."""
+                """:obj:`bool`: ``True`` if stdout and stderr are one file.
+
+                Raises:
+                    :class:`MetaDataError`
+                    :class:`TypeError`
+                """
                 return self._data["mixed_stdout"]
 
             @mixed_stdout.setter
             def mixed_stdout(self, value):
-                assert self.mutable
-                assert isinstance(value, bool)
+                if not self.mutable:
+                    raise MetaDataError("Muste be mutable")
+                if not isinstance(value, bool):
+                    raise TypeError(f"value must be bool, not {type(value)}")
                 self._data["mixed_stdout"] = value
 
             @property
             def stdout_path(self):
                 """:obj:`Union[pathlib.Path, None]`: Path to backend stdout file.
                 ``None`` if there is no backend stdout file.
+
+                Raises:
+                    :class:`MetaDataError`
+                    :class:`TypeError`
                 """
                 if "stdout_path" in self._meta and self._meta["stdout_path"]:
                     return Path(self._meta["stdout_path"])
@@ -281,14 +351,20 @@ log path: {self.log_path}
 
             @stdout_path.setter
             def stdout_path(self, value):
-                assert self.mutable
-                assert value is None or isinstance(value, Path)
+                if not self.mutable:
+                    raise MetaDataError("Muste be mutable")
+                if not (value is None or isinstance(value, Path)):
+                    raise TypeError(f"value must be None or pathlib.Path, not {type(value)}")
                 self._meta["stdout_path"] = None if value is None else str(value.resolve())
 
             @property
             def stderr_path(self):
                 """:obj:`Union[pathlib.Path, None]`: Path to wrapper stderr file.
                 ``None`` if there is no wrapper stderr file.
+
+                Raises:
+                    :class:`MetaDataError`
+                    :class:`TypeError`
                 """
                 if self.mixed_stdout:
                     return self.stdout_path
@@ -298,8 +374,10 @@ log path: {self.log_path}
 
             @stderr_path.setter
             def stderr_path(self, value):
-                assert self.mutable
-                assert value is None or isinstance(value, Path)
+                if not self.mutable:
+                    raise MetaDataError("Muste be mutable")
+                if not (value is None or isinstance(value, Path)):
+                    raise TypeError(f"value must be None or pathlib.Path, not {type(value)}")
                 self._meta["stderr_path"] = None if value is None else str(value.resolve())
 
 
@@ -307,6 +385,10 @@ log path: {self.log_path}
             def stdin_path(self):
                 """:obj:`Union[pathlib.Path, None]`: Path to wrapper stdin file.
                 ``None`` if there is no wrapper stdin file.
+
+                Raises:
+                    :class:`MetaDataError`
+                    :class:`TypeError`
                 """
                 if "stdin_path" in self._meta and self._meta["stdin_path"]:
                     return Path(self._meta["stdin_path"])
@@ -314,14 +396,20 @@ log path: {self.log_path}
 
             @stdin_path.setter
             def stdin_path(self, value):
-                assert self.mutable
-                assert value is None or isinstance(value, Path)
+                if not self.mutable:
+                    raise MetaDataError("Muste be mutable")
+                if not (value is None or isinstance(value, Path)):
+                    raise TypeError(f"value must be None or pathlib.Path, not {type(value)}")
                 self._meta["stdin_path"] = None if value is None else str(value.resolve())
 
             @property
             def process_pid(self):
                 """:obj:`Union[int, None]`: PID of wrapped process.
                 ``None`` if process hasn't started.
+
+                Raises:
+                    :class:`MetaDataError`
+                    :class:`TypeError`
                 """
                 if "process_pid" in self._meta and self._meta["process_pid"]:
                     return self._meta["process_pid"]
@@ -329,23 +417,31 @@ log path: {self.log_path}
 
             @process_pid.setter
             def process_pid(self, value):
-                assert self.mutable
-                assert value is None or isinstance(value, int)
+                if not self.mutable:
+                    raise MetaDataError("Muste be mutable")
+                if not (value is None or isinstance(value, int)):
+                    raise TypeError(f"value must be None or int, not {type(value)}")
                 self._meta["process_pid"] = value
 
             @property
             def exit_code(self):
                 """:obj:`Union[int, None]`: Exit code of wrapped process.
                 ``None`` if process hasn't finished.
+
+                Raises:
+                    :class:`MetaDataError`
+                    :class:`TypeError`
                 """
-                if "exit_code" in self._meta and self._meta["exit_code"]:
+                if "exit_code" in self._meta and not self._meta["exit_code"] is None:
                     return self._meta["exit_code"]
                 return None
 
             @exit_code.setter
             def exit_code(self, value):
-                assert self.mutable
-                assert value is None or isinstance(value, int)
+                if not self.mutable:
+                    raise MetaDataError("Muste be mutable")
+                if not (value is None or isinstance(value, int)):
+                    raise TypeError(f"value must be None or int, not {type(value)}")
                 self._meta["exit_code"] = value
 
             def __str__(self):
@@ -382,6 +478,9 @@ exit_code: {self.exit_code}
 
                 Returns:
                     :obj:`TaskManageable.Wrapper`.
+
+                Raises:
+                    :class:`NotImplementedError`
                 """
                 for path in Path(__file__).parent.joinpath("task_/wrappers").iterdir():
                     if path.is_file():
@@ -397,8 +496,7 @@ exit_code: {self.exit_code}
                             )
                         )
 
-                        if len(classes) >= 1:
-                            assert len(classes) == 1
+                        if len(classes) == 1:
                             return classes[0][1](metadata=metadata)
 
                 raise NotImplementedError()
@@ -414,14 +512,13 @@ exit_code: {self.exit_code}
             """Called on signal."""
             raise NotImplementedError()
 
-        @abstractmethod
-        def finish(self):
-            """Called on finish."""
-            raise NotImplementedError()
-
         @staticmethod
         def get_wrapper(metadata):
-            """Loads wrapper."""
+            """Loads wrapper.
+
+            Raises:
+                :class:`NotImplementedError`
+            """
             return TaskManageable.Wrapper.LoadHelper.get_wrapper(metadata)
 
     class Cli:
@@ -435,17 +532,25 @@ exit_code: {self.exit_code}
 
             Returns:
                 :obj:`str`.
+
+            Raises:
+                :class:`ValueError`
             """
-            return f"/usr/bin/env python3 '{__file__}' '{task_metadata.data_path}' '{task_metadata.meta_path}'"
+            if "'" in str(task_metadata.data_path):
+                raise ValueError(f"Data path \"{task_metadata.data_path}\" must not contain \"'\"")
+            if "'" in str(task_metadata.meta_path):
+                raise ValueError(f"Meta path \"{task_metadata.meta_path}\" must not contain \"'\"")
+            result = f"/usr/bin/env python3 '{__file__}' '{task_metadata.data_path}' '{task_metadata.meta_path}'"
+            if Logger.log_level == logging.DEBUG:
+                result += " debug"
+
+            return result
 
         @staticmethod
         def from_args():
             """Load metadata from start command."""
             datapath = Path(sys.argv[1])
-            assert datapath.exists() and datapath.is_file()
-
             metapath = Path(sys.argv[2])
-            assert metapath.exists() and metapath.is_file()
 
             return TaskManageable.MetaDataHelper(data=datapath, meta=metapath)
 
@@ -463,7 +568,8 @@ exit_code: {self.exit_code}
         self._backend.kill(self._metadata)
 
     def destruct(self):
-        assert not self._backend.is_active(self._metadata)
+        if self._backend.is_active(self._metadata):
+            raise TaskManageableException("Cannot destruct active task")
         super().destruct()
 
 
@@ -477,8 +583,8 @@ def set_signal_handlers(wrapper):
             continue
 
 if __name__ == "__main__":
+    Logger.basic_config(loglevel="DEBUG" if "debug" in sys.argv else "INFO")
     metadata = TaskManageable.Cli.from_args()
     wrapper = TaskManageable.Wrapper.get_wrapper(metadata)
     set_signal_handlers(wrapper)
     wrapper.start()
-    wrapper.finish()
