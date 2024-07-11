@@ -392,6 +392,8 @@ path: {self.path}
         """Free all resources (filesystem too)."""
         self._logger.debug(f"Destructing \"{self.state.id}\"")
         type(self).FileSystemHelper.destruct(self)
+        del self._metadata.meta_path
+        del self._metadata.data_path
 
     def register(self, path):
         """Registers by path.
@@ -413,11 +415,12 @@ path: {self.path}
         """:obj:`bool`: ``True`` if this manageable is registered."""
         return not self._metadata.meta_path is None
 
-    def finish(self):
-        """Dumps metadata."""
-        assert self.registered
-        self._logger.debug(f"Saving \"{self.state.id}\"")
-        self._metadata.blocking_dump()
+    def __enter__(self):
+        self._metadata.__enter__()
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self._metadata.__exit__(exc_type, exc_value, traceback)
 
     @classmethod
     def is_correct_meta_data(cls, data, meta=None):

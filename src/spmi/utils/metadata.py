@@ -171,6 +171,7 @@ class MetaData(MetaDataNode):
         Note:
             You can set meta and data or metadata flags at once
         """
+        self.__entered = False
         if metadata is None:
             self.__data_io = None
             self.__meta_io = None
@@ -179,7 +180,7 @@ class MetaData(MetaDataNode):
                 data = self.__data_io.blocking_load()
             if isinstance(meta, Path):
                 self.__meta_io = Io.get_io(meta)
-                meta = self.__meta_io.blocking_load()
+                meta = self.__data_io.blocking_load()
         else:
             self.__data_io = metadata.__data_io if not (metadata.__data_io and copy) else metadata.__data_io.copy()
             self.__meta_io = metadata.__meta_io if not (metadata.__meta_io and copy) else metadata.__meta_io.copy()
@@ -194,10 +195,16 @@ class MetaData(MetaDataNode):
 
     @meta_path.setter
     def meta_path(self, value):
+        assert not self.__entered
         assert self.mutable
         assert value is None or isinstance(value, Path)
 
         self.__meta_io = None if value is None else Io.get_io(value)
+
+    @meta_path.deleter
+    def meta_path(self):
+        assert self.mutable
+        self.__meta_io = None
 
     @dontcheck
     @property
@@ -207,10 +214,16 @@ class MetaData(MetaDataNode):
 
     @data_path.setter
     def data_path(self, value):
+        assert not self.__entered
         assert self.mutable
         assert value is None or isinstance(value, Path)
 
         self.__data_io = None if value is None else Io.get_io(value)
+
+    @data_path.deleter
+    def data_path(self):
+        assert self.mutable
+        self.__data_io = None
 
     @dontcheck
     @property
@@ -248,6 +261,7 @@ class MetaData(MetaDataNode):
         Note:
             Should be mutable.
         """
+        assert not self.__entered
         self._logger.debug("Locking")
         assert self.mutable
         assert self.__data_io and self.__meta_io
@@ -260,6 +274,7 @@ class MetaData(MetaDataNode):
         Note:
             Should be mutable.
         """
+        assert not self.__entered
         self._logger.debug("Acquiring")
         assert self.mutable
         assert self.__data_io and self.__meta_io
@@ -272,6 +287,7 @@ class MetaData(MetaDataNode):
         Note:
             Should be mutable.
         """
+        assert not self.__entered
         self._logger.debug("Procesing blocking load.")
         assert self.mutable
         assert self.__data_io and self.__meta_io
@@ -284,11 +300,24 @@ class MetaData(MetaDataNode):
         Note:
             Should be mutable.
         """
+        assert not self.__entered
         self._logger.debug("Processing blocking dump.")
         assert self.mutable
         assert self.__data_io and self.__meta_io
         self.__data_io.blocking_dump(self._data)
         self.__meta_io.blocking_dump(self._meta)
+
+    def __enter__(self):
+        self.acquire()
+        self.__entered = True
+        self.load()
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.__entered = False
+        if self.__meta_io and self.__data_io:
+            self.dump()
+            self.release()
 
     @classmethod
     def is_correct_meta_data(cls, data, meta = None):

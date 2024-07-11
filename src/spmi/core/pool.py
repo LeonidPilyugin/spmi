@@ -85,9 +85,14 @@ class Pool:
         """
         self._logger.debug(f"Searching \"{pattern}\"; detected: {detected}, registered: {registered}")
 
-        result = list(filter(lambda x: self._pm.match(pattern, x.state.id),
-                           (self._detected if detected else []) +
-                           (self._registered if registered else [])))
+        result = []
+        for m in self._registered if registered else []:
+            with m:
+                if self._pm.match(pattern, m.state.id):
+                    result.append(m)
+        for m in self._detected if detected else []:
+            if self._pm.match(pattern, m.state.id):
+                result.append(m)
 
         self._logger.debug(f"Found {len(result)} results")
 
@@ -126,7 +131,8 @@ class Pool:
             self.register(m)
 
         for m in to_start:
-            m.start()
+            with m:
+                m.start()
 
         self._logger.info(f"Started {len(to_start)} manageable{'s' if len(to_start) != 1 else ''}")
 
@@ -145,15 +151,7 @@ class Pool:
 
         self._logger.debug(f"Restarting manageables by pattern: \"{pattern}\"")
 
-        to_restart = self.find(pattern, detected=False)
-
-        for m in to_restart:
-            m.clean()
-
-        for m in to_restart:
-            m.start()
-
-        self._logger.info(f"Restarted {len(to_remove)} manageable{'s' if len(to_remove) != 1 else ''}")
+        self._logger.critical("DO SMTH WITH RESTART")
 
     def term(self, pattern):
         """Terminates registered manageables by pattern.
@@ -169,7 +167,8 @@ class Pool:
         to_term = self.find(pattern, detected=False)
 
         for m in to_term:
-            m.term()
+            with m:
+                m.term()
 
         self._logger.info(f"Terminated {len(to_term)} manageable{'s' if len(to_term) != 1 else ''}")
 
@@ -187,7 +186,8 @@ class Pool:
         to_kill = self.find(pattern, detected=False)
 
         for m in to_kill:
-            m.kill()
+            with m:
+                m.kill()
 
         self._logger.info(f"Killed {len(to_kill)} manageable{'s' if len(to_kill) != 1 else ''}")
 
@@ -204,9 +204,10 @@ class Pool:
 
         to_remove = self.find(pattern, detected=False)
 
-        for rem in to_remove:
-            rem.destruct()
-            self._registered.remove(rem)
+        for m in to_remove:
+            with m:
+                m.destruct()
+            self._registered.remove(m)
 
         self._logger.info(f"Destructed {len(to_remove)} manageable{'s' if len(to_remove) != 1 else ''}")
 
@@ -228,7 +229,8 @@ class Pool:
 
         result = ""
         for m in to_show:
-            result += str(m.state) + "\n"
+            with m:
+                result += str(m.state) + "\n"
 
         self._logger.info(f"Found {len(to_show)} manageable{'s' if len(to_show) != 1 else ''}")
 
@@ -246,13 +248,10 @@ class Pool:
         for d in self._detected:
             result += "detected: " + d.state.id + " by path \"" + str(d.state.data_path) + "\"\n"
         for r in self._registered:
-            result += "registered: " + r.state.id + "\n"
+            with r:
+                result += "registered: " + r.state.id + "\n"
 
         self._logger.info(f"{len(self._detected)} manageable{'s' if len(self._detected) != 1 else ''} detected and {len(self._registered)} registered")
 
         return result
 
-    def finish(self):
-        """Finishes all registered manageables."""
-        for m in self._registered:
-            m.finish()

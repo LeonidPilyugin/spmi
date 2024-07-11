@@ -303,16 +303,11 @@ class Spmi:
         elif self._args.is_clean:
             for p in self._args.patterns: self.clean(p)
 
-    def finish(self):
-        """Finish SPMI."""
-        self._pool.finish()
-
 
 if __name__ == "__main__":
     try:
         spmi = Spmi(docopt(HELP_MESSAGE, version=VERSION), SimplePatternMatcher())
         spmi.execute()
-        spmi.finish()
     except Exception as e:
         print(f"Unknown error: {traceback.format_exc(e)}")
         sys.exit(1)
