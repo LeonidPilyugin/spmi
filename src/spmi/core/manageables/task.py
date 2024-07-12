@@ -558,18 +558,26 @@ exit_code: {self.exit_code}
         self._backend = TaskManageable.Backend.get_backend(self._metadata)
 
     def start(self):
+        if self.active:
+            raise TaskManageableException("Cannot start active task")
         self._metadata.backend.command = TaskManageable.Cli.command(self._metadata)
         self._backend.submit(self._metadata)
 
     def term(self):
+        if not self.active:
+            raise TaskManageableException("Cannot terminate inactive task")
         self._backend.term(self._metadata)
 
     def kill(self):
+        if not self.active:
+            raise TaskManageableException("Cannot kill inactive task")
         self._backend.kill(self._metadata)
 
+    @property
+    def active(self):
+        return self._backend.is_active(self._metadata)
+
     def destruct(self):
-        if self._backend.is_active(self._metadata):
-            raise TaskManageableException("Cannot destruct active task")
         super().destruct()
 
 

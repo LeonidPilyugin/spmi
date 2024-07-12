@@ -41,6 +41,7 @@ SPMI is a program to maintain processes.
 
 Usage:
     spmi list [-d | --debug]
+    spmi register <pathes>... [-d | --debug]
     spmi start <patterns>... [-d | --debug]
     spmi stop <patterns>... [-d | --debug]
     spmi kill <patterns>... [-d | --debug]
@@ -76,6 +77,11 @@ class Spmi:
             """
             assert isinstance(args, dict)
             self._args = args
+
+        @property
+        def is_register(self):
+            """:obj:`bool`: ``True`` if should register."""
+            return self._args["register"]
 
         @property
         def is_start(self):
@@ -123,6 +129,11 @@ class Spmi:
             return self._args["<patterns>"]
 
         @property
+        def pathes(self):
+            """:obj:`list` of :obj:`str`: List of pathes."""
+            return [Path(x).expanduser() for x in self._args["<pathes>"]]
+
+        @property
         def task_id(self):
             """:obj:`str`: ID of task."""
             return self._args["<task_id>"]
@@ -133,13 +144,11 @@ class Spmi:
 
         Settings os SPMI are stored in environment variables:
 
-        * ``SPMI_HOME`` is path to SPMI home directory.
-        * ``SPMI_PATH`` is string of pathes splitted by ``:`` where SPMI tries to find descriptors.
+        * ``SPMI_PATH`` is path to SPMI home directory.
         """
 
         DEFAULTS = {
-            "SPMI_HOME": "/home/leonid/github.com/LeonidPilyugin/spmi/resources/test-spmi/",
-            "SPMI_PATH": ".:/home/leonid/github.com/LeonidPilyugin/spmi/examples/task",
+            "SPMI_PATH": "~/.spmi",
         }
         """:obj:`dict` Default SPMI settings."""
 
@@ -153,7 +162,6 @@ class Spmi:
             self._dict = defaults if not defaults is None else dict(Spmi.ConfigHelper.DEFAULTS)
             self.load()
 
-            assert "SPMI_HOME" in self._dict
             assert "SPMI_PATH" in self._dict
 
         def load(self):
@@ -162,14 +170,9 @@ class Spmi:
                 self._dict[key] = os.environ.get(key, self._dict[key])
 
         @property
-        def home(self):
-            """:obj:`pathlib.Path`: Path to SPMI home directory."""
-            return Path(self._dict["SPMI_HOME"])
-
-        @property
         def path(self):
-            """:obj:`list` of :obj:`pathlib.Path`: List of pathes."""
-            return list(map(lambda x: Path(x).expanduser(), self._dict["SPMI_PATH"].split(":")))
+            """:obj:`pathlib.Path`: Path to SPMI home directory."""
+            return Path(self._dict["SPMI_PATH"]).expanduser()
 
 
     def __init__(self, args, pm):
@@ -190,37 +193,56 @@ class Spmi:
         self._logger.debug("Loading config")
         self._config = Spmi.ConfigHelper()
 
-        if not (self._config.home.is_dir() and self._config.home.exists()):
+        if not (self._config.path.is_dir() and self._config.path.exists()):
             self._logger.info(f"Creating directory \"{self._config.home}\"")
             self._config.home.mkdir(parents=True)
 
         self._logger.debug("Creating pool")
-        self._pool = Pool(home=self._config.home, path = self._config.path, pm=pm)
+        self._pool = Pool(path=self._config.path, pm=pm)
+
+    def register(self, pathes):
+        try:
+            to_register = []
+
+            for path in pathes:
+                to_register.append(Manageable.from_descriptor(path))
+
+            registered = 0
+
+            for m in to_register:
+                self._pool.register(m)
+                registered += 1
+        except (ManageableException, PoolException, MetaDataError) as e:
+            self._logger.error(f"Failed to register: {e}")
 
 
     def show_list(self):
         """Prints list of manageables."""
         self._logger.debug("Listing manageables")
+
+        states = []
         
-        for manageable in self._pool.detected:
-            self._logger.info(f"Detected \"{manageable.state.id}\" of type \"{manageable.state.type}\" by path \"{manageable.state.data_path}\"")
-
-        for manageable in self._pool.registered:
+        for manageable in self._pool.manageables:
             with manageable:
-                self._logger.info(f"Registered \"{manageable.state.id}\" of type \"{manageable.state.type}\"")
+                states.append((manageable.state, "active" if manageable.active else "inactive"))
 
-        self._logger.info(f"Detected {len(self._pool.detected)}")
-        self._logger.info(f"Registered {len(self._pool.registered)}")
+        self._logger.info(f"Registered {len(self._pool.manageables)}")
 
-    def start(self, pattern):
+        max_len = 1 if not states else max(map(lambda x: len(x[0].id), states)) + 1
+        max_len = max(max_len, 10)
+        print(f"{{:{max_len}}}{{:<9}}".format("ID", "ACTIVE"))
+        for s in states:
+            print(f"{{:<{max_len}}}{{:<9}}".format(s[0].id, s[1]))
+
+    def start(self, patterns):
         """Starts all manageables corresponding to pattern.
 
         Args:
             pattern (:obj:`str`): Pattern string.
         """
-        self._logger.debug(f"Starting manageables by pattern \"{pattern}\"")
-
-        to_start = self._pool.find(pattern, registered=False)
+        to_start = []
+        for pattern in patterns:
+            to_start.extend(self._pool.find(pattern))
         started = 0
         
         if len(to_start) == 0:
@@ -229,36 +251,25 @@ class Spmi:
             for manageable in to_start:
                 try:
                     self._logger.info(f"Starting manageable \"{manageable.state.id}\"")
-                    self._pool.register(manageable)
                     with manageable:
                         manageable.start()
                     started += 1
                 except (ManageableException, MetaDataError, PoolException) as e:
-                    self._logger.warning(f"Failed to start \"{manageable.state.id}\": {e}")
+                    self._logger.error(f"Failed to start \"{manageable.state.id}\": {e}")
                     if self._args.debug:
                         raise
 
         self._logger.info(f"Started {started} manageables")
 
-    def restart(self, pattern):
-        """Retarts all manageables corresponding to pattern.
-
-        Args:
-            pattern (:obj:`str`): Pattern string.
-        """
-        raise NotImplementedError()
-        assert isinstance(pattern, str)
-
-        self._logger.debug(f"Restarting manageables by pattern \"{pattern}\"")
-        self._pool.restart(pattern)
-
-    def stop(self, pattern):
+    def stop(self, patterns):
         """Stops all manageables corresponding to pattern.
 
         Args:
             pattern (:obj:`str`): Pattern string.
         """
-        to_stop = self._pool.find(pattern, detected=False)
+        to_stop = []
+        for pattern in patterns:
+            to_stop.extend(self._pool.find(pattern))
         stopped = 0
 
         if len(to_stop) == 0:
@@ -271,19 +282,21 @@ class Spmi:
                         manageable.term()
                     stopped += 1
                 except (ManageableException, MetaDataError) as e:
-                    self._logger.warning(f"Failed to stop \"{manageable.state.id}\": {e}")
+                    self._logger.error(f"Failed to stop \"{manageable.state.id}\": {e}")
                     if self._args.debug:
                         raise
 
         self._logger.info(f"Stopped {stopped} manageables")
 
-    def kill(self, pattern):
+    def kill(self, patterns):
         """Kills all manageables corresponding to pattern.
 
         Args:
             pattern (:obj:`str`): Pattern string.
         """
-        to_kill = self._pool.find(pattern, detected=False)
+        to_kill = []
+        for pattern in patterns:
+            to_kill.extend(self._pool.find(pattern))
         killed = 0
 
         if len(to_kill) == 0:
@@ -296,19 +309,21 @@ class Spmi:
                         manageable.kill()
                     killed += 1
                 except (ManageableException, MetaDataError) as e:
-                    self._logger.warning(f"Failed to kill \"{manageable.state.id}\": {e}")
+                    self._logger.error(f"Failed to kill \"{manageable.state.id}\": {e}")
                     if self._args.debug:
                         raise
 
         self._logger.info(f"Killed {killed} manageables")
 
-    def status(self, pattern):
+    def status(self, patterns):
         """Prints status all manageables corresponding to pattern.
 
         Args:
             pattern (:obj:`str`): Pattern string.
         """
-        to_show = self._pool.find(pattern, detected=False)
+        to_show = []
+        for pattern in patterns:
+            to_show.extend(self._pool.find(pattern))
 
         if len(to_show) == 0:
             self._logger.warning("Nothing to show")
@@ -320,13 +335,15 @@ class Spmi:
         self._logger.info(f"Showed {len(to_show)} manageables")
 
 
-    def clean(self, pattern):
+    def clean(self, patterns):
         """Cleans all manageables corresponding to pattern.
 
         Args:
             pattern (:obj:`str`): Pattern string.
         """
-        to_clean = self._pool.find(pattern, detected=False)
+        to_clean = []
+        for pattern in patterns:
+            to_clean.extend(self._pool.find(pattern))
         cleaned = 0
 
         if len(to_clean) == 0:
@@ -339,7 +356,7 @@ class Spmi:
                         manageable.destruct()
                     cleaned += 1
                 except (ManageableException, MetaDataError) as e:
-                    self._logger.warning(f"Failed to clean \"{manageable.state.id}\": {e}")
+                    self._logger.error(f"Failed to clean \"{manageable.state.id}\": {e}")
                     if self._args.debug:
                         raise
 
@@ -351,7 +368,7 @@ class Spmi:
         Args:
             task_id (:obj:`str`): ID of task to connect.
         """
-        tasks = self._pool.find(task_id, detected=False)
+        tasks = self._pool.find(task_id)
         assert len(tasks) == 1
         task = tasks[0]
 
@@ -373,16 +390,18 @@ class Spmi:
 
         if self._args.is_list:
             self.show_list()
+        elif self._args.is_register:
+            self.register(self._args.pathes)
         elif self._args.is_start:
-            for p in self._args.patterns: self.start(p)
+            self.start(self._args.patterns)
         elif self._args.is_status:
-            for p in self._args.patterns: self.status(p)
+            self.status(self._args.patterns)
         elif self._args.is_stop:
-            for p in self._args.patterns: self.stop(p)
+            self.stop(self._args.patterns)
         elif self._args.is_kill:
-            for p in self._args.patterns: self.kill(p)
+            self.kill(self._args.patterns)
         elif self._args.is_clean:
-            for p in self._args.patterns: self.clean(p)
+            self.clean(self._args.patterns)
         elif self._args.is_connect:
             self.connect(self._args.task_id)
 

@@ -466,6 +466,12 @@ path: {self.path}
         raise NotImplementedError()
 
     @property
+    @abstractmethod
+    def active(self):
+        """:obj:`bool`: ``True`` if active."""
+        raise NotImplementedError()
+
+    @property
     def state(self):
         """:obj:`Manageable.MetaDataHelper` state of this manageable."""
         return self._metadata.state
@@ -474,8 +480,10 @@ path: {self.path}
         """Free all resources (filesystem too).
         
         Raises:
-            :class:`TaskManageableException`
+            :class:`ManageableException`
         """
+        if self.active:
+            raise ManageableException("Cannot destruct active manageable")
         self._logger.debug(f"Destructing \"{self.state.id}\"")
         type(self).FileSystemHelper.destruct(self)
         del self._metadata.meta_path
