@@ -88,14 +88,6 @@ class TaskManageable(Manageable):
                 mutable=self.mutable
             )
 
-        def __str__(self):
-            return rf"""{super().__str__()}
-backend:
-{self.backend}
-wrapper:
-{self.wrapper}
-"""
-
 
     class Backend(metaclass=ABCMeta):
         """Provides an interface to process manager.
@@ -171,12 +163,6 @@ wrapper:
                 if not (value is None or isinstance(value, Path)):
                     raise TypeError(f"value must be None or pathlib.Path, not {type(value)}")
                 self._meta["log_path"] = None if value is None else str(value.resolve())
-
-            def __str__(self):
-                return rf"""type: {self.type}
-job id: {self.id}
-log path: {self.log_path}
-"""
 
 
         class LoadHelper:
@@ -444,16 +430,6 @@ log path: {self.log_path}
                     raise TypeError(f"value must be None or int, not {type(value)}")
                 self._meta["exit_code"] = value
 
-            def __str__(self):
-                return rf"""type: {self.type}
-command: {self.command}
-stdin path: {self.stdin_path}
-stdout path: {self.stdout_path}
-stderr path: {self.stderr_path}
-PID: {self.process_pid}
-exit_code: {self.exit_code}
-"""
-
 
         class LoadHelper:
             """Helps to load classes."""
@@ -579,6 +555,43 @@ exit_code: {self.exit_code}
 
     def destruct(self):
         super().destruct()
+        
+    def status_string(self, align=0):
+        """Returns status string of this manageable.
+
+        Args:
+            align (:obj:`int`): Align.
+        """
+        align = max(
+            align,
+            max(
+                map(
+                    lambda x: len(x),
+                    [
+                        "Backend type",
+                        "Backend ID",
+                        "Wrapper type",
+                        "Command",
+                        "PID",
+                        "Exit code",
+                    ]
+                )
+            )
+        )
+
+        state = self.state
+        result = super().status_string(align=align)
+        result += f"{{:>{align}}}: {{:}}\n".format("Backend type", state.backend.type)
+        if state.backend.id:
+            result += f"{{:>{align}}}: {{:}}\n".format("Backend ID", state.backend.id)
+        result += f"{{:>{align}}}: {{:}}\n".format("Wrapper type", state.wrapper.type)
+        result += f"{{:>{align}}}: {{:}}\n".format("Command", state.wrapper.command)
+        if state.wrapper.process_pid:
+            result += f"{{:>{align}}}: {{:}}\n".format("PID", state.wrapper.process_pid)
+        if state.wrapper.exit_code:
+            result += f"{{:>{align}}}: {{:}}\n".format("Exit code", state.wrapper.exit_code)
+
+        return result
 
 
 def set_signal_handlers(wrapper):

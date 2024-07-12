@@ -6,7 +6,7 @@ import shutil
 from abc import abstractmethod, ABCMeta
 from pathlib import Path
 from spmi.utils.load import load_module
-from spmi.utils.metadata import MetaData, MetaDataError
+from spmi.utils.metadata import MetaData, MetaDataError, dontcheck
 from spmi.utils.logger import Logger
 from spmi.utils.io.io import Io
 from spmi.utils.exception import SpmiException
@@ -112,6 +112,15 @@ class Manageable(metaclass=ABCMeta):
             return str(self.m_data["id"])
 
         @property
+        def comment(self):
+            """:obj:`str`. Comment.
+
+            Raises:
+                :class:`KeyError`
+            """
+            return str(self.m_data["comment"])
+
+        @property
         def path(self):
             """:obj:`pathlib.Path`. Path.
 
@@ -134,11 +143,6 @@ class Manageable(metaclass=ABCMeta):
                 raise TypeError(f"value must be None or Path, not {type(value)}")
             self._meta["path"] = value if value is None else str(value)
 
-        def __str__(self):
-            return rf"""{self.type} Manageable:
-id: {self.id}
-path: {self.path}
-"""
 
     class FileSystemHelper:
         """Contains methods to work with filesystem."""
@@ -516,6 +520,33 @@ path: {self.path}
             if not existed:
                 shutil.rmtree(path)
             raise
+
+    def status_string(self, align=0):
+        """Returns status string of this manageable.
+
+        Args:
+            align (:obj:`int`): Align.
+        """
+        align = max(
+            align,
+            max(
+                map(
+                    lambda x: len(x),
+                    [
+                        "Active",
+                        "Path",
+                    ]
+                )
+            )
+        )
+
+        state = self.state
+        result = ""
+        result += f"{state.id} ({state.type}) - {state.comment}\n"
+        result += f"{{:>{align}}}: {{:}}\n".format("Active", "\x1b[32;20mactive\x1b[0m" if self.active else "\x1b[31;20minactive\x1b[0m")
+        result += f"{{:>{align}}}: \"{{:}}\"\n".format("Path", state.path)
+
+        return result
 
     @property
     def registered(self):

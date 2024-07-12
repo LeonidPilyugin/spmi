@@ -1,6 +1,7 @@
 {
     "task": {
         "id": "json_task",
+        "comment": "example JSON task",
         "backend": {
             "type": "screen"
         },

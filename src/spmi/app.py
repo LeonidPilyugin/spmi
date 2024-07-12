@@ -330,7 +330,7 @@ class Spmi:
         else:
             for manageable in to_show:
                 with manageable:
-                    print(manageable.state)
+                    print(manageable.status_string())
 
         self._logger.info(f"Showed {len(to_show)} manageables")
 
