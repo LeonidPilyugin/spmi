@@ -12,7 +12,7 @@ class YamlIo(Io):
 
     def load(self):
         with open(self.path, encoding=self.encoding) as f:
-            result = yaml.load(f)
+            result = yaml.safe_load(f)
         return result
 
     def dump(self, data):

@@ -67,7 +67,7 @@ class DefaultWrapper(TaskManageable.Wrapper):
 
             self._logger.debug("Starting wrapped process")
             process = subprocess.Popen(
-                shlex.split(self._metadata.wrapper.command),
+                self._metadata.wrapper.command,
                 shell=True,
                 stdout=stdout_write,
                 stdin=fifo_read,

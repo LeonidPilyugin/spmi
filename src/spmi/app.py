@@ -23,7 +23,7 @@ from docopt import docopt
 from spmi.core.pool import Pool, PoolException
 from spmi.utils.logger import Logger
 from spmi.utils.io.io import Io
-from spmi.utils.pattern import PatternMatcher, SimplePatternMatcher
+from spmi.utils.pattern import PatternMatcher, RegexPatternMatcher
 from spmi.core.manageable import Manageable, ManageableException
 from spmi.utils.exception import SpmiException
 from spmi.utils.metadata import MetaDataError
@@ -56,7 +56,7 @@ Options:
 
 """
 
-VERSION = "SPMI 0.0.1 test"
+VERSION = "SPMI 0.0.1"
 """str: Version of SPMI"""
 
 class Spmi:
@@ -228,11 +228,18 @@ class Spmi:
 
         self._logger.info(f"Registered {len(self._pool.manageables)}")
 
-        max_len = 1 if not states else max(map(lambda x: len(x[0].id), states)) + 1
-        max_len = max(max_len, 10)
-        print(f"{{:{max_len}}}{{:<9}}".format("ID", "ACTIVE"))
+        max_id_len = 1 if not states else max(map(lambda x: len(x[0].id), states)) + 1
+        max_id_len = max(max_id_len, 10)
+
+        max_active_len = 1 if not states else max(map(lambda x: len(x[1]), states)) + 1
+        max_active_len = max(max_active_len, 10)
+
+        max_comment_len = 1 if not states else max(map(lambda x: len(x[0].comment), states)) + 1
+        max_comment_len = max(max_comment_len, 10)
+
+        print(f"{{:{max_id_len}}}{{:<{max_active_len}}}{{:<{max_comment_len}}}".format("ID", "ACTIVE", "COMMENT"))
         for s in states:
-            print(f"{{:<{max_len}}}{{:<9}}".format(s[0].id, s[1]))
+            print(f"{{:<{max_id_len}}}{{:<{max_active_len}}}{{:<{max_comment_len}}}".format(s[0].id, s[1], s[0].comment))
 
     def start(self, patterns):
         """Starts all manageables corresponding to pattern.
@@ -408,7 +415,7 @@ class Spmi:
 
 if __name__ == "__main__":
     try:
-        spmi = Spmi(docopt(HELP_MESSAGE, version=VERSION), SimplePatternMatcher())
+        spmi = Spmi(docopt(HELP_MESSAGE, version=VERSION), RegexPatternMatcher())
         spmi.execute()
     except Exception as e:
         raise

@@ -1,0 +1,14 @@
+{
+    "task": {
+        "id": "echo",
+        "comment": "A forever echo command.",
+        "backend": {
+            "type": "screen"
+        },
+        "wrapper": {
+            "type": "default",
+            "command": "cat -",
+            "mixed_stdout": true
+        }
+    }
+}

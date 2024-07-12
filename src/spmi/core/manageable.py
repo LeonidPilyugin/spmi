@@ -3,7 +3,7 @@
 
 import inspect
 import shutil
-from datetime import datetime
+from datetime import datetime, timedelta
 from abc import abstractmethod, ABCMeta
 from pathlib import Path
 from spmi.utils.load import load_module
@@ -609,12 +609,18 @@ class Manageable(metaclass=ABCMeta):
         if self.active:
             active_info += "\x1b[32;20mactive\x1b[0m"
             active_info += f" since {self._metadata.start_time}"
-            active_info += f" ({datetime.now() - self._metadata.start_time} ago)"
+            td = datetime.now() - self._metadata.start_time
+            td = td - timedelta(microseconds=td.microseconds)
+            active_info += f" ({td} ago)"
         else:
             active_info += "\x1b[31;20minactive\x1b[0m"
             if self._metadata.finish_time:
                 active_info += f" since {self._metadata.finish_time}"
-                active_info += f" ({datetime.now() - self._metadata.finish_time} ago)"
+                td = datetime.now() - self._metadata.finish_time
+                td = td - timedelta(microseconds=td.microseconds)
+                active_info += f" ({td} ago)"
+            else:
+                active_info += "(could not find finish time)"
 
         result += f"{{:>{align}}}: {{:}}\n".format("Active", active_info)
         result += f"{{:>{align}}}: \"{{:}}\"\n".format("Path", state.path)

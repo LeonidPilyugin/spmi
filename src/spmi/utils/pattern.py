@@ -4,6 +4,7 @@ Todo:
     Add regex pattern matcher.
 """
 
+import re
 from abc import ABCMeta, abstractmethod
 
 class PatternMatcher(metaclass=ABCMeta):
@@ -37,9 +38,6 @@ class PatternMatcher(metaclass=ABCMeta):
 
 class SimplePatternMatcher(PatternMatcher):
     """Simple pattern matcher."""
-    def __init__(self):
-        pass
-
     def is_pattern(self, string):
         if not isinstance(string, str):
             raise TypeError(f"string must be a str, not {type(string)}")
@@ -53,3 +51,24 @@ class SimplePatternMatcher(PatternMatcher):
             raise TypeError(f"string must be a str, not {type(string)}")
 
         return string == pattern
+
+class RegexPatternMatcher(PatternMatcher):
+    """Regex pattern matcher."""
+    def is_pattern(self, string):
+        if not isinstance(string, str):
+            raise TypeError(f"string must be a str, not {type(string)}")
+        try:
+            re.compile(string)
+            return True
+        except Exception:
+            return False
+
+    def match(self, pattern, string):
+        if not isinstance(pattern, str):
+            raise TypeError(f"pattern must be a str, not {type(pattern)}")
+        if not isinstance(string, str):
+            raise TypeError(f"string must be a str, not {type(string)}")
+
+        p = re.compile(pattern)
+
+        return p.match(string)

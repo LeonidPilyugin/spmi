@@ -595,7 +595,7 @@ class TaskManageable(Manageable):
             if "'" in str(task_metadata.meta_path):
                 raise ValueError(f"Meta path \"{task_metadata.meta_path}\" must not contain \"'\"")
             result = f"/usr/bin/env python3 '{__file__}' '{task_metadata.data_path}' '{task_metadata.meta_path}'"
-            if Logger.log_level == logging.DEBUG:
+            if Logger.log_level() == logging.DEBUG:
                 result += " debug"
 
             return result
@@ -669,9 +669,9 @@ class TaskManageable(Manageable):
         if isinstance(state.wrapper.exit_code, int):
             result += f"{{:>{align}}}: {{:}}\n".format("Exit code", state.wrapper.exit_code)
 
-        if isinstance(state.backend.log_path, Path):
+        if isinstance(state.wrapper.stdout_path, Path):
             result += "\n"
-            result += getoutput(f"tail -5 {state.backend.log_path}")
+            result += getoutput(f"tail -5 {state.wrapper.stdout_path}")
             result += "\n"
 
         return result
