@@ -3,6 +3,7 @@
 
 import inspect
 import shutil
+from datetime import datetime
 from abc import abstractmethod, ABCMeta
 from pathlib import Path
 from spmi.utils.load import load_module
@@ -60,6 +61,7 @@ class Manageable(metaclass=ABCMeta):
     should be written in PascalCase and ended with "Manageable".
     """
     class MetaDataHelper(MetaData):
+        _DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
         @property
         def prefered_suffix(self):
             """:obj:`str`. Prefered suffix.
@@ -142,6 +144,61 @@ class Manageable(metaclass=ABCMeta):
             if not (value is None or isinstance(value, Path)):
                 raise TypeError(f"value must be None or Path, not {type(value)}")
             self._meta["path"] = value if value is None else str(value)
+
+        @property
+        def start_time(self):
+            """:obj:`Union[None, datetime.datetime]`. Start time."""
+            if "start_time" in self._meta and self._meta["start_time"]:
+                return datetime.strptime(self._meta["start_time"], Manageable.MetaDataHelper._DATETIME_FORMAT)
+            return None
+
+        @start_time.setter
+        def start_time(self, value):
+            if not self.mutable:
+                raise MetaDataError("Must be mutable")
+            if not (value is None or isinstance(value, datetime)):
+                raise TypeError(f"value must be None or datetime, not {type(value)}")
+            if value:
+                self._meta["start_time"] = value.strftime(Manageable.MetaDataHelper._DATETIME_FORMAT)
+            else:
+                self._meta["finish_time"] = None
+
+        @start_time.deleter
+        def start_time(self):
+            if not self.mutable:
+                raise MetaDataError("Must be mutable")
+            del self._meta["start_time"]
+
+        @property
+        def finish_time(self):
+            """:obj:`Union[None, datetime.datetime]`. Finish time."""
+            if "finish_time" in self._meta and self._meta["finish_time"]:
+                return datetime.strptime(self._meta["finish_time"], Manageable.MetaDataHelper._DATETIME_FORMAT)
+            return None
+
+        @finish_time.setter
+        def finish_time(self, value):
+            if not self.mutable:
+                raise MetaDataError("Must be mutable")
+            if not (value is None or isinstance(value, datetime)):
+                raise TypeError(f"value must be None or datetime, not {type(value)}")
+            if value:
+                self._meta["finish_time"] = value.strftime(Manageable.MetaDataHelper._DATETIME_FORMAT)
+            else:
+                self._meta["finish_time"] = None
+
+        @finish_time.deleter
+        def finish_time(self):
+            if not self.mutable:
+                raise MetaDataError("Must be mutable")
+            del self._meta["finish_time"]
+
+        def reset(self):
+            """Resets some values in case of restart."""
+            if isinstance(self.start_time, datetime):
+                del self.start_time
+            if isinstance(self.finish_time, datetime):
+                del self.finish_time
 
 
     class FileSystemHelper:
@@ -449,7 +506,9 @@ class Manageable(metaclass=ABCMeta):
         Raises:
             :class:`ManageableException`
         """
-        raise NotImplementedError()
+        if self.active:
+            raise ManageableException("Cannot start active manageable")
+        self._metadata.reset()
 
     @abstractmethod
     def term(self):
@@ -458,7 +517,8 @@ class Manageable(metaclass=ABCMeta):
         Raises:
             :class:`ManageableException`
         """
-        raise NotImplementedError()
+        if not self.active:
+            raise ManageableException("Cannot terminate inactive manageable")
 
     @abstractmethod
     def kill(self):
@@ -467,7 +527,8 @@ class Manageable(metaclass=ABCMeta):
         Raises:
             :class:`ManageableException`
         """
-        raise NotImplementedError()
+        if not self.active:
+            raise ManageableException("Cannot kill inactive manageable")
 
     @property
     @abstractmethod
@@ -543,7 +604,19 @@ class Manageable(metaclass=ABCMeta):
         state = self.state
         result = ""
         result += f"{state.id} ({state.type}) - {state.comment}\n"
-        result += f"{{:>{align}}}: {{:}}\n".format("Active", "\x1b[32;20mactive\x1b[0m" if self.active else "\x1b[31;20minactive\x1b[0m")
+
+        active_info = ""
+        if self.active:
+            active_info += "\x1b[32;20mactive\x1b[0m"
+            active_info += f" since {self._metadata.start_time}"
+            active_info += f" ({datetime.now() - self._metadata.start_time} ago)"
+        else:
+            active_info += "\x1b[31;20minactive\x1b[0m"
+            if self._metadata.finish_time:
+                active_info += f" since {self._metadata.finish_time}"
+                active_info += f" ({datetime.now() - self._metadata.finish_time} ago)"
+
+        result += f"{{:>{align}}}: {{:}}\n".format("Active", active_info)
         result += f"{{:>{align}}}: \"{{:}}\"\n".format("Path", state.path)
 
         return result

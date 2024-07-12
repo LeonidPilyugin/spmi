@@ -7,6 +7,7 @@ import signal
 import shlex
 import subprocess
 import multiprocessing
+from datetime import datetime
 from spmi.core.manageables.task import TaskManageable
 
 class DefaultWrapper(TaskManageable.Wrapper):
@@ -34,7 +35,6 @@ class DefaultWrapper(TaskManageable.Wrapper):
         self._logger.info(f"Starting \"{self._metadata.wrapper.command}\" process")
 
         to_close = []
-        to_unlink = []
 
         with self._metadata:
             self._logger.debug("Opening stdout on write")
@@ -56,11 +56,7 @@ class DefaultWrapper(TaskManageable.Wrapper):
                 to_close.append(stderr_write)
 
             stdin_path = self._metadata.path.joinpath("process.stdin")
-            to_unlink.append(stdin_path)
             self._metadata.wrapper.stdin_path = stdin_path
-
-            self._logger.debug(f"Creating FIFO \"{stdin_path}\"")
-            os.mkfifo(stdin_path)
 
             self._logger.debug("Starting daemon process")
             self._start_daemon_process()
@@ -91,11 +87,9 @@ class DefaultWrapper(TaskManageable.Wrapper):
         for f in to_close:
             os.close(f)
 
-        for f in to_unlink:
-            os.unlink(f)
-
         with self._metadata:
             self._metadata.wrapper.exit_code = process.returncode
+            self._metadata.finish_time = datetime.now()
 
     def on_signal(self, signum, frame):
         self._logger.info(f"Got signal: {signal.Signals(signum).name}")

@@ -4,14 +4,17 @@ Todo:
     Write documentation.
 """
 
+import os
 import sys
 import signal
 import inspect
 import logging
+from datetime import datetime
 from pathlib import Path
+from subprocess import getoutput
 from abc import ABCMeta, abstractmethod
 from spmi.core.manageable import Manageable, manageable, ManageableException
-from spmi.utils.metadata import MetaDataNode, MetaDataError
+from spmi.utils.metadata import MetaDataNode, MetaDataError, dontcheck
 from spmi.utils.load import load_module
 from spmi.utils.logger import Logger
 from spmi.utils.exception import SpmiException
@@ -88,6 +91,11 @@ class TaskManageable(Manageable):
                 mutable=self.mutable
             )
 
+        def reset(self):
+            super().reset()
+            self.backend.reset()
+            self.wrapper.reset()
+
 
     class Backend(metaclass=ABCMeta):
         """Provides an interface to process manager.
@@ -123,6 +131,12 @@ class TaskManageable(Manageable):
                     raise TypeError(f"value must be None or str, not {type(value)}")
                 self._meta["id"] = value
 
+            @id.deleter
+            def id(self):
+                if not self.mutable:
+                    raise MetaDataError("Must be mutable")
+                del self._meta["id"]
+
             @property
             def command(self):
                 """:obj:`str`: Start command.
@@ -143,6 +157,13 @@ class TaskManageable(Manageable):
                     raise TypeError(f"value must be None or str, not {type(value)}")
                 self._meta["start_command"] = value
 
+            @command.deleter
+            def command(self):
+                if not self.mutable:
+                    raise MetaDataError("Must be mutable")
+                del self ["start_command"]
+
+            @dontcheck
             @property
             def log_path(self):
                 """:obj:`Union[pathlib.Path, None]`: Path to backend log file.
@@ -163,6 +184,19 @@ class TaskManageable(Manageable):
                 if not (value is None or isinstance(value, Path)):
                     raise TypeError(f"value must be None or pathlib.Path, not {type(value)}")
                 self._meta["log_path"] = None if value is None else str(value.resolve())
+
+            @log_path.deleter
+            def log_path(self):
+                if not self.mutable:
+                    raise MetaDataError("Must be mutable")
+                assert "log_path" in self._meta
+                if self.log_path.exists():
+                    self.log_path.unlink()
+                del self._meta["log_path"]
+
+            def reset(self):
+                if self.log_path: del self.log_path
+                if not self.id is None: del self.id
 
 
         class LoadHelper:
@@ -314,14 +348,7 @@ class TaskManageable(Manageable):
                 """
                 return self._data["mixed_stdout"]
 
-            @mixed_stdout.setter
-            def mixed_stdout(self, value):
-                if not self.mutable:
-                    raise MetaDataError("Muste be mutable")
-                if not isinstance(value, bool):
-                    raise TypeError(f"value must be bool, not {type(value)}")
-                self._data["mixed_stdout"] = value
-
+            @dontcheck
             @property
             def stdout_path(self):
                 """:obj:`Union[pathlib.Path, None]`: Path to backend stdout file.
@@ -338,11 +365,21 @@ class TaskManageable(Manageable):
             @stdout_path.setter
             def stdout_path(self, value):
                 if not self.mutable:
-                    raise MetaDataError("Muste be mutable")
+                    raise MetaDataError("Must be mutable")
                 if not (value is None or isinstance(value, Path)):
                     raise TypeError(f"value must be None or pathlib.Path, not {type(value)}")
                 self._meta["stdout_path"] = None if value is None else str(value.resolve())
 
+            @stdout_path.deleter
+            def stdout_path(self):
+                if not self.mutable:
+                    raise MetaDataError("Must be mutable")
+                assert "stdout_path" in self._meta
+                if self.stdout_path.exists():
+                    self.stdout_path.unlink()
+                del self._meta["stdout_path"]
+
+            @dontcheck
             @property
             def stderr_path(self):
                 """:obj:`Union[pathlib.Path, None]`: Path to wrapper stderr file.
@@ -361,12 +398,21 @@ class TaskManageable(Manageable):
             @stderr_path.setter
             def stderr_path(self, value):
                 if not self.mutable:
-                    raise MetaDataError("Muste be mutable")
+                    raise MetaDataError("Must be mutable")
                 if not (value is None or isinstance(value, Path)):
                     raise TypeError(f"value must be None or pathlib.Path, not {type(value)}")
                 self._meta["stderr_path"] = None if value is None else str(value.resolve())
 
+            @stderr_path.deleter
+            def stderr_path(self):
+                if not self.mutable:
+                    raise MetaDataError("Must be mutable")
+                assert "stderr_path" in self._meta
+                if self.stderr_path.exists():
+                    self.stderr_path.unlink()
+                del self._meta["stderr_path"]
 
+            @dontcheck
             @property
             def stdin_path(self):
                 """:obj:`Union[pathlib.Path, None]`: Path to wrapper stdin file.
@@ -383,10 +429,23 @@ class TaskManageable(Manageable):
             @stdin_path.setter
             def stdin_path(self, value):
                 if not self.mutable:
-                    raise MetaDataError("Muste be mutable")
+                    raise MetaDataError("Must be mutable")
                 if not (value is None or isinstance(value, Path)):
                     raise TypeError(f"value must be None or pathlib.Path, not {type(value)}")
                 self._meta["stdin_path"] = None if value is None else str(value.resolve())
+
+                if value:
+                    os.mkfifo(value)
+
+            @stdin_path.deleter
+            def stdin_path(self):
+                if not self.mutable:
+                    raise MetaDataError("Must be mutable")
+
+                assert "stdin_path" in self._meta
+                if self.stdin_path:
+                    os.unlink(self.stdin_path)
+                del self._meta["stdin_path"]
 
             @property
             def process_pid(self):
@@ -404,10 +463,16 @@ class TaskManageable(Manageable):
             @process_pid.setter
             def process_pid(self, value):
                 if not self.mutable:
-                    raise MetaDataError("Muste be mutable")
+                    raise MetaDataError("Must be mutable")
                 if not (value is None or isinstance(value, int)):
                     raise TypeError(f"value must be None or int, not {type(value)}")
                 self._meta["process_pid"] = value
+
+            @process_pid.deleter
+            def process_pid(self):
+                if not self.mutable:
+                    raise MetaDataError("Must be mutable")
+                del self._meta["process_pid"]
 
             @property
             def exit_code(self):
@@ -425,10 +490,23 @@ class TaskManageable(Manageable):
             @exit_code.setter
             def exit_code(self, value):
                 if not self.mutable:
-                    raise MetaDataError("Muste be mutable")
+                    raise MetaDataError("Must be mutable")
                 if not (value is None or isinstance(value, int)):
                     raise TypeError(f"value must be None or int, not {type(value)}")
                 self._meta["exit_code"] = value
+
+            @exit_code.deleter
+            def exit_code(self):
+                if not self.mutable:
+                    raise MetaDataError("Must be mutable")
+                del self._meta["exit_code"]
+
+            def reset(self):
+                if self.stdin_path: del self.stdin_path
+                if self.stdout_path: del self.stdout_path
+                if self.stderr_path and self.mixed_stdout: del self.stderr_path
+                if not self.exit_code is None: del self.exit_code
+                if not self.process_pid is None: del self.process_pid
 
 
         class LoadHelper:
@@ -534,20 +612,20 @@ class TaskManageable(Manageable):
         self._backend = TaskManageable.Backend.get_backend(self._metadata)
 
     def start(self):
-        if self.active:
-            raise TaskManageableException("Cannot start active task")
+        super().start()
         self._metadata.backend.command = TaskManageable.Cli.command(self._metadata)
         self._backend.submit(self._metadata)
+        self._metadata.start_time = datetime.now()
 
     def term(self):
-        if not self.active:
-            raise TaskManageableException("Cannot terminate inactive task")
+        super().term()
         self._backend.term(self._metadata)
+        self._metadata.finish_time = datetime.now()
 
     def kill(self):
-        if not self.active:
-            raise TaskManageableException("Cannot kill inactive task")
+        super().kill()
         self._backend.kill(self._metadata)
+        self._metadata.finish_time = datetime.now()
 
     @property
     def active(self):
@@ -586,10 +664,15 @@ class TaskManageable(Manageable):
             result += f"{{:>{align}}}: {{:}}\n".format("Backend ID", state.backend.id)
         result += f"{{:>{align}}}: {{:}}\n".format("Wrapper type", state.wrapper.type)
         result += f"{{:>{align}}}: {{:}}\n".format("Command", state.wrapper.command)
-        if state.wrapper.process_pid:
+        if isinstance(state.wrapper.process_pid, int):
             result += f"{{:>{align}}}: {{:}}\n".format("PID", state.wrapper.process_pid)
-        if state.wrapper.exit_code:
+        if isinstance(state.wrapper.exit_code, int):
             result += f"{{:>{align}}}: {{:}}\n".format("Exit code", state.wrapper.exit_code)
+
+        if isinstance(state.backend.log_path, Path):
+            result += "\n"
+            result += getoutput(f"tail -5 {state.backend.log_path}")
+            result += "\n"
 
         return result
 
