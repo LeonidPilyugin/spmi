@@ -3,15 +3,22 @@
 Simple Process Management Interface
 
 > [!IMPORTANT]
-> This project may be buggy because I haven't tested it enough.
+> This project may be buggy because I haven't tested it much.
+
+## TODO
+- [ ] Do smth with loader classes, they are awful
+- [ ] Develop SLURM backend
+- [ ] Create PyPI package
 
 ## What is SPMI
 
 SPMI (Simple Process Management Interface) is a Python package which provides
 an application and library to start and manage processes via different process
 managers (now [GNU Screen](https://www.gnu.org/software/screen/) is supported
-and I am going to add [SLURM](https://slurm.schedmd.com/overview.html) support)
-for UNIX-like systems.
+and I am going to add [SLURM](https://slurm.schedmd.com/overview.html) support).
+
+> [!IMPORTANT]
+> Only UNIX-like systems are supported.
 
 ## Installation
 
