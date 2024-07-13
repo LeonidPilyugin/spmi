@@ -1,7 +1,4 @@
 """Provides :class:`TaskManageable`.
-
-Todo:
-    Write documentation.
 """
 
 import os

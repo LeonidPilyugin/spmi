@@ -164,3 +164,4 @@ test-root/
 resources/
 actv
 examples/test/
+src/spmi/spmi

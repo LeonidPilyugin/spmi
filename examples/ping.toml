@@ -1,0 +1,11 @@
+[task]
+id = "ping"
+comment = "Pinges localhost 10 times."
+
+  [task.backend]
+  type = "screen"
+
+  [task.wrapper]
+  type = "default"
+  command = "ping -c 10 -i 1 localhost"
+  mixed_stdout = true

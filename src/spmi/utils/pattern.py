@@ -1,7 +1,4 @@
 """Provides :class:`PatternMatcher`.
-
-Todo:
-    Add regex pattern matcher.
 """
 
 import re

@@ -7,11 +7,6 @@ Execute next command to get help message:
 .. code-block:: console
 
     $ spmi --help
-
-
-Todo:
-    * Exceptions
-    * Error handling
 """
 
 import os
@@ -42,7 +37,7 @@ SPMI is a program to maintain processes.
 
 Usage:
     spmi list [-d | --debug]
-    spmi register <pathes>... [-d | --debug]
+    spmi load <pathes>... [-d | --debug]
     spmi start <patterns>... [-d | --debug]
     spmi stop <patterns>... [-d | --debug]
     spmi kill <patterns>... [-d | --debug]
@@ -80,9 +75,9 @@ class Spmi:
             self._args = args
 
         @property
-        def is_register(self):
-            """:obj:`bool`: ``True`` if should register."""
-            return self._args["register"]
+        def is_load(self):
+            """:obj:`bool`: ``True`` if should load."""
+            return self._args["load"]
 
         @property
         def is_start(self):
@@ -214,23 +209,23 @@ class Spmi:
         self._logger.debug("Creating pool")
         self._pool = Pool(path=self._config.path, pm=pm)
 
-    def register(self, pathes):
-        registered = 0
+    def load(self, pathes):
+        loaded = 0
         try:
-            to_register = []
+            to_load = []
 
             for path in pathes:
-                to_register.append(Manageable.from_descriptor(path))
+                to_load.append(Manageable.from_descriptor(path))
 
-            for m in to_register:
+            for m in to_load:
                 self._pool.register(m)
-                registered += 1
+                loaded += 1
         except SpmiException as e:
-            self._logger.error(f"Failed to register:\n{e}")
+            self._logger.error(f"Failed to load:\n{e}")
             if self._args.debug:
                 raise
         finally:
-            self._logger.info(f"Registered {registered} manageable{'' if registered == 1 else 's'}")
+            self._logger.info(f"Loaded {loaded} manageable{'' if loaded == 1 else 's'}")
 
 
     def show_list(self):
@@ -414,8 +409,8 @@ class Spmi:
 
         if self._args.is_list:
             self.show_list()
-        elif self._args.is_register:
-            self.register(self._args.pathes)
+        elif self._args.is_load:
+            self.load(self._args.pathes)
         elif self._args.is_start:
             self.start(self._args.patterns)
         elif self._args.is_status:

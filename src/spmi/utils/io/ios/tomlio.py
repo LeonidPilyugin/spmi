@@ -11,7 +11,7 @@ class TomlIo(Io):
     """TOML formatted io."""
 
     def copy(self):
-        return JsonIo(path=self.path, encoding=self.encoding)
+        return TomlIo(path=self.path, encoding=self.encoding)
 
     def load(self):
         try:

@@ -1,0 +1,11 @@
+[task]
+id = "cal"
+comment = "Prints calendar to stdout."
+
+[task.backend]
+type = "screen"
+
+[task.wrapper]
+type = "default"
+command = "cal"
+mixed_stdout = true

@@ -1,6 +1,6 @@
 {
     "task": {
-        "id": "calendar",
+        "id": "cal",
         "comment": "Prints calendar to stdout.",
         "backend": {
             "type": "screen"

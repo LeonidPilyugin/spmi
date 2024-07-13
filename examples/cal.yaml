@@ -1,0 +1,9 @@
+task:
+  id: cal
+  comment: Prints calendar to stdout.
+  backend:
+    type: screen
+  wrapper:
+    type: default
+    command: cal
+    mixed_stdout: true
