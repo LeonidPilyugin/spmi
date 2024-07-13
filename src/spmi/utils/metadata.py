@@ -94,13 +94,12 @@ class MetaDataNode:
 
             self._meta = meta if not copy else deepcopy(meta)
             self._data = data if not copy else deepcopy(data)
-
-            self.check_properties()
         else:
             if not (meta is None and data is None):
                 raise ValueError(f"metadata is not None, so meta and data must be None, not {meta} and {data}")
             self._meta = metadata._meta if not copy else deepcopy(metadata._meta)
             self._data = metadata._data if not copy else deepcopy(metadata._data)
+        self.check_properties()
 
     def check_properties(self):
         """Raises :class:`IncorrectProperty` exception if properties are incorrect..

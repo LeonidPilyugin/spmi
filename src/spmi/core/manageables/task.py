@@ -45,14 +45,7 @@ class TaskManageable(Manageable):
 
     """
     class MetaDataHelper(Manageable.MetaDataHelper):
-        @property
-        def backend(self):
-            """:obj:`TaskManageable.Backend.MetaDataHelper`: Backend data.
-
-            Raises:
-                :class:`ValueError`
-                :class:`TypeError`
-            """
+        def _backend(self, cls):
             if "backend" not in self.m_data:
                 raise ValueError("Data should contain \"backend\" dictionary")
             if not isinstance(self.m_data["backend"], dict):
@@ -61,9 +54,41 @@ class TaskManageable(Manageable):
             if "backend" not in self._meta:
                 self._meta["backend"] = {}
 
-            return TaskManageable.Backend.MetaDataHelper(
+            return cls.MetaDataHelper(
                 data=self.m_data["backend"],
                 meta=self._meta["backend"],
+                copy=not self.mutable,
+                mutable=self.mutable
+            )
+
+        @property
+        def backend(self):
+            """:obj:`TaskManageable.Backend.MetaDataHelper`: Backend data.
+
+            Raises:
+                :class:`ValueError`
+                :class:`TypeError`
+            """
+            if not hasattr(self, "_backend_class"):
+                self._backend_class = TaskManageable.Backend.LoadHelper.get_backend(self)
+            return self._backend(self._backend_class)
+
+        @property
+        def common_backend(self):
+            return self._backend(TaskManageable.Backend)
+
+        def _wrapper(self, cls):
+            if "wrapper" not in self.m_data:
+                raise ValueError("Data should contain \"wrapper\" dictionary")
+            if not isinstance(self.m_data["wrapper"], dict):
+                raise TypeError(f"\"wrapper\" must be a dict, not {type(self.m_data['wrapper'])}")
+
+            if "wrapper" not in self._meta:
+                self._meta["wrapper"] = {}
+
+            return cls.MetaDataHelper(
+                data=self.m_data["wrapper"],
+                meta=self._meta["wrapper"],
                 copy=not self.mutable,
                 mutable=self.mutable
             )
@@ -76,20 +101,13 @@ class TaskManageable(Manageable):
                 :class:`ValueError`
                 :class:`TypeError`
             """
-            if "wrapper" not in self.m_data:
-                raise ValueError("Data should contain \"wrapper\" dictionary")
-            if not isinstance(self.m_data["wrapper"], dict):
-                raise TypeError(f"\"wrapper\" must be a dict, not {type(self.m_data['wrapper'])}")
+            if not hasattr(self, "_wrapper_class"):
+                self._wrapper_class = TaskManageable.Wrapper.get_wrapper(self)
+            return self._wrapper(self._wrapper_class)
 
-            if "wrapper" not in self._meta:
-                self._meta["wrapper"] = {}
-
-            return TaskManageable.Wrapper.MetaDataHelper(
-                data=self.m_data["wrapper"],
-                meta=self._meta["wrapper"],
-                copy=not self.mutable,
-                mutable=self.mutable
-            )
+        @property
+        def common_wrapper(self):
+            return self._wrapper(TaskManageable.Wrapper)
 
         def reset(self):
             super().reset()
@@ -234,14 +252,14 @@ class TaskManageable(Manageable):
                         classes = list(
                             filter(
                                 lambda x: x[0] == TaskManageable.Backend.LoadHelper.get_class_name(
-                                    metadata.backend.type
+                                    metadata.common_backend.type
                                 ),
                                 inspect.getmembers(module)
                             )
                         )
 
                         if len(classes) == 1:
-                            return classes[0][1]()
+                            return classes[0][1]
 
                 raise NotImplementedError()
 
@@ -544,14 +562,14 @@ class TaskManageable(Manageable):
                         classes = list(
                             filter(
                                 lambda x: x[0] == TaskManageable.Wrapper.LoadHelper.get_class_name(
-                                    metadata.wrapper.type
+                                    metadata.common_wrapper.type
                                 ),
                                 inspect.getmembers(module)
                             )
                         )
 
                         if len(classes) == 1:
-                            return classes[0][1](metadata=metadata)
+                            return classes[0][1]
 
                 raise NotImplementedError()
 
@@ -609,7 +627,7 @@ class TaskManageable(Manageable):
             return TaskManageable.MetaDataHelper(data=datapath, meta=metapath)
 
     def __init__(self, *args, **kwargs):
-        self._backend = TaskManageable.Backend.get_backend(self._metadata)
+        self._backend = TaskManageable.Backend.get_backend(self._metadata)()
 
     def start(self):
         super().start()
@@ -689,6 +707,6 @@ def set_signal_handlers(wrapper):
 if __name__ == "__main__":
     Logger.basic_config(loglevel="DEBUG" if "debug" in sys.argv else "INFO")
     metadata = TaskManageable.Cli.from_args()
-    wrapper = TaskManageable.Wrapper.get_wrapper(metadata)
+    wrapper = TaskManageable.Wrapper.get_wrapper(metadata)(metadata=metadata)
     set_signal_handlers(wrapper)
     wrapper.start()

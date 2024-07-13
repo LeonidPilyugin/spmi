@@ -45,7 +45,7 @@ class ScreenBackend(TaskManageable.Backend):
         self.load_screens()
         old_ids = self._screen_ids
 
-        if os.system(f"screen -L -Logfile '{metadata.backend.log_path}' -dmS 'SPMI screen' {metadata.backend.command}") != 0:
+        if os.system(f"screen -L -Logfile '{metadata.backend.log_path}' -dmS 'SPMI screen {metadata.id}' {metadata.backend.command}") != 0:
             raise ScreenBackendException("Cannot start screen")
 
         self.load_screens()
