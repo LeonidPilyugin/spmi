@@ -38,6 +38,7 @@ class ScreenBackend(TaskManageable.Backend):
             
 
     def submit(self, metadata):
+        super().submit(metadata)
         self._logger.debug("Submitting a new task")
 
         metadata.backend.log_path = metadata.path.joinpath("backend.log")
@@ -70,14 +71,19 @@ class ScreenBackend(TaskManageable.Backend):
         if not self.is_active(metadata):
             raise ScreenBackendException(f"Attempting to operate on not existing screen \"{screen_id}\"")
 
-        os.system(f"screen -x {screen_id} -X {message}")
+        command = f"screen -x {screen_id} -X {message}" 
+        if os.system(command) != 0:
+            raise ScreenBackendException(f"Command  \"{command}\" failed")
 
     def term(self, metadata):
+        super().term(metadata)
         self._send(metadata, "stuff '^C'")
 
     def kill(self, metadata):
+        super().kill(metadata)
         self._send(metadata, "quit")
 
     def is_active(self, metadata):
+        super().is_active(metadata)
         self.load_screens()
         return metadata.backend.id in self._screen_ids

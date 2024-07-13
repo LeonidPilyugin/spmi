@@ -44,6 +44,7 @@ class SlurmBackend(TaskManageable.Backend):
         return command
 
     def submit(self, metadata):
+        super().submit(metadata)
         self._logger.debug("Submitting a new task")
 
         metadata.backend.log_path = metadata.path.joinpath("backend.log")
@@ -52,7 +53,7 @@ class SlurmBackend(TaskManageable.Backend):
         old_ids = self._job_ids
 
         if os.system(self._generate_command(metadata)) != 0:
-            raise SlurmBackendException("Cannot start screen")
+            raise SlurmBackendException("Sbatch failed.")
 
         self.load_jobs()
 
@@ -65,12 +66,15 @@ class SlurmBackend(TaskManageable.Backend):
         self._logger.debug(f"New job ID: {screen_id}")
 
     def term(self, metadata):
+        super().term(metadata)
         if os.system(f"scancel {metadata.backend.id}") != 0:
             raise SlurmBackendException(f"Cannot cancel job {metadata.backend.id}")
 
     def kill(self, metadata):
+        super().kill(metadata)
         self.term(metadata)
 
     def is_active(self, metadata):
+        super().is_active(metadata)
         self.load_jobs()
         return metadata.backend.id in self._job_ids

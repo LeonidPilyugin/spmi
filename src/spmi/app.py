@@ -27,6 +27,7 @@ from spmi.utils.pattern import PatternMatcher, RegexPatternMatcher
 from spmi.core.manageable import Manageable, ManageableException
 from spmi.utils.exception import SpmiException
 from spmi.utils.metadata import MetaDataError
+from spmi.utils.exception import SpmiException
 
 HELP_MESSAGE = r"""
    _____ ____  __  _______
@@ -164,10 +165,23 @@ class Spmi:
 
             assert "SPMI_PATH" in self._dict
 
+        def _check(self):
+            try:
+                path = Path(self._dict["SPMI_PATH"]).expanduser()
+                if path.exists() and not path.is_dir():
+                    raise SpmiException(f"Path \"{path}\" must be a directory")
+            except Exception as e:
+                raise SpmiException(f"Invalid \"SPMI_PATH\" variable:\n{e}") from e
+
         def load(self):
-            """Loads system environment variables."""
+            """Loads system environment variables.
+
+            Raises:
+                :class:`SpmiException`
+            """
             for key in self._dict:
                 self._dict[key] = os.environ.get(key, self._dict[key])
+            self._check()
 
         @property
         def path(self):
@@ -201,19 +215,22 @@ class Spmi:
         self._pool = Pool(path=self._config.path, pm=pm)
 
     def register(self, pathes):
+        registered = 0
         try:
             to_register = []
 
             for path in pathes:
                 to_register.append(Manageable.from_descriptor(path))
 
-            registered = 0
-
             for m in to_register:
                 self._pool.register(m)
                 registered += 1
-        except (ManageableException, PoolException, MetaDataError) as e:
-            self._logger.error(f"Failed to register: {e}")
+        except SpmiException as e:
+            self._logger.error(f"Failed to register:\n{e}")
+            if self._args.debug:
+                raise
+        finally:
+            self._logger.info(f"Registered {registered} manageable{'' if registered == 1 else 's'}")
 
 
     def show_list(self):
@@ -226,7 +243,7 @@ class Spmi:
             with manageable:
                 states.append((manageable.state, "active" if manageable.active else "inactive"))
 
-        self._logger.info(f"Registered {len(self._pool.manageables)}")
+        self._logger.info(f"Registered {len(self._pool.manageables)} manageable{'' if len(self._pool.manageables) == 1 else 's'}")
 
         max_id_len = 1 if not states else max(map(lambda x: len(x[0].id), states)) + 1
         max_id_len = max(max_id_len, 10)
@@ -261,8 +278,8 @@ class Spmi:
                     with manageable:
                         manageable.start()
                     started += 1
-                except (ManageableException, MetaDataError, PoolException) as e:
-                    self._logger.error(f"Failed to start \"{manageable.state.id}\": {e}")
+                except SpmiException as e:
+                    self._logger.error(f"Failed to start \"{manageable.state.id}\":\n{e}")
                     if self._args.debug:
                         raise
 
@@ -288,8 +305,8 @@ class Spmi:
                     with manageable:
                         manageable.term()
                     stopped += 1
-                except (ManageableException, MetaDataError) as e:
-                    self._logger.error(f"Failed to stop \"{manageable.state.id}\": {e}")
+                except SpmiException as e:
+                    self._logger.error(f"Failed to stop \"{manageable.state.id}\":\n{e}")
                     if self._args.debug:
                         raise
 
@@ -315,8 +332,8 @@ class Spmi:
                     with manageable:
                         manageable.kill()
                     killed += 1
-                except (ManageableException, MetaDataError) as e:
-                    self._logger.error(f"Failed to kill \"{manageable.state.id}\": {e}")
+                except SpmiException as e:
+                    self._logger.error(f"Failed to kill \"{manageable.state.id}\":\n{e}")
                     if self._args.debug:
                         raise
 
@@ -362,8 +379,8 @@ class Spmi:
                     with manageable:
                         manageable.destruct()
                     cleaned += 1
-                except (ManageableException, MetaDataError) as e:
-                    self._logger.error(f"Failed to clean \"{manageable.state.id}\": {e}")
+                except SpmiException as e:
+                    self._logger.error(f"Failed to clean \"{manageable.state.id}\":\n{e}")
                     if self._args.debug:
                         raise
 

@@ -68,7 +68,7 @@ class Manageable(metaclass=ABCMeta):
 
             Raises:
                 :class:`TypeError`
-                :class:`ValueError`
+                :class:`MetaDataError`
             """
             if "prefered_suffix" in self._meta:
                 return self._meta["prefered_suffix"]
@@ -88,21 +88,23 @@ class Manageable(metaclass=ABCMeta):
 
             Raises:
                 :class:`ValueError`
-                :class:`TypeError`
             """
             keys = list(self._data.keys())
             if len(keys) != 1:
                 raise ValueError(f"Data dictionary must contain 1 element, not {len(keys)}")
             key = keys[0]
             if not isinstance(key, str):
-                raise TypeError(f"Type of key in data dictionary must be str, not {type(key)}")
+                raise ValueError(f"Type of key in data dictionary must be str, not {type(key)}")
 
             return key
 
         @property
         def m_data(self):
             """:obj:`dict`. Manageable data."""
-            return self._data[self.type]
+            mdata = self._data[self.type]
+            if not isinstance(mdata, dict):
+                raise ValueError(f"Data[type] must be a dictionary, not {type(mdata)}")
+            return mdata
 
         @property
         def id(self):
@@ -147,7 +149,12 @@ class Manageable(metaclass=ABCMeta):
 
         @property
         def start_time(self):
-            """:obj:`Union[None, datetime.datetime]`. Start time."""
+            """:obj:`Union[None, datetime.datetime]`. Start time.
+
+            Raises:
+                :class:`TypeError`
+                :class:`MetaDataError`
+            """
             if "start_time" in self._meta and self._meta["start_time"]:
                 return datetime.strptime(self._meta["start_time"], Manageable.MetaDataHelper._DATETIME_FORMAT)
             return None
@@ -171,7 +178,12 @@ class Manageable(metaclass=ABCMeta):
 
         @property
         def finish_time(self):
-            """:obj:`Union[None, datetime.datetime]`. Finish time."""
+            """:obj:`Union[None, datetime.datetime]`. Finish time.
+
+            Raises:
+                :class:`TypeError`
+                :class:`MetaDataError`
+            """
             if "finish_time" in self._meta and self._meta["finish_time"]:
                 return datetime.strptime(self._meta["finish_time"], Manageable.MetaDataHelper._DATETIME_FORMAT)
             return None
@@ -194,7 +206,11 @@ class Manageable(metaclass=ABCMeta):
             del self._meta["finish_time"]
 
         def reset(self):
-            """Resets some values in case of restart."""
+            """Resets some values in case of restart.
+
+            Raise:
+                :class:`MetaDataError`
+            """
             if isinstance(self.start_time, datetime):
                 del self.start_time
             if isinstance(self.finish_time, datetime):
@@ -221,7 +237,7 @@ class Manageable(metaclass=ABCMeta):
             """
             return list(
                 filter(
-                    lambda x: ".lock" not in x.suffix,
+                    lambda x: x.is_file() and ".lock" not in x.suffix,
                     path.rglob(Manageable.FileSystemHelper.DATA_FILENAME + ".*")
                 )
             )
@@ -238,7 +254,7 @@ class Manageable(metaclass=ABCMeta):
             """
             return list(
                 filter(
-                    lambda x: ".lock" not in x.suffix,
+                    lambda x: x.is_file() and ".lock" not in x.suffix,
                     path.rglob(Manageable.FileSystemHelper.META_FILENAME + ".*")
                 )
             )
@@ -252,8 +268,16 @@ class Manageable(metaclass=ABCMeta):
 
             Returns:
                 :obj:`pathlib.Path`.
+
+            Raises:
+                :class:`ManageableException`
             """
-            return Manageable.FileSystemHelper.data_pathes(path)[0]
+            pathes = Manageable.FileSystemHelper.data_pathes(path)
+            if len(pathes) != 1:
+                if len(pathes) == 0:
+                    raise ManageableException(f"Could not find data path in \"{path}\"")
+                raise ManageableException(f"Found more than 1 data pathes in \"{path}\"")
+            return pathes[0]
 
         @staticmethod
         def meta_path(path):
@@ -264,8 +288,16 @@ class Manageable(metaclass=ABCMeta):
 
             Returns:
                 :obj:`pathlib.Path`.
+
+            Raises:
+                :class:`ManageableException`
             """
-            return Manageable.FileSystemHelper.meta_pathes(path)[0]
+            pathes = Manageable.FileSystemHelper.meta_pathes(path)
+            if len(pathes) != 1:
+                if len(pathes) == 0:
+                    raise ManageableException(f"Could not find meta path in \"{path}\"")
+                raise ManageableException(f"Found more than 1 meta pathes in \"{path}\"")
+            return pathes[0]
 
         @classmethod
         def register(cls, manageable, path):
@@ -278,7 +310,6 @@ class Manageable(metaclass=ABCMeta):
             Raises:
                 :class:`TypeError`
                 :class:`ManageableException`
-                :class:`OSError`
             """
             if not isinstance(manageable, Manageable):
                 raise TypeError(f"manageable must be a Manageable, not {type(manageable)}")
@@ -287,21 +318,24 @@ class Manageable(metaclass=ABCMeta):
             if path.exists():
                 raise ManageableException(f"Path \"{path}\" should not exist")
 
-            path.mkdir()
-            manageable._metadata.path = path
+            try:
+                path.mkdir()
+                manageable._metadata.path = path
 
-            manageable._metadata.data_path = path.joinpath(
-                Path(Manageable.FileSystemHelper.DATA_FILENAME).with_suffix(
-                    manageable.state.prefered_suffix
+                manageable._metadata.data_path = path.joinpath(
+                    Path(Manageable.FileSystemHelper.DATA_FILENAME).with_suffix(
+                        manageable.state.prefered_suffix
+                    )
                 )
-            )
-            manageable._metadata.meta_path = path.joinpath(
-                Path(Manageable.FileSystemHelper.META_FILENAME).with_suffix(
-                    manageable.state.prefered_suffix
+                manageable._metadata.meta_path = path.joinpath(
+                    Path(Manageable.FileSystemHelper.META_FILENAME).with_suffix(
+                        manageable.state.prefered_suffix
+                    )
                 )
-            )
 
-            manageable._metadata.dump()
+                manageable._metadata.dump()
+            except Exception as e:
+                raise ManageableException(f"Cannot register \"{manageable.state.id}\":\n{e}") from e
 
         @classmethod
         def destruct(cls, manageable):
@@ -309,6 +343,10 @@ class Manageable(metaclass=ABCMeta):
 
             Args:
                 manageable (:obj:`Manageable`): Manageable to destruct.
+
+            Raises:
+                :class:`TypeError`
+                :class:`ManageableException`
             """
             if not isinstance(manageable, Manageable):
                 raise TypeError(f"manageable must be a Manageable, not {type(manageable)}")
@@ -412,7 +450,7 @@ class Manageable(metaclass=ABCMeta):
 
             for path in Path(__file__).parent.joinpath("manageables").iterdir():
                 if path.is_file():
-                    module_name = f"__manageable_realisation_{path.stem}"
+                    module_name = f"{path.stem}"
                     module = load_module(module_name, path)
 
                     classes = inspect.getmembers(module)
@@ -426,7 +464,7 @@ class Manageable(metaclass=ABCMeta):
                     if len(classes) == 1:
                         return classes[0][1]
 
-            raise NotImplementedError(f"Could not find manageable type \"{name}\"")
+            raise NotImplementedError(f"Manageable type \"{name}\" is not implemented")
 
         @staticmethod
         def from_directory_unknown(path):
@@ -497,6 +535,12 @@ class Manageable(metaclass=ABCMeta):
         Args:
             data (:obj:`Union[dict, pathlib.Path, None]`): Data.
             meta (:obj:`Union[dict, pathlib.Path, None]`): Meta.
+
+        Raises:
+            :class:`TypeError`
+            :class:`ValueError`
+            :class:`MetaDataError`
+            :class:`IoException`
         """
 
     @abstractmethod
@@ -620,7 +664,7 @@ class Manageable(metaclass=ABCMeta):
                 td = td - timedelta(microseconds=td.microseconds)
                 active_info += f" ({td} ago)"
             else:
-                active_info += "(could not find finish time)"
+                active_info += " (no finish time)"
 
         result += f"{{:>{align}}}: {{:}}\n".format("Active", active_info)
         result += f"{{:>{align}}}: \"{{:}}\"\n".format("Path", state.path)
@@ -650,6 +694,9 @@ class Manageable(metaclass=ABCMeta):
 
         Returns:
             :obj:`bool`.
+
+        Raises:
+            :obj:`TypeError`
         """
         return cls.MetaDataHelper.is_correct_meta_data(data=data, meta=meta)
 
@@ -683,12 +730,14 @@ class Manageable(metaclass=ABCMeta):
         Raises:
             :class:`TypeError`
             :class:`ManageableException`
-            :class:`MetaDataError`
         """
         if not isinstance(path, Path):
             raise TypeError(f"path must be a pathlib.Path, not {type(path)}")
 
-        return cls(**cls.FileSystemHelper.from_directory(path))
+        try:
+            return cls(**cls.FileSystemHelper.from_directory(path))
+        except Exception as e:
+            raise ManageableException(f"Cannot load from \"{path}\":\n{e}") from e
 
     @staticmethod
     def from_directory_unknown(path):
@@ -703,7 +752,6 @@ class Manageable(metaclass=ABCMeta):
         Raises:
             :class:`TypeError`
             :class:`ManageableException`
-            :class:`MetaDataError`
         """
         if not isinstance(path, Path):
             raise TypeError(f"path must be a pathlib.Path, not {type(path)}")
@@ -723,9 +771,15 @@ class Manageable(metaclass=ABCMeta):
         Raises:
             :class:`TypeError`
             :class:`ManageableException`
-            :class:`MetaDataError`
         """
         if not isinstance(path, Path):
             raise TypeError(f"path must be a pathlib.Path, not {type(path)}")
 
-        return Manageable.LoadHelper.from_descriptor(path)
+        try:
+            return Manageable.LoadHelper.from_descriptor(path)
+        except Exception as e:
+            try:
+                Io.remove_lock(path)
+            except Exception:
+                pass
+            raise ManageableException(f"Cannot load from \"{path}\":\n{e}")

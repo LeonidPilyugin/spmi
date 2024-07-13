@@ -88,6 +88,7 @@ class DefaultWrapper(TaskManageable.Wrapper):
             os.close(f)
 
         with self._metadata:
+            del self._metadata.wrapper.stdin_path
             self._metadata.wrapper.exit_code = process.returncode
             self._metadata.finish_time = datetime.now()
 

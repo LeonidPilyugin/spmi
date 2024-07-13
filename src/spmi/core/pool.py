@@ -50,7 +50,10 @@ class Pool:
             result = []
 
             for path in self._path.iterdir():
-                result.append(Manageable.from_directory_unknown(path))
+                try:
+                    result.append(Manageable.from_directory_unknown(path))
+                except ManageableException as e:
+                    self._logger.warning(f"Cannot load a registered manageable from \"{path}\":\n{e}")
 
             return result
 

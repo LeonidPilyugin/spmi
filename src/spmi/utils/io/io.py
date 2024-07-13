@@ -6,7 +6,14 @@ from abc import ABCMeta, abstractmethod
 from pathlib import Path
 from filelock import FileLock
 from spmi.utils.load import load_module
-from spmi.utils.exception import *
+from spmi.utils.exception import SpmiException
+
+def _get_lock(path):
+    assert isinstance(path, Path)
+    return path.parent.joinpath(path.name + ".lock")
+
+class IoException(SpmiException):
+    pass
 
 class Io(metaclass=ABCMeta):
     """Formatted input and output.
@@ -56,34 +63,64 @@ class Io(metaclass=ABCMeta):
             raise TypeError(f"path \"{path}\" must be a file")
 
         self._path = value
-        self._lock = FileLock(value.parent.joinpath(value.name + ".lock"))
+        self._lock = FileLock(_get_lock(value))
 
     def acquire(self):
-        """Acquire lock."""
-        self._lock.acquire()
+        """Acquire lock.
+
+        Raises:
+            :class:`IoException`
+        """
+        try:
+            self._lock.acquire()
+        except Exception as e:
+            raise IoException(f"Cannot acquire \"{self.path}\":\n{e}") from e
 
     def release(self):
-        """Release lock."""
-        self._lock.release()
+        """Release lock.
+
+        Raises:
+            :class:`IoException`
+        """
+        try:
+            self._lock.release()
+        except Exception as e:
+            raise IoException(f"Cannot acquire \"{self.path}\":\n{e}") from e
 
     def blocking_load(self):
         """Blocking load.
 
         Returns:
             :obj:`dict`. File representation as dict.
+
+        Raises:
+            :class:`IoException`
         """
-        with self._lock:
-            result = self.load()
-        return result
+        try:
+            with self._lock:
+                result = self.load()
+            return result
+        except IoException:
+            raise
+        except Exception as e:
+            raise IoException(f"Cannot process blocking load from \"{self.path}\":\n{e}") from e
 
     def blocking_dump(self, data):
         """Blocking dump.
 
         Args:
             data (:obj:`dict`): Dictionary to dump.
+
+        Raises:
+            :class:`IoException`
         """
-        with self._lock:
-            self.dump(data)
+        try:
+            with self._lock:
+                self.dump(data)
+        except IoException:
+            raise
+        except Exception as e:
+            raise IoException(f"Cannot process blocking load from \"{self.path}\":\n{e}") from e
 
     @abstractmethod
     def load(self):
@@ -91,8 +128,10 @@ class Io(metaclass=ABCMeta):
 
         Returns:
             :obj:`dict`. File representation as dict.
+
+        Raises:
+            :class:`IoException`
         """
-        raise NotImplementedError()
 
     @abstractmethod
     def dump(self, data: dict):
@@ -100,8 +139,10 @@ class Io(metaclass=ABCMeta):
 
         Args:
             data (:obj:`dict`): Dictionary to dump.
+
+        Raises:
+            :class:`IoException`
         """
-        raise NotImplementedError()
 
     @staticmethod
     def has_io(suffix):
@@ -114,16 +155,17 @@ class Io(metaclass=ABCMeta):
             :obj:`bool`.
 
         Raises:
-            TypeError
+            :class:`TypeError`
+            :class:`ValueError`
         """
         if not isinstance(suffix, str):
             raise TypeError(f"suffix must be a str, not {type(suffix)}")
-
         if not suffix:
             return False
-        if suffix[0] == ".":
-            suffix = suffix[1:]
-
+        if not suffix.startswith("."):
+            raise ValueError("suffix must be a return of pathlib.Path.suffix")
+        
+        suffix = suffix[1:]
         ios = Path(__file__).parent.joinpath("ios").iterdir()
 
         return f"{suffix}io" in [x.stem for x in ios]
@@ -140,12 +182,12 @@ class Io(metaclass=ABCMeta):
 
         Raises:
             :class:`TypeError`
-            :class:`ValueError`
+            :class:`IoException`
         """
         if not isinstance(path, Path):
             raise TypeError(f"path must be a Path, not {type(suffix)}")
         if not Io.has_io(path.suffix):
-            raise ValueError(f"Unsupported suffix: {path.suffix}")
+            raise IoException(f"Unsupported suffix: {path.suffix}")
 
         suffix = path.suffix[1:]
 
@@ -160,6 +202,21 @@ class Io(metaclass=ABCMeta):
         ))[0][1](path)
 
     @staticmethod
+    def lock_exists(path):
+        """Returns ``True`` if ``path`` has a lock file.
+
+        Args:
+            path (:obj:`pathlib.Path`): Path.
+
+        Returns:
+            :class:`TypeError`
+        """
+        if not isinstance(path, Path):
+            raise TypeError(f"path must be a pathlib.Path, not {type(path)}")
+        path = _get_lock(path)
+        return path.exists() and path.is_file()
+
+    @staticmethod
     def remove_lock(path):
         """Removes lock file by this path if it exists.
 
@@ -168,7 +225,8 @@ class Io(metaclass=ABCMeta):
 
         Raises:
             :class:`TypeError`
+            :class:`IoException`
         """
-        if not isinstance(path, Path):
-            raise TypeError(f"path must be a Path, not {type(suffix)}")
-        path.parent.joinpath(path.name + ".lock").unlink()
+        if not Io.lock_exists(path):
+            raise IoException(f"Lock file on \"{path}\" should exist")
+        _get_lock(path).unlink()

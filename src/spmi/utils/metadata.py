@@ -82,6 +82,7 @@ class MetaDataNode:
             You can set meta and data or metadata flags at once
 
         Raises:
+            :class:`TypeError`
             :class:`ValueError`
             :class:`IncorrectProperty`
         """
@@ -92,11 +93,23 @@ class MetaDataNode:
             if data is None: data = {}
             if meta is None: meta = {}
 
-            self._meta = meta if not copy else deepcopy(meta)
-            self._data = data if not copy else deepcopy(data)
+            if not isinstance(meta, dict):
+                raise TypeError(f"meta must be a dict, not {type(meta)}")
+            if not isinstance(data, dict):
+                raise TypeError(f"data must be a dict, not {type(data)}")
+            try:
+                self._meta = meta if not copy else deepcopy(meta)
+            except Exception as e:
+                raise ValueError(f"meta must be a dict which can be deepcopied")
+            try:
+                self._data = data if not copy else deepcopy(data)
+            except Exception as e:
+                raise ValueError(f"data must be a dict which can be deepcopied")
         else:
             if not (meta is None and data is None):
                 raise ValueError(f"metadata is not None, so meta and data must be None, not {meta} and {data}")
+            if not isinstance(metadata, MetaDataNode):
+                raise TypeError(f"metadata must be a MetaDataNode, not {type(metadata)}")
             self._meta = metadata._meta if not copy else deepcopy(metadata._meta)
             self._data = metadata._data if not copy else deepcopy(metadata._data)
         self.check_properties()
@@ -141,7 +154,7 @@ class MetaDataNode:
             self._logger.debug("All attributes are correct")
         except Exception as e:
             self._logger.debug(f"Failed \"{p}\" attribute")
-            raise IncorrectProperty(str(e)) from e
+            raise IncorrectProperty(f"Property \"{p}\" is incorrect:\n{e}") from e
 
     @property
     def mutable(self):
@@ -185,6 +198,12 @@ class MetaData(MetaDataNode):
 
         Note:
             You can set meta and data or metadata flags at once
+
+        Raises:
+            :class:`TypeError`
+            :class:`ValueError`
+            :class:`IoException`
+            :class:`MetaDataError`
         """
         self.__entered = False
         if metadata is None:
@@ -200,7 +219,14 @@ class MetaData(MetaDataNode):
             self.__data_io = metadata.__data_io if not (metadata.__data_io and copy) else metadata.__data_io.copy()
             self.__meta_io = metadata.__meta_io if not (metadata.__meta_io and copy) else metadata.__meta_io.copy()
 
-        super().__init__(meta=meta, data=data, metadata=metadata, mutable=mutable, copy=copy)
+        try:
+            super().__init__(meta=meta, data=data, metadata=metadata, mutable=mutable, copy=copy)
+        except IncorrectProperty as e:
+            msg = f"Cannot load from \"{data}\""
+            if meta:
+                msg += f" and \"{meta}\""
+            msg += f":\n{e}"
+            raise MetaDataError(msg) from e
 
     @dontcheck
     @property
@@ -211,14 +237,14 @@ class MetaData(MetaDataNode):
             :class:`MetaDataError`
             :class:`TypeError`
         """
-        return None if not self.__meta_io else self.__meta_io.path.resolve()
+        return None if not self.__meta_io else self.__meta_io.path
 
     @meta_path.setter
     def meta_path(self, value):
         if self.__entered:
             raise MetaDataError("Cannot change meta path, entered a \"with\" statement")
         if not self.mutable:
-            raise MetaDataError("Cannot change meta path, object is immutable")
+            raise MetaDataError("Must be mutable")
         if not (value is None or isinstance(value, Path)):
             raise TypeError(f"value must be a None or pathlib.Path, not {type(value)}")
 
@@ -227,7 +253,7 @@ class MetaData(MetaDataNode):
     @meta_path.deleter
     def meta_path(self):
         if not self.mutable:
-            raise MetaDataError("Cannot reset meta path, object is immutable")
+            raise MetaDataError("Must be mutable")
         self.__meta_io = None
 
     @dontcheck
@@ -239,14 +265,14 @@ class MetaData(MetaDataNode):
             :class:`MetaDataError`
             :class:`TypeError`
         """
-        return None if not self.__data_io else self.__data_io.path.resolve()
+        return None if not self.__data_io else self.__data_io.path
 
     @data_path.setter
     def data_path(self, value):
         if self.__entered:
             raise MetaDataError("Cannot change data path, entered a \"with\" statement")
         if not self.mutable:
-            raise MetaDataError("Cannot change data path, object is immutable")
+            raise MetaDataError("Must be mutable")
         if not (value is None or isinstance(value, Path)):
             raise TypeError(f"value must be a None or pathlib.Path, not {type(value)}")
 
@@ -255,7 +281,7 @@ class MetaData(MetaDataNode):
     @data_path.deleter
     def data_path(self):
         if not self.mutable:
-            raise MetaDataError("Cannot reset data path, object is immutable")
+            raise MetaDataError("Must be mutable")
         self.__data_io = None
 
     @dontcheck
@@ -272,6 +298,7 @@ class MetaData(MetaDataNode):
 
         Raises:
             :class:`MetaDataError`
+            :class:`IoException`
         """
         self._logger.debug("Loading")
         if not self.mutable:
@@ -291,6 +318,7 @@ class MetaData(MetaDataNode):
 
         Raises:
             :class:`MetaDataError`
+            :class:`IoException`
         """
         self._logger.debug("Dumping")
         if not self.mutable:
@@ -310,6 +338,7 @@ class MetaData(MetaDataNode):
 
         Raises:
             :class:`MetaDatarror`
+            :class:`IoException`
         """
         self._logger.debug("Locking")
         if self.__entered:
@@ -328,6 +357,10 @@ class MetaData(MetaDataNode):
 
         Note:
             Should be mutable.
+
+        Raises:
+            :class:`MetaDatarror`
+            :class:`IoException`
         """
         self._logger.debug("Releasing")
         if self.__entered:
@@ -349,6 +382,7 @@ class MetaData(MetaDataNode):
 
         Raises:
             :class:`MetaDataError`
+            :class:`IoException`
         """
         self._logger.debug("Procesing blocking load.")
         if self.__entered:
@@ -370,6 +404,7 @@ class MetaData(MetaDataNode):
 
         Raises:
             :class:`MetaDataError`
+            :class:`IoException`
         """
         self._logger.debug("Processing blocking dump.")
         if self.__entered:
@@ -412,15 +447,10 @@ class MetaData(MetaDataNode):
 
         Raises:
             :class:`TypeError`
+            :class:`IoException`
         """
-
-        if not (isinstance(data, (dict, Path)) or data is None):
-            raise TypeError(f"Data must be dict, pathlib.Path or None, not {type(data)}.")
-        if not (isinstance(meta, (dict, Path)) or meta is None):
-            raise TypeError(f"Meta must be dict, pathlib.Path or None, not {type(meta)}.")
-
         try:
             cls(data=data, meta=meta)
             return True
-        except Exception:
+        except IncorrectProperty:
             return False

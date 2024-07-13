@@ -25,6 +25,9 @@ class TaskManageableException(ManageableException):
 class BackendException(TaskManageableException):
     pass
 
+class WrapperException(TaskManageableException):
+    pass
+
 @manageable
 class TaskManageable(Manageable):
     """Manageable which handles a single command.
@@ -49,7 +52,7 @@ class TaskManageable(Manageable):
             if "backend" not in self.m_data:
                 raise ValueError("Data should contain \"backend\" dictionary")
             if not isinstance(self.m_data["backend"], dict):
-                raise TypeError(f"\"backend\" must be a dict, not {type(self.m_data['backend'])}")
+                raise ValueError(f"\"backend\" must be a dict, not {type(self.m_data['backend'])}")
 
             if "backend" not in self._meta:
                 self._meta["backend"] = {}
@@ -67,7 +70,6 @@ class TaskManageable(Manageable):
 
             Raises:
                 :class:`ValueError`
-                :class:`TypeError`
             """
             if not hasattr(self, "_backend_class"):
                 self._backend_class = TaskManageable.Backend.LoadHelper.get_backend(self)
@@ -81,7 +83,7 @@ class TaskManageable(Manageable):
             if "wrapper" not in self.m_data:
                 raise ValueError("Data should contain \"wrapper\" dictionary")
             if not isinstance(self.m_data["wrapper"], dict):
-                raise TypeError(f"\"wrapper\" must be a dict, not {type(self.m_data['wrapper'])}")
+                raise ValueError(f"\"wrapper\" must be a dict, not {type(self.m_data['wrapper'])}")
 
             if "wrapper" not in self._meta:
                 self._meta["wrapper"] = {}
@@ -99,7 +101,6 @@ class TaskManageable(Manageable):
 
             Raises:
                 :class:`ValueError`
-                :class:`TypeError`
             """
             if not hasattr(self, "_wrapper_class"):
                 self._wrapper_class = TaskManageable.Wrapper.get_wrapper(self)
@@ -261,7 +262,7 @@ class TaskManageable(Manageable):
                         if len(classes) == 1:
                             return classes[0][1]
 
-                raise NotImplementedError()
+                raise NotImplementedError(f"Backend \"{name}\" is not implemented")
 
         @abstractmethod
         def submit(self, task_metadata):
@@ -276,7 +277,6 @@ class TaskManageable(Manageable):
             Raises:
                 :class:`BackendException`
             """
-            raise NotImplementedError()
 
         @abstractmethod
         def term(self, task_metadata):
@@ -287,8 +287,10 @@ class TaskManageable(Manageable):
 
             Raises:
                 :class:`BackendException`
+
+            Raises:
+                :class:`BackendException`
             """
-            raise NotImplementedError()
 
         @abstractmethod
         def kill(self, task_metadata):
@@ -299,8 +301,10 @@ class TaskManageable(Manageable):
 
             Raises:
                 :class:`BackendException`
+
+            Raises:
+                :class:`BackendException`
             """
-            raise NotImplementedError()
 
         @abstractmethod
         def is_active(self, task_metadata):
@@ -315,7 +319,6 @@ class TaskManageable(Manageable):
             Raises:
                 :class:`BackendException`
             """
-            raise NotImplementedError()
 
         @staticmethod
         def get_backend(task_metadata):
@@ -571,18 +574,16 @@ class TaskManageable(Manageable):
                         if len(classes) == 1:
                             return classes[0][1]
 
-                raise NotImplementedError()
+                raise NotImplementedError(f"Wrapper \"{name}\" is not implemented")
 
 
         @abstractmethod
         def start(self):
             """Start wrapper."""
-            raise NotImplementedError()
 
         @abstractmethod
         def on_signal(self, signal, frame):
             """Called on signal."""
-            raise NotImplementedError()
 
         @staticmethod
         def get_wrapper(metadata):
@@ -606,8 +607,11 @@ class TaskManageable(Manageable):
                 :obj:`str`.
 
             Raises:
+                :class:`TypeError`
                 :class:`ValueError`
             """
+            if not isinstance(task_metadata, TaskManageable.MetaDataHelper):
+                raise TypeError(f"task_metadata must be a TaskManageable.MetaDataHelper, not {type(task_metadata)}")
             if "'" in str(task_metadata.data_path):
                 raise ValueError(f"Data path \"{task_metadata.data_path}\" must not contain \"'\"")
             if "'" in str(task_metadata.meta_path):

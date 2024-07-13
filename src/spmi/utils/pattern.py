@@ -20,7 +20,8 @@ class PatternMatcher(metaclass=ABCMeta):
         Returns:
             :obj:`bool`.
         """
-        raise NotImplementedError()
+        if not isinstance(string, str):
+            raise TypeError(f"string must be a str, not {type(string)}")
 
     @abstractmethod
     def match(self, pattern, string):
@@ -32,31 +33,31 @@ class PatternMatcher(metaclass=ABCMeta):
 
         Returns:
             :obj:`bool`.
+
+        Raises:
+            :obj:`TypeError`
+            :obj:`ValueError`
         """
-        raise NotImplementedError()
+        if not self.is_pattern(pattern):
+            raise ValueError("pattern must be a pattern string")
+        if not isinstance(string, str):
+            raise TypeError(f"string must be a str, not {type(string)}")
 
 
 class SimplePatternMatcher(PatternMatcher):
     """Simple pattern matcher."""
     def is_pattern(self, string):
-        if not isinstance(string, str):
-            raise TypeError(f"string must be a str, not {type(string)}")
-
+        super().is_pattern(string)
         return True
 
     def match(self, pattern, string):
-        if not isinstance(pattern, str):
-            raise TypeError(f"pattern must be a str, not {type(pattern)}")
-        if not isinstance(string, str):
-            raise TypeError(f"string must be a str, not {type(string)}")
-
+        super().match(pattern, string)
         return string == pattern
 
 class RegexPatternMatcher(PatternMatcher):
     """Regex pattern matcher."""
     def is_pattern(self, string):
-        if not isinstance(string, str):
-            raise TypeError(f"string must be a str, not {type(string)}")
+        super().is_pattern(string)
         try:
             re.compile(string)
             return True
@@ -64,11 +65,6 @@ class RegexPatternMatcher(PatternMatcher):
             return False
 
     def match(self, pattern, string):
-        if not isinstance(pattern, str):
-            raise TypeError(f"pattern must be a str, not {type(pattern)}")
-        if not isinstance(string, str):
-            raise TypeError(f"string must be a str, not {type(string)}")
-
+        super().match(pattern, string)
         p = re.compile(pattern)
-
         return p.match(string)
