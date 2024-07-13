@@ -5,6 +5,10 @@ Simple Process Management Interface
 > [!IMPORTANT]
 > This project may be buggy because I haven't tested it enough.
 
+## TODO
+- [ ] Add SLURM backend
+- [ ] Create PyPI package
+
 ## What is SPMI
 
 SPMI (Simple Process Management Interface) is a Python package which provides
