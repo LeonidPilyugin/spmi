@@ -1,0 +1,14 @@
+{
+    "task": {
+        "id": "manageable_3",
+        "comment": "Comment 3",
+        "backend": {
+            "type": "screen"
+        },
+        "wrapper": {
+            "type": "default",
+            "command": "echo 3",
+            "mixed_stdout": true
+        }
+    }
+}

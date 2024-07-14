@@ -13,9 +13,8 @@ SPMI (Simple Process Management Interface) is a Python package which provides an
    :maxdepth: 2
    :caption: Contents:
 
-   getting_started/index
-   user_guide/index
-   developer_guide/index
+   getting_started
+   user_guide
    api_reference/index
 
 Indices and tables

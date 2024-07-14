@@ -38,7 +38,7 @@ Install dependencies
 $ pip install -r requirements.txt
 ```
 
-Add `spmi/src` to `$PYTHON_PATH` variable and create link to `spmi/src/app.py`
+Add `spmi/src` to `$PYTHONPATH` variable and create link to `spmi/src/app.py`
 ```sh
 $ ln -s $PWD/src/spmi/app.py ~/.local/bin/spmi
 ```
@@ -206,14 +206,15 @@ Hello
 Showed 1 manageables
 ```
 
-Also you can see that screen is in `screen -ls`
+
+`cat -` printed your line to stdout! Also you can see that screen is in `screen -ls`
 ```sh
 $ screen -ls
         76113.SPMI screen echo   (Detached)
 1 Socket in /run/screens/S-leonid.
 ```
 
-`cat -` printed your line to stdout! Next, stop `echo` task
+Next, stop `echo` task
 
 ```sh
 $ spmi stop echo
@@ -223,7 +224,7 @@ Stopping manageable "echo"
 Stopped 1 manageables
 ```
 
-And see its status one more time
+And look at its status one more time
 ```sh
 $ spmi status echo
 echo (task) - A forever echo command.

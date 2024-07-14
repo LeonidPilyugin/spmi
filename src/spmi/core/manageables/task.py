@@ -11,7 +11,7 @@ from subprocess import getoutput
 from abc import ABCMeta, abstractmethod
 import spmi.core.manageables.task_.wrappers as wrappers_package
 import spmi.core.manageables.task_.backends as backends_package
-from spmi.core.manageable import Manageable, manageable, ManageableException
+from spmi.core.manageable import Manageable, manageable, ManageableException, ManageableStatus
 from spmi.utils.metadata import MetaDataNode, MetaDataError, dontcheck
 from spmi.utils.load import load_class_from_package
 from spmi.utils.logger import Logger
@@ -308,7 +308,7 @@ class TaskManageable(Manageable):
         def get_backend_class(metadata):
             """Returns wrapper class by metadata"""
             return load_class_from_package(
-                metadata.common_backend.type.capitalize() + "Backend",
+                "".join([x.capitalize() for x in metadata.common_backend.type.split()]) + "Backend",
                 backends_package,
             )
 
@@ -535,7 +535,7 @@ class TaskManageable(Manageable):
         def get_wrapper_class(metadata):
             """Returns wrapper class by metadata"""
             return load_class_from_package(
-                metadata.common_wrapper.type.capitalize() + "Wrapper",
+                "".join([x.capitalize() for x in metadata.common_wrapper.type.split()]) + "Wrapper",
                 wrappers_package,
             )
 
@@ -602,8 +602,12 @@ class TaskManageable(Manageable):
         self._metadata.finish_time = datetime.now()
 
     @property
-    def active(self):
-        return self._backend.is_active(self._metadata)
+    def status(self):
+        if not self._metadata.path:
+            return ManageableStatus.UNTRACKED
+        if self._backend.is_active(self._metadata):
+            return ManageableStatus.ACTIVE
+        return ManageableStatus.INACTIVE
 
     def destruct(self):
         super().destruct()
@@ -616,7 +620,7 @@ class TaskManageable(Manageable):
         """
         align = max(
             align,
-            map(
+            max(map(
                 len,
                 [
                     "Backend type",
@@ -626,7 +630,7 @@ class TaskManageable(Manageable):
                     "PID",
                     "Exit code",
                 ],
-            )
+            ))
         )
 
         state = self.state

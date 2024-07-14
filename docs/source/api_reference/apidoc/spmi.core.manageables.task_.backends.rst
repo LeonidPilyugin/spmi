@@ -12,6 +12,14 @@ spmi.core.manageables.task\_.backends.screen module
    :undoc-members:
    :show-inheritance:
 
+spmi.core.manageables.task\_.backends.slurm module
+--------------------------------------------------
+
+.. automodule:: spmi.core.manageables.task_.backends.slurm
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

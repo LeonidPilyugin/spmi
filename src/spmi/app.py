@@ -231,7 +231,7 @@ class Spmi:
         for manageable in self._pool.manageables:
             with manageable:
                 states.append(
-                    (manageable.state, "active" if manageable.active else "inactive")
+                    (manageable.state, str(manageable.status.name.lower()))
                 )
 
         self._logger.info(

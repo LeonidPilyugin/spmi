@@ -12,6 +12,14 @@ Subpackages
 Submodules
 ----------
 
+spmi.utils.exception module
+---------------------------
+
+.. automodule:: spmi.utils.exception
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 spmi.utils.load module
 ----------------------
 

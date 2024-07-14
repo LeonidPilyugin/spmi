@@ -2,6 +2,7 @@
 """
 
 import shutil
+from enum import Enum
 from datetime import datetime, timedelta
 from abc import abstractmethod, ABCMeta
 from pathlib import Path
@@ -11,6 +12,12 @@ from spmi.utils.metadata import MetaData, MetaDataError
 from spmi.utils.logger import Logger
 from spmi.utils.io.io import Io
 from spmi.utils.exception import SpmiException
+
+
+class ManageableStatus(str, Enum):
+    UNTRACKED = "untracked"
+    ACTIVE = "active"
+    INACTIVE = "inactive"
 
 
 class ManageableException(SpmiException):
@@ -552,9 +559,8 @@ class Manageable(metaclass=ABCMeta):
         Raises:
             :class:`ManageableException`
         """
-        if self.active:
-            raise ManageableException("Cannot start active manageable")
-        self._metadata.reset()
+        if self.status != ManageableStatus.INACTIVE:
+            raise ManageableException("Must be inactive")
 
     @abstractmethod
     def term(self):
@@ -563,8 +569,8 @@ class Manageable(metaclass=ABCMeta):
         Raises:
             :class:`ManageableException`
         """
-        if not self.active:
-            raise ManageableException("Cannot terminate inactive manageable")
+        if self.status != ManageableStatus.ACTIVE:
+            raise ManageableException("Must be active")
 
     @abstractmethod
     def kill(self):
@@ -573,14 +579,8 @@ class Manageable(metaclass=ABCMeta):
         Raises:
             :class:`ManageableException`
         """
-        if not self.active:
-            raise ManageableException("Cannot kill inactive manageable")
-
-    @property
-    @abstractmethod
-    def active(self):
-        """:obj:`bool`: ``True`` if active."""
-        raise NotImplementedError()
+        if self.status != ManageableStatus.ACTIVE:
+            raise ManageableException("Must be active")
 
     @property
     def state(self):
@@ -593,8 +593,8 @@ class Manageable(metaclass=ABCMeta):
         Raises:
             :class:`ManageableException`
         """
-        if self.active:
-            raise ManageableException("Cannot destruct active manageable")
+        if self.status != ManageableStatus.INACTIVE:
+            raise ManageableException("Must be inactive")
         self._logger.debug(f'Destructing "{self.state.id}"')
         type(self).FileSystemHelper.destruct(self)
         del self._metadata.meta_path
@@ -616,8 +616,8 @@ class Manageable(metaclass=ABCMeta):
         """
         if not isinstance(path, Path):
             raise TypeError(f"path must be a pathlib.Path, not {type(path)}")
-        if self.registered:
-            raise ManageableException("Already registered")
+        if self.status != ManageableStatus.UNTRACKED:
+            raise ManageableException("Must be untracked")
         self._logger.debug(f'Registering "{self.state.id}"')
 
         existed = path.exists()
@@ -636,13 +636,13 @@ class Manageable(metaclass=ABCMeta):
         """
         align = max(
             align,
-            map(
+            max(map(
                 lambda x: len(x),
                 [
                     "Active",
                     "Path",
                 ],
-            )
+            ))
         )
 
         state = self.state
@@ -650,13 +650,13 @@ class Manageable(metaclass=ABCMeta):
         result += f"{state.id} ({state.type}) - {state.comment}\n"
 
         active_info = ""
-        if self.active:
+        if self.status == ManageableStatus.ACTIVE:
             active_info += "\x1b[32;20mactive\x1b[0m"
             active_info += f" since {self._metadata.start_time}"
             td = datetime.now() - self._metadata.start_time
             td = td - timedelta(microseconds=td.microseconds)
             active_info += f" ({td} ago)"
-        else:
+        elif self.status == ManageableStatus.INACTIVE:
             active_info += "\x1b[31;20minactive\x1b[0m"
             if self._metadata.finish_time:
                 active_info += f" since {self._metadata.finish_time}"
@@ -665,6 +665,8 @@ class Manageable(metaclass=ABCMeta):
                 active_info += f" ({td} ago)"
             else:
                 active_info += " (no finish time)"
+        else:
+            return result
 
         result += f"{{:>{align}}}: {{:}}\n".format("Active", active_info)
         result += f'{{:>{align}}}: "{{:}}"\n'.format("Path", state.path)
@@ -672,9 +674,10 @@ class Manageable(metaclass=ABCMeta):
         return result
 
     @property
-    def registered(self):
-        """:obj:`bool`: ``True`` if this manageable is registered."""
-        return not self._metadata.meta_path is None
+    @abstractmethod
+    def status(self):
+        """:obj:`ManageableStatus`: Status of manageable."""
+        raise NotImplementedError()
 
     def __enter__(self):
         self._metadata.__enter__()
