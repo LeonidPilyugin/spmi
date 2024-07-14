@@ -10,9 +10,11 @@ from datetime import datetime
 from pathlib import Path
 from subprocess import getoutput
 from abc import ABCMeta, abstractmethod
+import spmi.core.manageables.task_.wrappers as wrappers_package
+import spmi.core.manageables.task_.backends as backends_package
 from spmi.core.manageable import Manageable, manageable, ManageableException
 from spmi.utils.metadata import MetaDataNode, MetaDataError, dontcheck
-from spmi.utils.load import load_module
+from spmi.utils.load import load_class_from_package
 from spmi.utils.logger import Logger
 from spmi.utils.exception import SpmiException
 
@@ -69,7 +71,7 @@ class TaskManageable(Manageable):
                 :class:`ValueError`
             """
             if not hasattr(self, "_backend_class"):
-                self._backend_class = TaskManageable.Backend.LoadHelper.get_backend(self)
+                self._backend_class = TaskManageable.Backend.get_backend_class(self)
             return self._backend(self._backend_class)
 
         @property
@@ -100,7 +102,7 @@ class TaskManageable(Manageable):
                 :class:`ValueError`
             """
             if not hasattr(self, "_wrapper_class"):
-                self._wrapper_class = TaskManageable.Wrapper.get_wrapper(self)
+                self._wrapper_class = TaskManageable.Wrapper.get_wrapper_class(self)
             return self._wrapper(self._wrapper_class)
 
         @property
@@ -215,52 +217,6 @@ class TaskManageable(Manageable):
                 if not self.id is None: del self.id
 
 
-        class LoadHelper:
-            """Helps to load classes."""
-            @staticmethod
-            def get_class_name(string):
-                """Converts ``string`` to class name.
-
-                Args:
-                    string (:obj:`str`): String.
-
-                Returns:
-                    :obj:`str`.
-                """
-                return string.capitalize() + "Backend"
-
-            @staticmethod
-            def get_backend(metadata):
-                """Returns backend.
-
-                Args:
-                    task_metadata (:obj:`TaskManageable.MetaDataHelper`): Metadata.
-
-                Returns:
-                    :obj:`TaskManageable.Backend`.
-
-                Raises:
-                    :class:`NotImplementedError`
-                """
-                for path in Path(__file__).parent.joinpath("task_/backends").iterdir():
-                    if path.is_file():
-                        module_name = f"_task_backend_realisation_{path.stem}"
-                        module = load_module(module_name, path)
-
-                        classes = list(
-                            filter(
-                                lambda x: x[0] == TaskManageable.Backend.LoadHelper.get_class_name(
-                                    metadata.common_backend.type
-                                ),
-                                inspect.getmembers(module)
-                            )
-                        )
-
-                        if len(classes) == 1:
-                            return classes[0][1]
-
-                raise NotImplementedError(f"Backend \"{name}\" is not implemented")
-
         @abstractmethod
         def submit(self, task_metadata):
             """Submits command.
@@ -273,7 +229,10 @@ class TaskManageable(Manageable):
 
             Raises:
                 :class:`BackendException`
+                :class:`TypeError`
             """
+            if not isinstance(task_metadata, TaskManageable.MetaDataHelper):
+                raise TypeError(f"task_metadata must be a TaskManageable.MetaDataHelper, not {type(task_metadata)}")
 
         @abstractmethod
         def term(self, task_metadata):
@@ -287,7 +246,10 @@ class TaskManageable(Manageable):
 
             Raises:
                 :class:`BackendException`
+                :class:`TypeError`
             """
+            if not isinstance(task_metadata, TaskManageable.MetaDataHelper):
+                raise TypeError(f"task_metadata must be a TaskManageable.MetaDataHelper, not {type(task_metadata)}")
 
         @abstractmethod
         def kill(self, task_metadata):
@@ -301,7 +263,10 @@ class TaskManageable(Manageable):
 
             Raises:
                 :class:`BackendException`
+                :class:`TypeError`
             """
+            if not isinstance(task_metadata, TaskManageable.MetaDataHelper):
+                raise TypeError(f"task_metadata must be a TaskManageable.MetaDataHelper, not {type(task_metadata)}")
 
         @abstractmethod
         def is_active(self, task_metadata):
@@ -315,22 +280,18 @@ class TaskManageable(Manageable):
 
             Raises:
                 :class:`BackendException`
+                :class:`TypeError`
             """
+            if not isinstance(task_metadata, TaskManageable.MetaDataHelper):
+                raise TypeError(f"task_metadata must be a TaskManageable.MetaDataHelper, not {type(task_metadata)}")
 
         @staticmethod
-        def get_backend(task_metadata):
-            """Returns backend.
-
-            Args:
-                task_metadata (:obj:`TaskManageable.MetaDataHelper`): Metadata.
-
-            Returns:
-                :obj:`TaskManageable.Backend`.
-
-            Raises:
-                :class:`NotImplementedError`
-            """
-            return TaskManageable.Backend.LoadHelper.get_backend(task_metadata)
+        def get_backend_class(metadata):
+            """Returns wrapper class by metadata"""
+            return load_class_from_package(
+                metadata.common_backend.type.capitalize() + "Backend",
+                backends_package,
+            )
 
 
     class Wrapper(metaclass=ABCMeta):
@@ -527,53 +488,6 @@ class TaskManageable(Manageable):
                 if not self.process_pid is None: del self.process_pid
 
 
-        class LoadHelper:
-            """Helps to load classes."""
-            @staticmethod
-            def get_class_name(string):
-                """Converts ``string`` to class name.
-
-                Args:
-                    string (:obj:`str`): String.
-
-                Returns:
-                    :obj:`str`.
-                """
-                return string.capitalize() + "Wrapper"
-
-            @staticmethod
-            def get_wrapper(metadata):
-                """Returns Wrapper.
-
-                Args:
-                    metadata (:obj:`TaskManageable.MetaDataHelper`): Metadata.
-
-                Returns:
-                    :obj:`TaskManageable.Wrapper`.
-
-                Raises:
-                    :class:`NotImplementedError`
-                """
-                for path in Path(__file__).parent.joinpath("task_/wrappers").iterdir():
-                    if path.is_file():
-                        module_name = f"_task_wrapper_realisation_{path.stem}"
-                        module = load_module(module_name, path)
-
-                        classes = list(
-                            filter(
-                                lambda x: x[0] == TaskManageable.Wrapper.LoadHelper.get_class_name(
-                                    metadata.common_wrapper.type
-                                ),
-                                inspect.getmembers(module)
-                            )
-                        )
-
-                        if len(classes) == 1:
-                            return classes[0][1]
-
-                raise NotImplementedError(f"Wrapper \"{name}\" is not implemented")
-
-
         @abstractmethod
         def start(self):
             """Start wrapper."""
@@ -583,13 +497,13 @@ class TaskManageable(Manageable):
             """Called on signal."""
 
         @staticmethod
-        def get_wrapper(metadata):
-            """Loads wrapper.
+        def get_wrapper_class(metadata):
+            """Returns wrapper class by metadata"""
+            return load_class_from_package(
+                metadata.common_wrapper.type.capitalize() + "Wrapper",
+                wrappers_package,
+            )
 
-            Raises:
-                :class:`NotImplementedError`
-            """
-            return TaskManageable.Wrapper.LoadHelper.get_wrapper(metadata)
 
     class Cli:
         """CLI for wrapper."""
@@ -628,7 +542,7 @@ class TaskManageable(Manageable):
             return TaskManageable.MetaDataHelper(data=datapath, meta=metapath)
 
     def __init__(self, *args, **kwargs):
-        self._backend = TaskManageable.Backend.get_backend(self._metadata)()
+        self._backend = TaskManageable.Backend.get_backend_class(self._metadata)()
 
     def start(self):
         super().start()
@@ -708,6 +622,6 @@ def set_signal_handlers(wrapper):
 if __name__ == "__main__":
     Logger.basic_config(loglevel="DEBUG" if "debug" in sys.argv else "INFO")
     metadata = TaskManageable.Cli.from_args()
-    wrapper = TaskManageable.Wrapper.get_wrapper(metadata)(metadata=metadata)
+    wrapper = TaskManageable.Wrapper.get_wrapper_class(metadata)(metadata=metadata)
     set_signal_handlers(wrapper)
     wrapper.start()

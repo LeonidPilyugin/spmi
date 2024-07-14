@@ -2,33 +2,38 @@
 """
 
 import sys
-import importlib.util
+import inspect
+import pkgutil
+import importlib
 from pathlib import Path
 
-def load_module(name, path):
-    """Loads module.
+def load_class_from_package(classname, package):
+    """Loads class from package by name.
+
+    Iterates throw ``package`` modules and returns a class
+    by ``classname`` if finds it.
 
     Args:
-        name (:obj:`str`): Module name.
-        path (:obj:`pathlib.Path`): Path to module file.
+        classname (:obj:`str`): Classname.
+        package (Python package): Package.
 
     Returns:
-        Loaded module.
+        :obj:`class`.
 
     Raises:
         :class:`TypeError`
-        :class:`ValueError`
+        :class:`NotImplementedError`
     """
-    if not isinstance(name, str):
-        raise TypeError(f"name must be a string, not {type(name)}")
-    if not isinstance(path, Path):
-        raise TypeError(f"path must be a pathlib.Path, not {type(path)}")
-    if not path.exists():
-        raise ValueError(f"Path {path} doesn't exist")
+    if not isinstance(classname, str):
+        raise TypeError(f"classname must be a str, not {type(classname)}")
+    if not inspect.ismodule(package):
+        raise TypeError(f"package must be a module, not {type(package)}")
 
-    spec = importlib.util.spec_from_file_location(name, path)
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[name] = module
-    spec.loader.exec_module(module)
+    for (_, mname, _) in pkgutil.iter_modules([Path(package.__file__).parent]):
+        module = importlib.import_module(package.__name__ + "." + mname)
+        classes = inspect.getmembers(module, inspect.isclass)
+        classes = list(filter(lambda x: x[0] == classname, classes))
+        if len(classes) == 1:
+            return classes[0][1]
 
-    return module
+    raise NotImplementedError(f"Cannot find \"{classname}\" in {package}")

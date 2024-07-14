@@ -6,12 +6,8 @@ Simple Process Management Interface
 > This project may be buggy because I haven't tested it much.
 
 ## TODO
-- [ ] Do smth with loader classes, they are awful
+- [ ] Document code more accurate
 - [ ] Develop SLURM backend
-- [ ] Create PyPI package
-
-## TODO
-- [ ] Add SLURM backend
 - [ ] Create PyPI package
 
 ## What is SPMI

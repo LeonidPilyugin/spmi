@@ -6,7 +6,8 @@ import shutil
 from datetime import datetime, timedelta
 from abc import abstractmethod, ABCMeta
 from pathlib import Path
-from spmi.utils.load import load_module
+import spmi.core.manageables as manageables_package
+from spmi.utils.load import load_class_from_package
 from spmi.utils.metadata import MetaData, MetaDataError, dontcheck
 from spmi.utils.logger import Logger
 from spmi.utils.io.io import Io
@@ -418,19 +419,6 @@ class Manageable(metaclass=ABCMeta):
 
     class LoadHelper:
         """Abstract load helper."""
-
-        @staticmethod
-        def get_class_name(string) -> str:
-            """Converts ``string`` to class name.
-
-            Args:
-                string (:obj:`str`): String.
-
-            Returns:
-                str.
-            """
-            return "".join([x.capitalize() for x in string.split()]) + "Manageable"
-
         @staticmethod
         def load_manageable_class(name):
             """Loads manageable class by name.
@@ -448,23 +436,11 @@ class Manageable(metaclass=ABCMeta):
             if not isinstance(name, str):
                 raise TypeError(f"name must be a str, not {type(name)}")
 
-            for path in Path(__file__).parent.joinpath("manageables").iterdir():
-                if path.is_file():
-                    module_name = f"{path.stem}"
-                    module = load_module(module_name, path)
+            return load_class_from_package(
+                "".join([x.capitalize() for x in name.split()]) + "Manageable",
+                manageables_package,
+            )
 
-                    classes = inspect.getmembers(module)
-                    classes = list(
-                        filter(
-                            lambda x: x[0] == Manageable.LoadHelper.get_class_name(name),
-                            inspect.getmembers(module)
-                        )
-                    )
-
-                    if len(classes) == 1:
-                        return classes[0][1]
-
-            raise NotImplementedError(f"Manageable type \"{name}\" is not implemented")
 
         @staticmethod
         def from_directory_unknown(path):

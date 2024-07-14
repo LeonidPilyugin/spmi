@@ -5,7 +5,8 @@ import inspect
 from abc import ABCMeta, abstractmethod
 from pathlib import Path
 from filelock import FileLock
-from spmi.utils.load import load_module
+import spmi.utils.io.ios as ios_package
+from spmi.utils.load import load_class_from_package
 from spmi.utils.exception import SpmiException
 
 def _get_lock(path):
@@ -189,18 +190,13 @@ class Io(metaclass=ABCMeta):
         if not Io.has_io(path.suffix):
             raise IoException(f"Unsupported suffix: {path.suffix}")
 
-        suffix = path.suffix[1:]
+        try:
+            cls = load_class_from_package(f"{path.suffix[1:].capitalize()}Io", ios_package)
+            return cls(path)
+        except NotImplementedError as e:
+            raise IoException(f"Unsupported suffix: {path.suffix} ({e})") from e
 
-        module = load_module(
-            f"__spmi_{suffix}_io_realisation",
-            Path(__file__).parent.joinpath(f"ios/{suffix}io.py")
-        )
-
-        return list(filter(
-            lambda x: inspect.isclass(x[1]) and issubclass(x[1], Io) and x[1] is not Io,
-            inspect.getmembers(module)
-        ))[0][1](path)
-
+        
     @staticmethod
     def lock_exists(path):
         """Returns ``True`` if ``path`` has a lock file.
