@@ -10,18 +10,12 @@ Execute next command to get help message:
 """
 
 import os
-import sys
-import traceback
-from typing import List
 from pathlib import Path
 from docopt import docopt
-from spmi.core.pool import Pool, PoolException
+from spmi.core.pool import Pool
 from spmi.utils.logger import Logger
-from spmi.utils.io.io import Io
 from spmi.utils.pattern import PatternMatcher, RegexPatternMatcher
-from spmi.core.manageable import Manageable, ManageableException
-from spmi.utils.exception import SpmiException
-from spmi.utils.metadata import MetaDataError
+from spmi.core.manageable import Manageable
 from spmi.utils.exception import SpmiException
 
 HELP_MESSAGE = r"""
@@ -55,11 +49,13 @@ Options:
 VERSION = "SPMI 0.0.1"
 """str: Version of SPMI"""
 
+
 class Spmi:
     """Main aplication class.
 
     Provides methods to start application.
     """
+
     class ArgumentsHelper:
         """Command line argument container.
 
@@ -134,7 +130,6 @@ class Spmi:
             """:obj:`str`: ID of task."""
             return self._args["<task_id>"]
 
-
     class ConfigHelper:
         """Manages SPMI configuration.
 
@@ -148,14 +143,16 @@ class Spmi:
         }
         """:obj:`dict` Default SPMI settings."""
 
-        def __init__(self, defaults = None):
+        def __init__(self, defaults=None):
             """
             Args:
                 defaults (:obj:`Union[dict, None]`): default settings.
                     If None, defaults are set from ``DEFAULTS`` attribute.
             """
             assert defaults is None or isinstance(defaults, dict)
-            self._dict = defaults if not defaults is None else dict(Spmi.ConfigHelper.DEFAULTS)
+            self._dict = (
+                defaults if not defaults is None else dict(Spmi.ConfigHelper.DEFAULTS)
+            )
             self.load()
 
             assert "SPMI_PATH" in self._dict
@@ -164,9 +161,9 @@ class Spmi:
             try:
                 path = Path(self._dict["SPMI_PATH"]).expanduser()
                 if path.exists() and not path.is_dir():
-                    raise SpmiException(f"Path \"{path}\" must be a directory")
+                    raise SpmiException(f'Path "{path}" must be a directory')
             except Exception as e:
-                raise SpmiException(f"Invalid \"SPMI_PATH\" variable:\n{e}") from e
+                raise SpmiException(f'Invalid "SPMI_PATH" variable:\n{e}') from e
 
         def load(self):
             """Loads system environment variables.
@@ -182,7 +179,6 @@ class Spmi:
         def path(self):
             """:obj:`pathlib.Path`: Path to SPMI home directory."""
             return Path(self._dict["SPMI_PATH"]).expanduser()
-
 
     def __init__(self, args, pm):
         """
@@ -203,7 +199,7 @@ class Spmi:
         self._config = Spmi.ConfigHelper()
 
         if not (self._config.path.is_dir() and self._config.path.exists()):
-            self._logger.info(f"Creating directory \"{self._config.path}\"")
+            self._logger.info(f'Creating directory "{self._config.path}"')
             self._config.path.mkdir(parents=True)
 
         self._logger.debug("Creating pool")
@@ -227,18 +223,20 @@ class Spmi:
         finally:
             self._logger.info(f"Loaded {loaded} manageable{'' if loaded == 1 else 's'}")
 
-
     def show_list(self):
         """Prints list of manageables."""
         self._logger.debug("Listing manageables")
 
         states = []
-        
         for manageable in self._pool.manageables:
             with manageable:
-                states.append((manageable.state, "active" if manageable.active else "inactive"))
+                states.append(
+                    (manageable.state, "active" if manageable.active else "inactive")
+                )
 
-        self._logger.info(f"Registered {len(self._pool.manageables)} manageable{'' if len(self._pool.manageables) == 1 else 's'}")
+        self._logger.info(
+            f"Registered {len(self._pool.manageables)} manageable{'' if len(self._pool.manageables) == 1 else 's'}"
+        )
 
         max_id_len = 1 if not states else max(map(lambda x: len(x[0].id), states)) + 1
         max_id_len = max(max_id_len, 10)
@@ -246,12 +244,22 @@ class Spmi:
         max_active_len = 1 if not states else max(map(lambda x: len(x[1]), states)) + 1
         max_active_len = max(max_active_len, 10)
 
-        max_comment_len = 1 if not states else max(map(lambda x: len(x[0].comment), states)) + 1
+        max_comment_len = (
+            1 if not states else max(map(lambda x: len(x[0].comment), states)) + 1
+        )
         max_comment_len = max(max_comment_len, 10)
 
-        print(f"{{:{max_id_len}}}{{:<{max_active_len}}}{{:<{max_comment_len}}}".format("ID", "ACTIVE", "COMMENT"))
+        print(
+            f"{{:{max_id_len}}}{{:<{max_active_len}}}{{:<{max_comment_len}}}".format(
+                "ID", "ACTIVE", "COMMENT"
+            )
+        )
         for s in states:
-            print(f"{{:<{max_id_len}}}{{:<{max_active_len}}}{{:<{max_comment_len}}}".format(s[0].id, s[1], s[0].comment))
+            print(
+                f"{{:<{max_id_len}}}{{:<{max_active_len}}}{{:<{max_comment_len}}}".format(
+                    s[0].id, s[1], s[0].comment
+                )
+            )
 
     def start(self, patterns):
         """Starts all manageables corresponding to pattern.
@@ -263,18 +271,18 @@ class Spmi:
         for pattern in patterns:
             to_start.extend(self._pool.find(pattern))
         started = 0
-        
+
         if len(to_start) == 0:
             self._logger.warning("Nothing to start")
         else:
             for manageable in to_start:
                 try:
-                    self._logger.info(f"Starting manageable \"{manageable.state.id}\"")
+                    self._logger.info(f'Starting manageable "{manageable.state.id}"')
                     with manageable:
                         manageable.start()
                     started += 1
                 except SpmiException as e:
-                    self._logger.error(f"Failed to start \"{manageable.state.id}\":\n{e}")
+                    self._logger.error(f'Failed to start "{manageable.state.id}":\n{e}')
                     if self._args.debug:
                         raise
 
@@ -296,12 +304,12 @@ class Spmi:
         else:
             for manageable in to_stop:
                 try:
-                    self._logger.info(f"Stopping manageable \"{manageable.state.id}\"")
+                    self._logger.info(f'Stopping manageable "{manageable.state.id}"')
                     with manageable:
                         manageable.term()
                     stopped += 1
                 except SpmiException as e:
-                    self._logger.error(f"Failed to stop \"{manageable.state.id}\":\n{e}")
+                    self._logger.error(f'Failed to stop "{manageable.state.id}":\n{e}')
                     if self._args.debug:
                         raise
 
@@ -323,12 +331,12 @@ class Spmi:
         else:
             for manageable in to_kill:
                 try:
-                    self._logger.info(f"Killing manageable \"{manageable.state.id}\"")
+                    self._logger.info(f'Killing manageable "{manageable.state.id}"')
                     with manageable:
                         manageable.kill()
                     killed += 1
                 except SpmiException as e:
-                    self._logger.error(f"Failed to kill \"{manageable.state.id}\":\n{e}")
+                    self._logger.error(f'Failed to kill "{manageable.state.id}":\n{e}')
                     if self._args.debug:
                         raise
 
@@ -353,7 +361,6 @@ class Spmi:
 
         self._logger.info(f"Showed {len(to_show)} manageables")
 
-
     def clean(self, patterns):
         """Cleans all manageables corresponding to pattern.
 
@@ -370,12 +377,12 @@ class Spmi:
         else:
             for manageable in to_clean:
                 try:
-                    self._logger.info(f"Cleaning manageable \"{manageable.state.id}\"")
+                    self._logger.info(f'Cleaning manageable "{manageable.state.id}"')
                     with manageable:
                         manageable.destruct()
                     cleaned += 1
                 except SpmiException as e:
-                    self._logger.error(f"Failed to clean \"{manageable.state.id}\":\n{e}")
+                    self._logger.error(f'Failed to clean "{manageable.state.id}":\n{e}')
                     if self._args.debug:
                         raise
 
@@ -426,8 +433,5 @@ class Spmi:
 
 
 if __name__ == "__main__":
-    try:
-        spmi = Spmi(docopt(HELP_MESSAGE, version=VERSION), RegexPatternMatcher())
-        spmi.execute()
-    except Exception as e:
-        raise
+    spmi = Spmi(docopt(HELP_MESSAGE, version=VERSION), RegexPatternMatcher())
+    spmi.execute()

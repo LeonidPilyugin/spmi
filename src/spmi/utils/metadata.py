@@ -7,11 +7,14 @@ from spmi.utils.io.io import Io
 from spmi.utils.logger import Logger
 from spmi.utils.exception import SpmiException
 
+
 class MetaDataError(SpmiException):
     pass
 
+
 class IncorrectProperty(MetaDataError):
     pass
+
 
 def dontcheck(prop):
     """Decorate properties you don't want to check.
@@ -63,12 +66,14 @@ def dontcheck(prop):
 
     return prop
 
+
 class MetaDataNode:
     """Provides property access to ``meta`` and ``data`` dictionaries.
 
     ``data`` is immutable dictionary, ``meta`` is mutable.
     If ``mutable`` flag is set to ``False``, ``meta`` become immutable.
     """
+
     def __init__(self, meta=None, data=None, metadata=None, mutable=True, copy=False):
         """
         Args:
@@ -90,8 +95,10 @@ class MetaDataNode:
         self.__mutable = mutable
 
         if metadata is None:
-            if data is None: data = {}
-            if meta is None: meta = {}
+            if data is None:
+                data = {}
+            if meta is None:
+                meta = {}
 
             if not isinstance(meta, dict):
                 raise TypeError(f"meta must be a dict, not {type(meta)}")
@@ -107,9 +114,13 @@ class MetaDataNode:
                 raise ValueError(f"data must be a dict which can be deepcopied")
         else:
             if not (meta is None and data is None):
-                raise ValueError(f"metadata is not None, so meta and data must be None, not {meta} and {data}")
+                raise ValueError(
+                    f"metadata is not None, so meta and data must be None, not {meta} and {data}"
+                )
             if not isinstance(metadata, MetaDataNode):
-                raise TypeError(f"metadata must be a MetaDataNode, not {type(metadata)}")
+                raise TypeError(
+                    f"metadata must be a MetaDataNode, not {type(metadata)}"
+                )
             self._meta = metadata._meta if not copy else deepcopy(metadata._meta)
             self._data = metadata._data if not copy else deepcopy(metadata._data)
         self.check_properties()
@@ -130,20 +141,15 @@ class MetaDataNode:
         # default value. If can, continue.
         # If not, wil raise an exception.
 
-        failed_attr = None
-
         try:
             self._logger.debug("Checking attributes")
 
             for p in dir(self.__class__):
-                failes_attr = p
                 property_object = getattr(self.__class__, p)
-                if isinstance(
-                    property_object,
-                    property
-                ) and property_object.fget and not hasattr(
-                    property_object.fget,
-                    "_spmi_metadata_dontcheck"
+                if (
+                    isinstance(property_object, property)
+                    and property_object.fget
+                    and not hasattr(property_object.fget, "_spmi_metadata_dontcheck")
                 ):
                     if self.mutable and property_object.fset:
                         # Set property with default value.
@@ -153,8 +159,8 @@ class MetaDataNode:
                         getattr(self, p)
             self._logger.debug("All attributes are correct")
         except Exception as e:
-            self._logger.debug(f"Failed \"{p}\" attribute")
-            raise IncorrectProperty(f"Property \"{p}\" is incorrect:\n{e}") from e
+            self._logger.debug(f'Failed "{p}" attribute')
+            raise IncorrectProperty(f'Property "{p}" is incorrect:\n{e}') from e
 
     @property
     def mutable(self):
@@ -183,8 +189,8 @@ class MetaDataNode:
 
 
 class MetaData(MetaDataNode):
-    """Provides property and file access to meta and data.
-    """
+    """Provides property and file access to meta and data."""
+
     def __init__(self, data=None, meta=None, mutable=True, metadata=None, copy=True):
         """
         Args:
@@ -216,15 +222,25 @@ class MetaData(MetaDataNode):
                 self.__meta_io = Io.get_io(meta)
                 meta = self.__data_io.blocking_load()
         else:
-            self.__data_io = metadata.__data_io if not (metadata.__data_io and copy) else metadata.__data_io.copy()
-            self.__meta_io = metadata.__meta_io if not (metadata.__meta_io and copy) else metadata.__meta_io.copy()
+            self.__data_io = (
+                metadata.__data_io
+                if not (metadata.__data_io and copy)
+                else metadata.__data_io.copy()
+            )
+            self.__meta_io = (
+                metadata.__meta_io
+                if not (metadata.__meta_io and copy)
+                else metadata.__meta_io.copy()
+            )
 
         try:
-            super().__init__(meta=meta, data=data, metadata=metadata, mutable=mutable, copy=copy)
+            super().__init__(
+                meta=meta, data=data, metadata=metadata, mutable=mutable, copy=copy
+            )
         except IncorrectProperty as e:
-            msg = f"Cannot load from \"{data}\""
+            msg = f'Cannot load from "{data}"'
             if meta:
-                msg += f" and \"{meta}\""
+                msg += f' and "{meta}"'
             msg += f":\n{e}"
             raise MetaDataError(msg) from e
 
@@ -242,7 +258,7 @@ class MetaData(MetaDataNode):
     @meta_path.setter
     def meta_path(self, value):
         if self.__entered:
-            raise MetaDataError("Cannot change meta path, entered a \"with\" statement")
+            raise MetaDataError('Cannot change meta path, entered a "with" statement')
         if not self.mutable:
             raise MetaDataError("Must be mutable")
         if not (value is None or isinstance(value, Path)):
@@ -270,7 +286,7 @@ class MetaData(MetaDataNode):
     @data_path.setter
     def data_path(self, value):
         if self.__entered:
-            raise MetaDataError("Cannot change data path, entered a \"with\" statement")
+            raise MetaDataError('Cannot change data path, entered a "with" statement')
         if not self.mutable:
             raise MetaDataError("Must be mutable")
         if not (value is None or isinstance(value, Path)):
@@ -342,7 +358,7 @@ class MetaData(MetaDataNode):
         """
         self._logger.debug("Locking")
         if self.__entered:
-            raise MetaDataError("Cannot acquire inside \"with\" statement")
+            raise MetaDataError('Cannot acquire inside "with" statement')
         if not self.mutable:
             raise MetaDataError("Must be mutable")
         if not self.__data_io:
@@ -364,7 +380,7 @@ class MetaData(MetaDataNode):
         """
         self._logger.debug("Releasing")
         if self.__entered:
-            raise MetaDataError("Cannot release inside \"with\" statement")
+            raise MetaDataError('Cannot release inside "with" statement')
         if not self.mutable:
             raise MetaDataError("Must be mutable")
         if not self.__data_io:
@@ -386,7 +402,7 @@ class MetaData(MetaDataNode):
         """
         self._logger.debug("Procesing blocking load.")
         if self.__entered:
-            raise MetaDataError("Cannot process blocking load inside \"with\" statement")
+            raise MetaDataError('Cannot process blocking load inside "with" statement')
         if not self.mutable:
             raise MetaDataError("Must be mutable")
         if not self.__data_io:
@@ -408,7 +424,7 @@ class MetaData(MetaDataNode):
         """
         self._logger.debug("Processing blocking dump.")
         if self.__entered:
-            raise MetaDataError("Cannot process blocking dump inside \"with\" statement")
+            raise MetaDataError('Cannot process blocking dump inside "with" statement')
         if not self.mutable:
             raise MetaDataError("Must be mutable")
         if not self.__data_io:
@@ -419,23 +435,23 @@ class MetaData(MetaDataNode):
         self.__meta_io.blocking_dump(self._meta)
 
     def __enter__(self):
-        self._logger.debug("Entering \"with\" statement")
+        self._logger.debug('Entering "with" statement')
         if self.__entered:
-            raise MetaDataError("Already entered \"with\" statement")
+            raise MetaDataError('Already entered "with" statement')
         self.acquire()
         self.__entered = True
         self.load()
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
-        self._logger.debug("Exiting \"with\" statement")
+        self._logger.debug('Exiting "with" statement')
         self.__entered = False
         if self.__meta_io and self.__data_io:
             self.dump()
             self.release()
 
     @classmethod
-    def is_correct_meta_data(cls, data, meta = None):
+    def is_correct_meta_data(cls, data, meta=None):
         """Returns ``True`` if meta and data may be meta and data of manageable.
 
         Args:

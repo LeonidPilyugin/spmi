@@ -4,11 +4,11 @@
 import os
 import time
 import signal
-import shlex
 import subprocess
 import multiprocessing
 from datetime import datetime
 from spmi.core.manageables.task import TaskManageable
+
 
 class DefaultWrapper(TaskManageable.Wrapper):
 
@@ -17,6 +17,7 @@ class DefaultWrapper(TaskManageable.Wrapper):
 
     def _start_daemon_process(self):
         """Starts a daemon process which prevents EOF of wrapped command."""
+
         def daemon(exit_event, path):
             fifo_write = os.open(path, os.O_WRONLY)
             while not exit_event.is_set():
@@ -30,9 +31,8 @@ class DefaultWrapper(TaskManageable.Wrapper):
         )
         self._daemon_process.start()
 
-
     def start(self):
-        self._logger.info(f"Starting \"{self._metadata.wrapper.command}\" process")
+        self._logger.info(f'Starting "{self._metadata.wrapper.command}" process')
 
         to_close = []
 

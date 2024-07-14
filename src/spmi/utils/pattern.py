@@ -4,6 +4,7 @@
 import re
 from abc import ABCMeta, abstractmethod
 
+
 class PatternMatcher(metaclass=ABCMeta):
     """Provides methods to match pattern strings."""
 
@@ -43,6 +44,7 @@ class PatternMatcher(metaclass=ABCMeta):
 
 class SimplePatternMatcher(PatternMatcher):
     """Simple pattern matcher."""
+
     def is_pattern(self, string):
         super().is_pattern(string)
         return True
@@ -51,8 +53,10 @@ class SimplePatternMatcher(PatternMatcher):
         super().match(pattern, string)
         return string == pattern
 
+
 class RegexPatternMatcher(PatternMatcher):
     """Regex pattern matcher."""
+
     def is_pattern(self, string):
         super().is_pattern(string)
         try:

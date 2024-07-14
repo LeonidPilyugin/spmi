@@ -36,23 +36,23 @@ class SlurmBackend(TaskManageable.Backend):
 
         self._logger.debug(f"Loaded {len(job_ids)} IDs")
 
-    def _generate_command(self, metadata):
+    def _generate_command(self, task_metadata):
         command = "sbatch "
         for option in matedata.backend.options:
             command += f"{option} "
-        command += "'{metadata.backend.command}'"
+        command += "'{task_metadata.backend.command}'"
         return command
 
-    def submit(self, metadata):
-        super().submit(metadata)
+    def submit(self, task_metadata):
+        super().submit(task_metadata)
         self._logger.debug("Submitting a new task")
 
-        metadata.backend.log_path = metadata.path.joinpath("backend.log")
+        task_metadata.backend.log_path = task_metadata.path.joinpath("backend.log")
 
         self.load_jobs()
         old_ids = self._job_ids
 
-        if os.system(self._generate_command(metadata)) != 0:
+        if os.system(self._generate_command(task_metadata)) != 0:
             raise SlurmBackendException("Sbatch failed.")
 
         self.load_jobs()
@@ -61,20 +61,20 @@ class SlurmBackend(TaskManageable.Backend):
             raise SlurmBackendException("New job is not started")
 
         job_id = list(self._job_ids - old_ids)[0]
-        metadata.backend.id = job_id
+        task_metadata.backend.id = job_id
 
         self._logger.debug(f"New job ID: {screen_id}")
 
-    def term(self, metadata):
-        super().term(metadata)
-        if os.system(f"scancel {metadata.backend.id}") != 0:
-            raise SlurmBackendException(f"Cannot cancel job {metadata.backend.id}")
+    def term(self, task_metadata):
+        super().term(task_metadata)
+        if os.system(f"scancel {task_metadata.backend.id}") != 0:
+            raise SlurmBackendException(f"Cannot cancel job {task_metadata.backend.id}")
 
-    def kill(self, metadata):
-        super().kill(metadata)
-        self.term(metadata)
+    def kill(self, task_metadata):
+        super().kill(task_metadata)
+        self.term(task_metadata)
 
-    def is_active(self, metadata):
-        super().is_active(metadata)
+    def is_active(self, task_metadata):
+        super().is_active(task_metadata)
         self.load_jobs()
-        return metadata.backend.id in self._job_ids
+        return task_metadata.backend.id in self._job_ids

@@ -6,16 +6,18 @@ from spmi.utils.pattern import PatternMatcher
 from spmi.utils.logger import Logger
 from spmi.core.manageable import Manageable, ManageableException
 from spmi.utils.exception import SpmiException
-from spmi.utils.metadata import MetaDataError
-from spmi.utils.io.io import Io
+
 
 class PoolException(SpmiException):
     pass
 
+
 class Pool:
     """A class which helps to manage Manageables."""
+
     class FileSystemHelper:
         """Provides several methods to work with filesystem."""
+
         def __init__(self, path):
             """
             Arguments:
@@ -32,11 +34,11 @@ class Pool:
             self._logger.debug(f"Creating object with path {path}")
 
             if not isinstance(path, Path):
-                raise TypeError(f"path must be a pathlib.Path, not {type(dm)}")
+                raise TypeError(f"path must be a pathlib.Path, not {type(path)}")
             if not path.exists():
                 path.mkdir()
             if not path.is_dir():
-                raise PoolException(f"Path \"{path}\" exists and is not a directory")
+                raise PoolException(f'Path "{path}" exists and is not a directory')
 
             self._path = path
 
@@ -53,7 +55,9 @@ class Pool:
                 try:
                     result.append(Manageable.from_directory_unknown(path))
                 except ManageableException as e:
-                    self._logger.warning(f"Cannot load a registered manageable from \"{path}\":\n{e}")
+                    self._logger.warning(
+                        f'Cannot load a registered manageable from "{path}":\n{e}'
+                    )
 
             return result
 
@@ -68,13 +72,14 @@ class Pool:
                 :class:`ManageableException`
             """
             if not isinstance(manageable, Manageable):
-                raise TypeError(f"manageable must be a Manageable, not {type(manageable)}")
+                raise TypeError(
+                    f"manageable must be a Manageable, not {type(manageable)}"
+                )
 
             self._logger.debug("Registering a manageable {manageable.state.id}")
 
             path = self._path.joinpath(manageable.state.id)
             manageable.register(path)
-
 
     def __init__(self, path, pm):
         """
@@ -101,7 +106,7 @@ class Pool:
     def manageables(self):
         """:obj:`list` of :obj:`Manageable`. Copy of list with registered manageables."""
         return list(self._manageables)
-        
+
     def find(self, pattern):
         """Return list of manageables corresponding to pattern.
 
@@ -111,7 +116,7 @@ class Pool:
         Returns:
             :obj:`list` of :obj:`spmi.core.manageable.Manageable`.
         """
-        self._logger.debug(f"Searching \"{pattern}\"")
+        self._logger.debug(f'Searching "{pattern}"')
 
         result = []
         for m in self._manageables:
@@ -134,13 +139,15 @@ class Pool:
             :class:`ManageableException`
             :class:`PoolException`
         """
-        self._logger.debug(f"Registering a new manageable \"{manageable.state.id}\"")
+        self._logger.debug(f'Registering a new manageable "{manageable.state.id}"')
         if manageable.state.id in map(lambda x: x.state.id, self._manageables):
-            raise PoolException(f"Manageable with ID \"{manageable.state.id}\" is already registered")
+            raise PoolException(
+                f'Manageable with ID "{manageable.state.id}" is already registered'
+            )
         if not isinstance(manageable, Manageable):
             raise TypeError(f"manageable must be a Manageable, not {type(manageable)}")
 
         self._fsh.register(manageable)
         self._manageables.append(manageable)
 
-        self._logger.debug(f"Manageable \"{manageable.state.id}\" registered")
+        self._logger.debug(f'Manageable "{manageable.state.id}" registered')

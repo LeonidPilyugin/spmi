@@ -4,7 +4,6 @@
 import os
 import sys
 import signal
-import inspect
 import logging
 from datetime import datetime
 from pathlib import Path
@@ -16,16 +15,19 @@ from spmi.core.manageable import Manageable, manageable, ManageableException
 from spmi.utils.metadata import MetaDataNode, MetaDataError, dontcheck
 from spmi.utils.load import load_class_from_package
 from spmi.utils.logger import Logger
-from spmi.utils.exception import SpmiException
+
 
 class TaskManageableException(ManageableException):
     pass
 
+
 class BackendException(TaskManageableException):
     pass
 
+
 class WrapperException(TaskManageableException):
     pass
+
 
 @manageable
 class TaskManageable(Manageable):
@@ -46,12 +48,15 @@ class TaskManageable(Manageable):
         command = "sleep 10"    # command to execute
 
     """
+
     class MetaDataHelper(Manageable.MetaDataHelper):
         def _backend(self, cls):
             if "backend" not in self.m_data:
-                raise ValueError("Data should contain \"backend\" dictionary")
+                raise ValueError('Data should contain "backend" dictionary')
             if not isinstance(self.m_data["backend"], dict):
-                raise ValueError(f"\"backend\" must be a dict, not {type(self.m_data['backend'])}")
+                raise ValueError(
+                    f"\"backend\" must be a dict, not {type(self.m_data['backend'])}"
+                )
 
             if "backend" not in self._meta:
                 self._meta["backend"] = {}
@@ -60,7 +65,7 @@ class TaskManageable(Manageable):
                 data=self.m_data["backend"],
                 meta=self._meta["backend"],
                 copy=not self.mutable,
-                mutable=self.mutable
+                mutable=self.mutable,
             )
 
         @property
@@ -80,9 +85,11 @@ class TaskManageable(Manageable):
 
         def _wrapper(self, cls):
             if "wrapper" not in self.m_data:
-                raise ValueError("Data should contain \"wrapper\" dictionary")
+                raise ValueError('Data should contain "wrapper" dictionary')
             if not isinstance(self.m_data["wrapper"], dict):
-                raise ValueError(f"\"wrapper\" must be a dict, not {type(self.m_data['wrapper'])}")
+                raise ValueError(
+                    f"\"wrapper\" must be a dict, not {type(self.m_data['wrapper'])}"
+                )
 
             if "wrapper" not in self._meta:
                 self._meta["wrapper"] = {}
@@ -91,7 +98,7 @@ class TaskManageable(Manageable):
                 data=self.m_data["wrapper"],
                 meta=self._meta["wrapper"],
                 copy=not self.mutable,
-                mutable=self.mutable
+                mutable=self.mutable,
             )
 
         @property
@@ -114,7 +121,6 @@ class TaskManageable(Manageable):
             self.backend.reset()
             self.wrapper.reset()
 
-
     class Backend(metaclass=ABCMeta):
         """Provides an interface to process manager.
 
@@ -122,8 +128,10 @@ class TaskManageable(Manageable):
         package in own file.
         Its name should be written in PascalCase and ended with "Backend".
         """
+
         class MetaDataHelper(MetaDataNode):
             """Provides access to data."""
+
             @property
             def type(self):
                 """:obj:`str`. Backend type."""
@@ -179,7 +187,7 @@ class TaskManageable(Manageable):
             def command(self):
                 if not self.mutable:
                     raise MetaDataError("Must be mutable")
-                del self ["start_command"]
+                del self["start_command"]
 
             @dontcheck
             @property
@@ -200,7 +208,9 @@ class TaskManageable(Manageable):
                 if not self.mutable:
                     raise MetaDataError("Must be mutable")
                 if not (value is None or isinstance(value, Path)):
-                    raise TypeError(f"value must be None or pathlib.Path, not {type(value)}")
+                    raise TypeError(
+                        f"value must be None or pathlib.Path, not {type(value)}"
+                    )
                 self._meta["log_path"] = None if value is None else str(value.resolve())
 
             @log_path.deleter
@@ -213,9 +223,10 @@ class TaskManageable(Manageable):
                 del self._meta["log_path"]
 
             def reset(self):
-                if self.log_path: del self.log_path
-                if not self.id is None: del self.id
-
+                if self.log_path:
+                    del self.log_path
+                if not self.id is None:
+                    del self.id
 
         @abstractmethod
         def submit(self, task_metadata):
@@ -232,7 +243,9 @@ class TaskManageable(Manageable):
                 :class:`TypeError`
             """
             if not isinstance(task_metadata, TaskManageable.MetaDataHelper):
-                raise TypeError(f"task_metadata must be a TaskManageable.MetaDataHelper, not {type(task_metadata)}")
+                raise TypeError(
+                    f"task_metadata must be a TaskManageable.MetaDataHelper, not {type(task_metadata)}"
+                )
 
         @abstractmethod
         def term(self, task_metadata):
@@ -249,7 +262,9 @@ class TaskManageable(Manageable):
                 :class:`TypeError`
             """
             if not isinstance(task_metadata, TaskManageable.MetaDataHelper):
-                raise TypeError(f"task_metadata must be a TaskManageable.MetaDataHelper, not {type(task_metadata)}")
+                raise TypeError(
+                    f"task_metadata must be a TaskManageable.MetaDataHelper, not {type(task_metadata)}"
+                )
 
         @abstractmethod
         def kill(self, task_metadata):
@@ -266,7 +281,9 @@ class TaskManageable(Manageable):
                 :class:`TypeError`
             """
             if not isinstance(task_metadata, TaskManageable.MetaDataHelper):
-                raise TypeError(f"task_metadata must be a TaskManageable.MetaDataHelper, not {type(task_metadata)}")
+                raise TypeError(
+                    f"task_metadata must be a TaskManageable.MetaDataHelper, not {type(task_metadata)}"
+                )
 
         @abstractmethod
         def is_active(self, task_metadata):
@@ -274,7 +291,7 @@ class TaskManageable(Manageable):
 
             Args:
                 task_metadata (:obj:`TaskManageable.MetaDataHelper`): Metadata.
-            
+
             Returns:
                 :obj:`bool`.
 
@@ -283,7 +300,9 @@ class TaskManageable(Manageable):
                 :class:`TypeError`
             """
             if not isinstance(task_metadata, TaskManageable.MetaDataHelper):
-                raise TypeError(f"task_metadata must be a TaskManageable.MetaDataHelper, not {type(task_metadata)}")
+                raise TypeError(
+                    f"task_metadata must be a TaskManageable.MetaDataHelper, not {type(task_metadata)}"
+                )
 
         @staticmethod
         def get_backend_class(metadata):
@@ -293,7 +312,6 @@ class TaskManageable(Manageable):
                 backends_package,
             )
 
-
     class Wrapper(metaclass=ABCMeta):
         """Class which handles a command execution.
 
@@ -301,6 +319,7 @@ class TaskManageable(Manageable):
         package in own file.
         Its name should be written in PascalCase and ended with "Wrapper".
         """
+
         @abstractmethod
         def __init__(self, metadata=None):
             self._logger = Logger(self.__class__.__name__)
@@ -346,8 +365,12 @@ class TaskManageable(Manageable):
                 if not self.mutable:
                     raise MetaDataError("Must be mutable")
                 if not (value is None or isinstance(value, Path)):
-                    raise TypeError(f"value must be None or pathlib.Path, not {type(value)}")
-                self._meta["stdout_path"] = None if value is None else str(value.resolve())
+                    raise TypeError(
+                        f"value must be None or pathlib.Path, not {type(value)}"
+                    )
+                self._meta["stdout_path"] = (
+                    None if value is None else str(value.resolve())
+                )
 
             @stdout_path.deleter
             def stdout_path(self):
@@ -379,8 +402,12 @@ class TaskManageable(Manageable):
                 if not self.mutable:
                     raise MetaDataError("Must be mutable")
                 if not (value is None or isinstance(value, Path)):
-                    raise TypeError(f"value must be None or pathlib.Path, not {type(value)}")
-                self._meta["stderr_path"] = None if value is None else str(value.resolve())
+                    raise TypeError(
+                        f"value must be None or pathlib.Path, not {type(value)}"
+                    )
+                self._meta["stderr_path"] = (
+                    None if value is None else str(value.resolve())
+                )
 
             @stderr_path.deleter
             def stderr_path(self):
@@ -410,8 +437,12 @@ class TaskManageable(Manageable):
                 if not self.mutable:
                     raise MetaDataError("Must be mutable")
                 if not (value is None or isinstance(value, Path)):
-                    raise TypeError(f"value must be None or pathlib.Path, not {type(value)}")
-                self._meta["stdin_path"] = None if value is None else str(value.resolve())
+                    raise TypeError(
+                        f"value must be None or pathlib.Path, not {type(value)}"
+                    )
+                self._meta["stdin_path"] = (
+                    None if value is None else str(value.resolve())
+                )
 
                 if value:
                     os.mkfifo(value)
@@ -481,19 +512,23 @@ class TaskManageable(Manageable):
                 del self._meta["exit_code"]
 
             def reset(self):
-                if self.stdin_path: del self.stdin_path
-                if self.stdout_path: del self.stdout_path
-                if self.stderr_path and self.mixed_stdout: del self.stderr_path
-                if not self.exit_code is None: del self.exit_code
-                if not self.process_pid is None: del self.process_pid
-
+                if self.stdin_path:
+                    del self.stdin_path
+                if self.stdout_path:
+                    del self.stdout_path
+                if self.stderr_path and self.mixed_stdout:
+                    del self.stderr_path
+                if not self.exit_code is None:
+                    del self.exit_code
+                if not self.process_pid is None:
+                    del self.process_pid
 
         @abstractmethod
         def start(self):
             """Start wrapper."""
 
         @abstractmethod
-        def on_signal(self, signal, frame):
+        def on_signal(self, signum, frame):
             """Called on signal."""
 
         @staticmethod
@@ -504,9 +539,9 @@ class TaskManageable(Manageable):
                 wrappers_package,
             )
 
-
     class Cli:
         """CLI for wrapper."""
+
         @staticmethod
         def command(task_metadata):
             """Start command.
@@ -522,11 +557,17 @@ class TaskManageable(Manageable):
                 :class:`ValueError`
             """
             if not isinstance(task_metadata, TaskManageable.MetaDataHelper):
-                raise TypeError(f"task_metadata must be a TaskManageable.MetaDataHelper, not {type(task_metadata)}")
+                raise TypeError(
+                    f"task_metadata must be a TaskManageable.MetaDataHelper, not {type(task_metadata)}"
+                )
             if "'" in str(task_metadata.data_path):
-                raise ValueError(f"Data path \"{task_metadata.data_path}\" must not contain \"'\"")
+                raise ValueError(
+                    f'Data path "{task_metadata.data_path}" must not contain "\'"'
+                )
             if "'" in str(task_metadata.meta_path):
-                raise ValueError(f"Meta path \"{task_metadata.meta_path}\" must not contain \"'\"")
+                raise ValueError(
+                    f'Meta path "{task_metadata.meta_path}" must not contain "\'"'
+                )
             result = f"/usr/bin/env python3 '{__file__}' '{task_metadata.data_path}' '{task_metadata.meta_path}'"
             if Logger.log_level() == logging.DEBUG:
                 result += " debug"
@@ -566,7 +607,7 @@ class TaskManageable(Manageable):
 
     def destruct(self):
         super().destruct()
-        
+
     def status_string(self, align=0):
         """Returns status string of this manageable.
 
@@ -575,18 +616,16 @@ class TaskManageable(Manageable):
         """
         align = max(
             align,
-            max(
-                map(
-                    lambda x: len(x),
-                    [
-                        "Backend type",
-                        "Backend ID",
-                        "Wrapper type",
-                        "Command",
-                        "PID",
-                        "Exit code",
-                    ]
-                )
+            map(
+                len,
+                [
+                    "Backend type",
+                    "Backend ID",
+                    "Wrapper type",
+                    "Command",
+                    "PID",
+                    "Exit code",
+                ],
             )
         )
 
@@ -600,7 +639,9 @@ class TaskManageable(Manageable):
         if isinstance(state.wrapper.process_pid, int):
             result += f"{{:>{align}}}: {{:}}\n".format("PID", state.wrapper.process_pid)
         if isinstance(state.wrapper.exit_code, int):
-            result += f"{{:>{align}}}: {{:}}\n".format("Exit code", state.wrapper.exit_code)
+            result += f"{{:>{align}}}: {{:}}\n".format(
+                "Exit code", state.wrapper.exit_code
+            )
 
         if isinstance(state.wrapper.stdout_path, Path):
             result += "\n"
@@ -618,6 +659,7 @@ def set_signal_handlers(wrapper):
             signal.signal(signum, wrapper.on_signal)
         except (OSError, ValueError):
             continue
+
 
 if __name__ == "__main__":
     Logger.basic_config(loglevel="DEBUG" if "debug" in sys.argv else "INFO")

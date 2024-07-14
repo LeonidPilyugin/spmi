@@ -1,20 +1,21 @@
 """Provides :class:`Manageable`.
 """
 
-import inspect
 import shutil
 from datetime import datetime, timedelta
 from abc import abstractmethod, ABCMeta
 from pathlib import Path
 import spmi.core.manageables as manageables_package
 from spmi.utils.load import load_class_from_package
-from spmi.utils.metadata import MetaData, MetaDataError, dontcheck
+from spmi.utils.metadata import MetaData, MetaDataError
 from spmi.utils.logger import Logger
 from spmi.utils.io.io import Io
 from spmi.utils.exception import SpmiException
 
+
 class ManageableException(SpmiException):
     pass
+
 
 def manageable(cls):
     """All manageables should be decorated with it.
@@ -26,6 +27,7 @@ def manageable(cls):
     Raises:
         :class:`AttributeError`
     """
+
     def __new_init__(self, *args, data=None, meta=None, **kwargs):
         if not data:
             raise ValueError("Cannot create Manageable with empty data")
@@ -36,15 +38,19 @@ def manageable(cls):
             self._metadata = cls.MetaDataHelper(data=data, meta=meta, **kwargs)
             self._metadata._outer_object = self
 
-        self._logger.debug(f"Creating \"{self.state.id}\"")
+        self._logger.debug(f'Creating "{self.state.id}"')
 
         if self.__old_init__:
             self.__old_init__(*args, data=data, meta=meta, **kwargs)
 
     if not "MetaDataHelper" in dir(cls):
-        raise AttributeError("Each manageable must have a nested \"MetaDataHelper\" class")
+        raise AttributeError(
+            'Each manageable must have a nested "MetaDataHelper" class'
+        )
     if not "FileSystemHelper" in dir(cls):
-        raise AttributeError("Each manageable must have a nested \"FileSystemHelper\" class")
+        raise AttributeError(
+            'Each manageable must have a nested "FileSystemHelper" class'
+        )
 
     cls.FileSystemHelper._outer_class = cls
 
@@ -61,8 +67,10 @@ class Manageable(metaclass=ABCMeta):
     package in own file and decorated with :func:`manageable`. Its name
     should be written in PascalCase and ended with "Manageable".
     """
+
     class MetaDataHelper(MetaData):
         _DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
+
         @property
         def prefered_suffix(self):
             """:obj:`str`. Prefered suffix.
@@ -92,10 +100,14 @@ class Manageable(metaclass=ABCMeta):
             """
             keys = list(self._data.keys())
             if len(keys) != 1:
-                raise ValueError(f"Data dictionary must contain 1 element, not {len(keys)}")
+                raise ValueError(
+                    f"Data dictionary must contain 1 element, not {len(keys)}"
+                )
             key = keys[0]
             if not isinstance(key, str):
-                raise ValueError(f"Type of key in data dictionary must be str, not {type(key)}")
+                raise ValueError(
+                    f"Type of key in data dictionary must be str, not {type(key)}"
+                )
 
             return key
 
@@ -157,7 +169,9 @@ class Manageable(metaclass=ABCMeta):
                 :class:`MetaDataError`
             """
             if "start_time" in self._meta and self._meta["start_time"]:
-                return datetime.strptime(self._meta["start_time"], Manageable.MetaDataHelper._DATETIME_FORMAT)
+                return datetime.strptime(
+                    self._meta["start_time"], Manageable.MetaDataHelper._DATETIME_FORMAT
+                )
             return None
 
         @start_time.setter
@@ -167,7 +181,9 @@ class Manageable(metaclass=ABCMeta):
             if not (value is None or isinstance(value, datetime)):
                 raise TypeError(f"value must be None or datetime, not {type(value)}")
             if value:
-                self._meta["start_time"] = value.strftime(Manageable.MetaDataHelper._DATETIME_FORMAT)
+                self._meta["start_time"] = value.strftime(
+                    Manageable.MetaDataHelper._DATETIME_FORMAT
+                )
             else:
                 self._meta["finish_time"] = None
 
@@ -186,7 +202,10 @@ class Manageable(metaclass=ABCMeta):
                 :class:`MetaDataError`
             """
             if "finish_time" in self._meta and self._meta["finish_time"]:
-                return datetime.strptime(self._meta["finish_time"], Manageable.MetaDataHelper._DATETIME_FORMAT)
+                return datetime.strptime(
+                    self._meta["finish_time"],
+                    Manageable.MetaDataHelper._DATETIME_FORMAT,
+                )
             return None
 
         @finish_time.setter
@@ -196,7 +215,9 @@ class Manageable(metaclass=ABCMeta):
             if not (value is None or isinstance(value, datetime)):
                 raise TypeError(f"value must be None or datetime, not {type(value)}")
             if value:
-                self._meta["finish_time"] = value.strftime(Manageable.MetaDataHelper._DATETIME_FORMAT)
+                self._meta["finish_time"] = value.strftime(
+                    Manageable.MetaDataHelper._DATETIME_FORMAT
+                )
             else:
                 self._meta["finish_time"] = None
 
@@ -216,7 +237,6 @@ class Manageable(metaclass=ABCMeta):
                 del self.start_time
             if isinstance(self.finish_time, datetime):
                 del self.finish_time
-
 
     class FileSystemHelper:
         """Contains methods to work with filesystem."""
@@ -239,7 +259,7 @@ class Manageable(metaclass=ABCMeta):
             return list(
                 filter(
                     lambda x: x.is_file() and ".lock" not in x.suffix,
-                    path.rglob(Manageable.FileSystemHelper.DATA_FILENAME + ".*")
+                    path.rglob(Manageable.FileSystemHelper.DATA_FILENAME + ".*"),
                 )
             )
 
@@ -256,7 +276,7 @@ class Manageable(metaclass=ABCMeta):
             return list(
                 filter(
                     lambda x: x.is_file() and ".lock" not in x.suffix,
-                    path.rglob(Manageable.FileSystemHelper.META_FILENAME + ".*")
+                    path.rglob(Manageable.FileSystemHelper.META_FILENAME + ".*"),
                 )
             )
 
@@ -276,8 +296,8 @@ class Manageable(metaclass=ABCMeta):
             pathes = Manageable.FileSystemHelper.data_pathes(path)
             if len(pathes) != 1:
                 if len(pathes) == 0:
-                    raise ManageableException(f"Could not find data path in \"{path}\"")
-                raise ManageableException(f"Found more than 1 data pathes in \"{path}\"")
+                    raise ManageableException(f'Could not find data path in "{path}"')
+                raise ManageableException(f'Found more than 1 data pathes in "{path}"')
             return pathes[0]
 
         @staticmethod
@@ -296,8 +316,8 @@ class Manageable(metaclass=ABCMeta):
             pathes = Manageable.FileSystemHelper.meta_pathes(path)
             if len(pathes) != 1:
                 if len(pathes) == 0:
-                    raise ManageableException(f"Could not find meta path in \"{path}\"")
-                raise ManageableException(f"Found more than 1 meta pathes in \"{path}\"")
+                    raise ManageableException(f'Could not find meta path in "{path}"')
+                raise ManageableException(f'Found more than 1 meta pathes in "{path}"')
             return pathes[0]
 
         @classmethod
@@ -313,11 +333,13 @@ class Manageable(metaclass=ABCMeta):
                 :class:`ManageableException`
             """
             if not isinstance(manageable, Manageable):
-                raise TypeError(f"manageable must be a Manageable, not {type(manageable)}")
+                raise TypeError(
+                    f"manageable must be a Manageable, not {type(manageable)}"
+                )
             if not isinstance(path, Path):
                 raise TypeError(f"path must be a pathlib.Path, not {type(path)}")
             if path.exists():
-                raise ManageableException(f"Path \"{path}\" should not exist")
+                raise ManageableException(f'Path "{path}" should not exist')
 
             try:
                 path.mkdir()
@@ -336,7 +358,9 @@ class Manageable(metaclass=ABCMeta):
 
                 manageable._metadata.dump()
             except Exception as e:
-                raise ManageableException(f"Cannot register \"{manageable.state.id}\":\n{e}") from e
+                raise ManageableException(
+                    f'Cannot register "{manageable.state.id}":\n{e}'
+                ) from e
 
         @classmethod
         def destruct(cls, manageable):
@@ -350,7 +374,9 @@ class Manageable(metaclass=ABCMeta):
                 :class:`ManageableException`
             """
             if not isinstance(manageable, Manageable):
-                raise TypeError(f"manageable must be a Manageable, not {type(manageable)}")
+                raise TypeError(
+                    f"manageable must be a Manageable, not {type(manageable)}"
+                )
             shutil.rmtree(manageable.state.path)
 
         @classmethod
@@ -375,21 +401,22 @@ class Manageable(metaclass=ABCMeta):
                 meta_pathes = cls.meta_pathes(path)
                 data_path = cls.data_path(path)
                 meta_path = cls.meta_path(path)
-                return all([
-                    path.exists(),
-                    path.is_dir(),
-                    len(data_pathes) == 1,
-                    len(meta_pathes) == 1,
-                    data_path.exists(),
-                    meta_path.exists(),
-                    data_path.is_file(),
-                    meta_path.is_file(),
-                    data_path.suffix == meta_path.suffix,
-                    cls._outer_class.MetaDataHelper.is_correct_meta_data(
-                        data=data_path,
-                        meta=meta_path
-                    ),
-                ])
+                return all(
+                    [
+                        path.exists(),
+                        path.is_dir(),
+                        len(data_pathes) == 1,
+                        len(meta_pathes) == 1,
+                        data_path.exists(),
+                        meta_path.exists(),
+                        data_path.is_file(),
+                        meta_path.is_file(),
+                        data_path.suffix == meta_path.suffix,
+                        cls._outer_class.MetaDataHelper.is_correct_meta_data(
+                            data=data_path, meta=meta_path
+                        ),
+                    ]
+                )
             except Exception:
                 return False
 
@@ -410,7 +437,9 @@ class Manageable(metaclass=ABCMeta):
             if not isinstance(path, Path):
                 raise TypeError(f"path must be a [athlib.Path, not {type(path)}")
             if not cls.is_correct_directory(path):
-                raise ManageableException(f"Attempting to load from incorrect path \"{path}\"")
+                raise ManageableException(
+                    f'Attempting to load from incorrect path "{path}"'
+                )
 
             return {
                 "data": cls.data_path(path),
@@ -419,6 +448,7 @@ class Manageable(metaclass=ABCMeta):
 
     class LoadHelper:
         """Abstract load helper."""
+
         @staticmethod
         def load_manageable_class(name):
             """Loads manageable class by name.
@@ -441,11 +471,10 @@ class Manageable(metaclass=ABCMeta):
                 manageables_package,
             )
 
-
         @staticmethod
         def from_directory_unknown(path):
             """Loads registered manageable from directory.
-            
+
             Args:
                 path (:obj:`pathlib.Path`): Path to directory.
 
@@ -460,14 +489,14 @@ class Manageable(metaclass=ABCMeta):
             if not isinstance(path, Path):
                 raise TypeError(f"path must be a pthlib.Path, not {type(path)}")
             if not Manageable.is_correct_directory(path):
-                raise ManageableException(f"Cannot load Manageable from path \"{path}\"")
+                raise ManageableException(f'Cannot load Manageable from path "{path}"')
 
             data_path = Manageable.FileSystemHelper.data_path(path)
             meta_path = Manageable.FileSystemHelper.meta_path(path)
 
             metadata = Manageable.MetaDataHelper(
                 data=Manageable.FileSystemHelper.data_path(path),
-                meta=Manageable.FileSystemHelper.meta_path(path)
+                meta=Manageable.FileSystemHelper.meta_path(path),
             )
 
             return Manageable.LoadHelper.load_manageable_class(metadata.type)(
@@ -490,20 +519,17 @@ class Manageable(metaclass=ABCMeta):
                 :class:`MetaDataError`
             """
             if not isinstance(path, Path):
-                raise TypeError(f"path must be a pathlib.Path, not \"{type(path)}\"")
+                raise TypeError(f'path must be a pathlib.Path, not "{type(path)}"')
 
-            metadata = Manageable.MetaDataHelper(
-                data=path
-            )
+            metadata = Manageable.MetaDataHelper(data=path)
 
-            manageable = Manageable.LoadHelper.load_manageable_class(metadata.type.capitalize())(
-                data=path
-            )
+            manageable = Manageable.LoadHelper.load_manageable_class(
+                metadata.type.capitalize()
+            )(data=path)
 
             Io.remove_lock(path)
 
             return manageable
-
 
     @abstractmethod
     def __init__(self, data=None, meta=None):
@@ -563,13 +589,13 @@ class Manageable(metaclass=ABCMeta):
 
     def destruct(self):
         """Free all resources (filesystem too).
-        
+
         Raises:
             :class:`ManageableException`
         """
         if self.active:
             raise ManageableException("Cannot destruct active manageable")
-        self._logger.debug(f"Destructing \"{self.state.id}\"")
+        self._logger.debug(f'Destructing "{self.state.id}"')
         type(self).FileSystemHelper.destruct(self)
         del self._metadata.meta_path
         del self._metadata.data_path
@@ -592,7 +618,7 @@ class Manageable(metaclass=ABCMeta):
             raise TypeError(f"path must be a pathlib.Path, not {type(path)}")
         if self.registered:
             raise ManageableException("Already registered")
-        self._logger.debug(f"Registering \"{self.state.id}\"")
+        self._logger.debug(f'Registering "{self.state.id}"')
 
         existed = path.exists()
         try:
@@ -610,14 +636,12 @@ class Manageable(metaclass=ABCMeta):
         """
         align = max(
             align,
-            max(
-                map(
-                    lambda x: len(x),
-                    [
-                        "Active",
-                        "Path",
-                    ]
-                )
+            map(
+                lambda x: len(x),
+                [
+                    "Active",
+                    "Path",
+                ],
             )
         )
 
@@ -643,7 +667,7 @@ class Manageable(metaclass=ABCMeta):
                 active_info += " (no finish time)"
 
         result += f"{{:>{align}}}: {{:}}\n".format("Active", active_info)
-        result += f"{{:>{align}}}: \"{{:}}\"\n".format("Path", state.path)
+        result += f'{{:>{align}}}: "{{:}}"\n'.format("Path", state.path)
 
         return result
 
@@ -713,12 +737,12 @@ class Manageable(metaclass=ABCMeta):
         try:
             return cls(**cls.FileSystemHelper.from_directory(path))
         except Exception as e:
-            raise ManageableException(f"Cannot load from \"{path}\":\n{e}") from e
+            raise ManageableException(f'Cannot load from "{path}":\n{e}') from e
 
     @staticmethod
     def from_directory_unknown(path):
         """Loads registered manageable from directory.
-        
+
         Args:
             path (:obj:`pathlib.Path`): Path to directory.
 
@@ -758,4 +782,4 @@ class Manageable(metaclass=ABCMeta):
                 Io.remove_lock(path)
             except Exception:
                 pass
-            raise ManageableException(f"Cannot load from \"{path}\":\n{e}")
+            raise ManageableException(f'Cannot load from "{path}":\n{e}')
