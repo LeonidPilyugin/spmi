@@ -203,8 +203,8 @@ class Spmi:
         self._config = Spmi.ConfigHelper()
 
         if not (self._config.path.is_dir() and self._config.path.exists()):
-            self._logger.info(f"Creating directory \"{self._config.home}\"")
-            self._config.home.mkdir(parents=True)
+            self._logger.info(f"Creating directory \"{self._config.path}\"")
+            self._config.path.mkdir(parents=True)
 
         self._logger.debug("Creating pool")
         self._pool = Pool(path=self._config.path, pm=pm)

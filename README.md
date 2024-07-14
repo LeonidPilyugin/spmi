@@ -206,6 +206,13 @@ Hello
 Showed 1 manageables
 ```
 
+Also you can see that screen is in `screen -ls`
+```sh
+$ screen -ls
+        76113.SPMI screen echo   (Detached)
+1 Socket in /run/screens/S-leonid.
+```
+
 `cat -` printed your line to stdout! Next, stop `echo` task
 
 ```sh

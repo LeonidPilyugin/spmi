@@ -5,6 +5,9 @@
 
 Welcome to SPMI's documentation!
 ================================
+SPMI (Simple Process Management Interface) is a Python package which provides an application and library to start and manage processes via different process managers.
+
+.. note:: SPMI supports only UNIX-like systems.
 
 .. toctree::
    :maxdepth: 2
