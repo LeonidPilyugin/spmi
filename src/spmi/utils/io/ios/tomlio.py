@@ -11,19 +11,19 @@ class TomlIo(Io):
     """TOML formatted io."""
 
     def copy(self):
-        return TomlIo(path=self.path, encoding=self.encoding)
+        return TomlIo(path=self.path)
 
     def load(self):
+        super().load()
         try:
-            with open(self.path, encoding=self.encoding) as f:
-                result = toml.load(f)
+            result = toml.load(self._fd)
             return result
         except Exception as e:
             raise TomlIoException(f"Cannot load from \"{self.path}\":\n{e}") from e
 
     def dump(self, data):
+        super().dump(data)
         try:
-            with open(self.path, "w", encoding=self.encoding) as f:
-                toml.dump(data, f)
+            toml.dump(data, self._fd)
         except Exception as e:
             raise TomlIoException(f"Cannot dump to \"{self.path}\":\n{e}") from e

@@ -363,7 +363,7 @@ class Manageable(metaclass=ABCMeta):
                     )
                 )
 
-                manageable._metadata.dump()
+                manageable._metadata.blocking_dump()
             except Exception as e:
                 raise ManageableException(
                     f'Cannot register "{manageable.state.id}":\n{e}'
@@ -425,6 +425,7 @@ class Manageable(metaclass=ABCMeta):
                     ]
                 )
             except Exception:
+                #raise
                 return False
 
         @classmethod
@@ -534,8 +535,6 @@ class Manageable(metaclass=ABCMeta):
                 metadata.type.capitalize()
             )(data=path)
 
-            Io.remove_lock(path)
-
             return manageable
 
     @abstractmethod
@@ -561,6 +560,7 @@ class Manageable(metaclass=ABCMeta):
         """
         if self.status != ManageableStatus.INACTIVE:
             raise ManageableException("Must be inactive")
+        self._metadata.reset()
 
     @abstractmethod
     def term(self):
@@ -781,8 +781,4 @@ class Manageable(metaclass=ABCMeta):
         try:
             return Manageable.LoadHelper.from_descriptor(path)
         except Exception as e:
-            try:
-                Io.remove_lock(path)
-            except Exception:
-                pass
             raise ManageableException(f'Cannot load from "{path}":\n{e}')

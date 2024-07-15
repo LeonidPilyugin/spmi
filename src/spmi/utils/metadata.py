@@ -270,6 +270,8 @@ class MetaData(MetaDataNode):
     def meta_path(self):
         if not self.mutable:
             raise MetaDataError("Must be mutable")
+        if self.__entered:
+            self.__meta_io.__exit__(None, None, None)
         self.__meta_io = None
 
     @dontcheck
@@ -298,6 +300,8 @@ class MetaData(MetaDataNode):
     def data_path(self):
         if not self.mutable:
             raise MetaDataError("Must be mutable")
+        if self.__entered:
+            self.__data_io.__exit__(None, None, None)
         self.__data_io = None
 
     @dontcheck
@@ -345,50 +349,6 @@ class MetaData(MetaDataNode):
             raise MetaDataError("Meta path must be specified")
         self.__data_io.dump(self._data)
         self.__meta_io.dump(self._meta)
-
-    def acquire(self):
-        """Acquires meta and data files.
-
-        Note:
-            Should be mutable.
-
-        Raises:
-            :class:`MetaDatarror`
-            :class:`IoException`
-        """
-        self._logger.debug("Locking")
-        if self.__entered:
-            raise MetaDataError('Cannot acquire inside "with" statement')
-        if not self.mutable:
-            raise MetaDataError("Must be mutable")
-        if not self.__data_io:
-            raise MetaDataError("Data path must be specified")
-        if not self.__meta_io:
-            raise MetaDataError("Meta path must be specified")
-        self.__data_io.acquire()
-        self.__meta_io.acquire()
-
-    def release(self):
-        """Releases meta and data files.
-
-        Note:
-            Should be mutable.
-
-        Raises:
-            :class:`MetaDatarror`
-            :class:`IoException`
-        """
-        self._logger.debug("Releasing")
-        if self.__entered:
-            raise MetaDataError('Cannot release inside "with" statement')
-        if not self.mutable:
-            raise MetaDataError("Must be mutable")
-        if not self.__data_io:
-            raise MetaDataError("Data path must be specified")
-        if not self.__meta_io:
-            raise MetaDataError("Meta path must be specified")
-        self.__data_io.release()
-        self.__meta_io.release()
 
     def blocking_load(self):
         """Blocks and loads meta and data from files.
@@ -438,7 +398,8 @@ class MetaData(MetaDataNode):
         self._logger.debug('Entering "with" statement')
         if self.__entered:
             raise MetaDataError('Already entered "with" statement')
-        self.acquire()
+        self.__meta_io.__enter__()
+        self.__data_io.__enter__()
         self.__entered = True
         self.load()
         return self
@@ -448,7 +409,10 @@ class MetaData(MetaDataNode):
         self.__entered = False
         if self.__meta_io and self.__data_io:
             self.dump()
-            self.release()
+        if self.__meta_io:
+            self.__meta_io.__exit__(exc_type, exc_value, traceback)
+        if self.__data_io:
+            self.__data_io.__exit__(exc_type, exc_value, traceback)
 
     @classmethod
     def is_correct_meta_data(cls, data, meta=None):

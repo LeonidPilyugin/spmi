@@ -516,7 +516,7 @@ class TaskManageable(Manageable):
                     del self.stdin_path
                 if self.stdout_path:
                     del self.stdout_path
-                if self.stderr_path and self.mixed_stdout:
+                if self.stderr_path and not self.mixed_stdout:
                     del self.stderr_path
                 if not self.exit_code is None:
                     del self.exit_code

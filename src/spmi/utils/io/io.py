@@ -1,17 +1,13 @@
 """Provides :class:`Io`.
 """
 
+import os
+import fcntl
 from abc import ABCMeta, abstractmethod
 from pathlib import Path
-from filelock import FileLock
 import spmi.utils.io.ios as ios_package
 from spmi.utils.load import load_class_from_package
 from spmi.utils.exception import SpmiException
-
-
-def _get_lock(path):
-    assert isinstance(path, Path)
-    return path.parent.joinpath(path.name + ".lock")
 
 
 class IoException(SpmiException):
@@ -29,20 +25,16 @@ class Io(metaclass=ABCMeta):
     files.
     """
 
-    def __init__(self, path, encoding="utf-8"):
+    def __init__(self, path):
         """
         Args:
             path (:obj:`pathlib.Path`): Path to file.
-            encoding (:obj:`str`): Encoding.
 
         Raises:
             :class:`TypeError`.
         """
-        if not isinstance(encoding, str):
-            raise TypeError(f"encoding must be a str, not {type(encoding)}")
-
         self.path = path
-        self.encoding = encoding
+        self._fd = None
 
     @abstractmethod
     def copy(self):
@@ -56,7 +48,7 @@ class Io(metaclass=ABCMeta):
         Raises:
             :class:`TypeError`.
         """
-        return Path(self._path)
+        return self._path
 
     @path.setter
     def path(self, value):
@@ -66,29 +58,6 @@ class Io(metaclass=ABCMeta):
             raise TypeError(f'path "{value}" must be a file')
 
         self._path = value
-        self._lock = FileLock(_get_lock(value))
-
-    def acquire(self):
-        """Acquire lock.
-
-        Raises:
-            :class:`IoException`
-        """
-        try:
-            self._lock.acquire()
-        except Exception as e:
-            raise IoException(f'Cannot acquire "{self.path}":\n{e}') from e
-
-    def release(self):
-        """Release lock.
-
-        Raises:
-            :class:`IoException`
-        """
-        try:
-            self._lock.release()
-        except Exception as e:
-            raise IoException(f'Cannot acquire "{self.path}":\n{e}') from e
 
     def blocking_load(self):
         """Blocking load.
@@ -100,7 +69,7 @@ class Io(metaclass=ABCMeta):
             :class:`IoException`
         """
         try:
-            with self._lock:
+            with self:
                 result = self.load()
             return result
         except IoException:
@@ -120,7 +89,7 @@ class Io(metaclass=ABCMeta):
             :class:`IoException`
         """
         try:
-            with self._lock:
+            with self:
                 self.dump(data)
         except IoException:
             raise
@@ -139,6 +108,9 @@ class Io(metaclass=ABCMeta):
         Raises:
             :class:`IoException`
         """
+        if not self._fd:
+            raise IoException("Should be called inside \"with\" statement")
+        self._fd.seek(0)
 
     @abstractmethod
     def dump(self, data: dict):
@@ -150,6 +122,23 @@ class Io(metaclass=ABCMeta):
         Raises:
             :class:`IoException`
         """
+        if not self._fd:
+            raise IoException("Should be called inside \"with\" statement")
+        self._fd.seek(0)
+        self._fd.truncate(0)
+
+    def __enter__(self):
+        if not self._fd is None:
+            raise IoException("Already inside \"with\" statement")
+        self.path.touch()
+        self._fd = open(self.path, "r+")
+        fcntl.flock(self._fd.fileno(), fcntl.LOCK_EX)
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        assert not self._fd is None
+        fcntl.flock(self._fd.fileno(), fcntl.LOCK_UN)
+        self._fd.close()
+        self._fd = None
 
     @staticmethod
     def has_io(suffix):
@@ -203,33 +192,3 @@ class Io(metaclass=ABCMeta):
             return cls(path)
         except NotImplementedError as e:
             raise IoException(f"Unsupported suffix: {path.suffix} ({e})") from e
-
-    @staticmethod
-    def lock_exists(path):
-        """Returns ``True`` if ``path`` has a lock file.
-
-        Args:
-            path (:obj:`pathlib.Path`): Path.
-
-        Returns:
-            :class:`TypeError`
-        """
-        if not isinstance(path, Path):
-            raise TypeError(f"path must be a pathlib.Path, not {type(path)}")
-        path = _get_lock(path)
-        return path.exists() and path.is_file()
-
-    @staticmethod
-    def remove_lock(path):
-        """Removes lock file by this path if it exists.
-
-        Args:
-            path (:obj:`pathlib.Path`): Locked path.
-
-        Raises:
-            :class:`TypeError`
-            :class:`IoException`
-        """
-        if not Io.lock_exists(path):
-            raise IoException(f'Lock file on "{path}" should exist')
-        _get_lock(path).unlink()
