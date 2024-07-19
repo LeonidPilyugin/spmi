@@ -10,6 +10,7 @@ Execute next command to get help message:
 """
 
 import os
+import subprocess
 from pathlib import Path
 from docopt import docopt
 from spmi.core.pool import Pool
@@ -403,8 +404,7 @@ class Spmi:
 
             assert stdout_path and stdout_path.exists()
 
-            with open(stdout_path) as f:
-                print(f.read(), end="")
+            print(subprocess.check_output(f"cat '{stdout_path}'", shell=True).decode("utf-8"))
 
             stdin_path = task.state.wrapper.stdin_path
             if stdin_path and stdin_path.exists():

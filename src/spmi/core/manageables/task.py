@@ -7,7 +7,7 @@ import signal
 import logging
 from datetime import datetime
 from pathlib import Path
-from subprocess import getoutput
+from subprocess import check_output
 from abc import ABCMeta, abstractmethod
 import spmi.core.manageables.task_.wrappers as wrappers_package
 import spmi.core.manageables.task_.backends as backends_package
@@ -649,7 +649,7 @@ class TaskManageable(Manageable):
 
         if isinstance(state.wrapper.stdout_path, Path):
             result += "\n"
-            result += getoutput(f"tail -5 {state.wrapper.stdout_path}")
+            result += check_output(f"tail -5 {state.wrapper.stdout_path}", shell=True).decode(encoding="utf-8")
             result += "\n"
 
         return result
