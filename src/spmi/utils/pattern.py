@@ -68,4 +68,4 @@ class RegexPatternMatcher(PatternMatcher):
     def match(self, pattern, string):
         super().match(pattern, string)
         p = re.compile(pattern)
-        return p.match(string)
+        return p.fullmatch(string)
