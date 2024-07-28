@@ -1,0 +1,1197 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>spmi.core.manageables package &#8212; SPMI 0.0.1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=a3416100" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../_static/documentation_options.js?v=e645c8fa"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api_reference/apidoc/spmi.core.manageables';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="spmi.core.manageables.task_ package" href="spmi.core.manageables.task_.html" />
+    <link rel="prev" title="spmi.core package" href="spmi.core.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">SPMI 0.0.1 documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide.html">User guide</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../index.html">API reference</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="modules.html">spmi</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3 current active has-children"><a class="reference internal" href="spmi.html">spmi package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l4 current active"><a class="reference internal" href="spmi.core.html">spmi.core package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="spmi.utils.html">spmi.utils package</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/api_reference/apidoc/spmi.core.manageables.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>spmi.core.manageables package</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#subpackages">Subpackages</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-spmi.core.manageables.task">spmi.core.manageables.task module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.BackendException"><code class="docutils literal notranslate"><span class="pre">BackendException</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable"><code class="docutils literal notranslate"><span class="pre">TaskManageable</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Backend"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Backend</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Backend.MetaDataHelper"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Backend.MetaDataHelper</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Backend.MetaDataHelper.command"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Backend.MetaDataHelper.command</span></code></a></li>
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Backend.MetaDataHelper.id"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Backend.MetaDataHelper.id</span></code></a></li>
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Backend.MetaDataHelper.log_path"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Backend.MetaDataHelper.log_path</span></code></a></li>
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Backend.MetaDataHelper.reset"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Backend.MetaDataHelper.reset()</span></code></a></li>
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Backend.MetaDataHelper.type"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Backend.MetaDataHelper.type</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Backend.get_backend_class"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Backend.get_backend_class()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Backend.is_active"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Backend.is_active()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Backend.kill"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Backend.kill()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Backend.submit"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Backend.submit()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Backend.term"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Backend.term()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Cli"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Cli</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Cli.command"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Cli.command()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Cli.from_args"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Cli.from_args()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.MetaDataHelper"><code class="docutils literal notranslate"><span class="pre">TaskManageable.MetaDataHelper</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.MetaDataHelper.backend"><code class="docutils literal notranslate"><span class="pre">TaskManageable.MetaDataHelper.backend</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.MetaDataHelper.common_backend"><code class="docutils literal notranslate"><span class="pre">TaskManageable.MetaDataHelper.common_backend</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.MetaDataHelper.common_wrapper"><code class="docutils literal notranslate"><span class="pre">TaskManageable.MetaDataHelper.common_wrapper</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.MetaDataHelper.reset"><code class="docutils literal notranslate"><span class="pre">TaskManageable.MetaDataHelper.reset()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.MetaDataHelper.wrapper"><code class="docutils literal notranslate"><span class="pre">TaskManageable.MetaDataHelper.wrapper</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Wrapper"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Wrapper</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Wrapper.MetaDataHelper"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Wrapper.MetaDataHelper</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Wrapper.MetaDataHelper.command"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Wrapper.MetaDataHelper.command</span></code></a></li>
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Wrapper.MetaDataHelper.exit_code"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Wrapper.MetaDataHelper.exit_code</span></code></a></li>
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Wrapper.MetaDataHelper.mixed_stdout"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Wrapper.MetaDataHelper.mixed_stdout</span></code></a></li>
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Wrapper.MetaDataHelper.process_pid"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Wrapper.MetaDataHelper.process_pid</span></code></a></li>
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Wrapper.MetaDataHelper.reset"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Wrapper.MetaDataHelper.reset()</span></code></a></li>
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Wrapper.MetaDataHelper.stderr_path"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Wrapper.MetaDataHelper.stderr_path</span></code></a></li>
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Wrapper.MetaDataHelper.stdin_path"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Wrapper.MetaDataHelper.stdin_path</span></code></a></li>
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Wrapper.MetaDataHelper.stdout_path"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Wrapper.MetaDataHelper.stdout_path</span></code></a></li>
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Wrapper.MetaDataHelper.type"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Wrapper.MetaDataHelper.type</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Wrapper.get_wrapper_class"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Wrapper.get_wrapper_class()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Wrapper.on_signal"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Wrapper.on_signal()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Wrapper.start"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Wrapper.start()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.destruct"><code class="docutils literal notranslate"><span class="pre">TaskManageable.destruct()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.kill"><code class="docutils literal notranslate"><span class="pre">TaskManageable.kill()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.start"><code class="docutils literal notranslate"><span class="pre">TaskManageable.start()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.status"><code class="docutils literal notranslate"><span class="pre">TaskManageable.status</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.status_string"><code class="docutils literal notranslate"><span class="pre">TaskManageable.status_string()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.term"><code class="docutils literal notranslate"><span class="pre">TaskManageable.term()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageableException"><code class="docutils literal notranslate"><span class="pre">TaskManageableException</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.WrapperException"><code class="docutils literal notranslate"><span class="pre">WrapperException</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.set_signal_handlers"><code class="docutils literal notranslate"><span class="pre">set_signal_handlers()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-spmi.core.manageables">Module contents</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="spmi-core-manageables-package">
+<h1>spmi.core.manageables package<a class="headerlink" href="#spmi-core-manageables-package" title="Link to this heading">#</a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading">#</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="spmi.core.manageables.task_.html">spmi.core.manageables.task_ package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="spmi.core.manageables.task_.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="spmi.core.manageables.task_.backends.html">spmi.core.manageables.task_.backends package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="spmi.core.manageables.task_.backends.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="spmi.core.manageables.task_.backends.html#module-spmi.core.manageables.task_.backends.screen">spmi.core.manageables.task_.backends.screen module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="spmi.core.manageables.task_.backends.html#module-spmi.core.manageables.task_.backends.slurm">spmi.core.manageables.task_.backends.slurm module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="spmi.core.manageables.task_.backends.html#module-spmi.core.manageables.task_.backends">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="spmi.core.manageables.task_.wrappers.html">spmi.core.manageables.task_.wrappers package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="spmi.core.manageables.task_.wrappers.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="spmi.core.manageables.task_.wrappers.html#module-spmi.core.manageables.task_.wrappers.default">spmi.core.manageables.task_.wrappers.default module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="spmi.core.manageables.task_.wrappers.html#module-spmi.core.manageables.task_.wrappers">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="spmi.core.manageables.task_.html#module-spmi.core.manageables.task_">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">#</a></h2>
+</section>
+<section id="module-spmi.core.manageables.task">
+<span id="spmi-core-manageables-task-module"></span><h2>spmi.core.manageables.task module<a class="headerlink" href="#module-spmi.core.manageables.task" title="Link to this heading">#</a></h2>
+<p>Provides <a class="reference internal" href="#spmi.core.manageables.task.TaskManageable" title="spmi.core.manageables.task.TaskManageable"><code class="xref py py-class docutils literal notranslate"><span class="pre">TaskManageable</span></code></a>.</p>
+<dl class="py exception">
+<dt class="sig sig-object py" id="spmi.core.manageables.task.BackendException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spmi.core.manageables.task.</span></span><span class="sig-name descname"><span class="pre">BackendException</span></span><a class="headerlink" href="#spmi.core.manageables.task.BackendException" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#spmi.core.manageables.task.TaskManageableException" title="spmi.core.manageables.task.TaskManageableException"><code class="xref py py-class docutils literal notranslate"><span class="pre">TaskManageableException</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="spmi.core.manageables.task.TaskManageable">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spmi.core.manageables.task.</span></span><span class="sig-name descname"><span class="pre">TaskManageable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.manageables.task.TaskManageable" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="spmi.core.html#spmi.core.manageable.Manageable" title="spmi.core.manageable.Manageable"><code class="xref py py-class docutils literal notranslate"><span class="pre">Manageable</span></code></a></p>
+<p>Manageable which handles a single command.</p>
+<p>Basic descriptor in TOML format:</p>
+<div class="highlight-TOML notranslate"><div class="highlight"><pre><span></span><span class="k">[task]</span><span class="w">                  </span><span class="c1"># type of manageable</span>
+<span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;toml_task&quot;</span><span class="w">        </span><span class="c1"># ID of manageable</span>
+
+<span class="k">[task.backend]</span><span class="w">          </span><span class="c1"># backend section</span>
+<span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;screen&quot;</span><span class="w">         </span><span class="c1"># type of backend</span>
+
+<span class="k">[task.wrapper]</span><span class="w">          </span><span class="c1"># wrapper section</span>
+<span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;default&quot;</span><span class="w">        </span><span class="c1"># type of wrapper</span>
+<span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;sleep 10&quot;</span><span class="w">    </span><span class="c1"># command to execute</span>
+</pre></div>
+</div>
+<dl class="py class">
+<dt class="sig sig-object py" id="spmi.core.manageables.task.TaskManageable.Backend">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Backend</span></span><a class="headerlink" href="#spmi.core.manageables.task.TaskManageable.Backend" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Provides an interface to process manager.</p>
+<p>Any realisation should be defined in <a class="reference internal" href="spmi.core.manageables.task_.backends.html#module-spmi.core.manageables.task_.backends" title="spmi.core.manageables.task_.backends"><code class="xref py py-mod docutils literal notranslate"><span class="pre">spmi.core.manageables.task_.backends</span></code></a>
+package in own file.
+Its name should be written in PascalCase and ended with “Backend”.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="spmi.core.manageables.task.TaskManageable.Backend.MetaDataHelper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MetaDataHelper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">meta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mutable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.manageables.task.TaskManageable.Backend.MetaDataHelper" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="spmi.utils.html#spmi.utils.metadata.MetaDataNode" title="spmi.utils.metadata.MetaDataNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">MetaDataNode</span></code></a></p>
+<p>Provides access to data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>meta</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[dict,</span> <span class="pre">None]</span></code>) – Meta dictionary. Empty if <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>data</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[dict,</span> <span class="pre">None]</span></code>) – Data dictionary. Empty if <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>metadata</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[dict,</span> <span class="pre">MetaDataNode]</span></code>) – <code class="xref py py-class docutils literal notranslate"><span class="pre">MetaDataNode</span></code> object.</p></li>
+<li><p><strong>mutable</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>) – Mutable flag.</p></li>
+<li><p><strong>copy</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>) – Copy flag. If <code class="docutils literal notranslate"><span class="pre">True</span></code>, deepcopies <code class="docutils literal notranslate"><span class="pre">meta</span></code>, <code class="docutils literal notranslate"><span class="pre">data</span></code> and <code class="docutils literal notranslate"><span class="pre">metadata</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can set meta and data or metadata flags at once</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>TypeError</strong> – </p></li>
+<li><p><strong>ValueError</strong> – </p></li>
+<li><p><a class="reference internal" href="spmi.utils.html#spmi.utils.metadata.IncorrectProperty" title="spmi.utils.metadata.IncorrectProperty"><strong>IncorrectProperty</strong></a> – </p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="spmi.core.manageables.task.TaskManageable.Backend.MetaDataHelper.command">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">command</span></span><a class="headerlink" href="#spmi.core.manageables.task.TaskManageable.Backend.MetaDataHelper.command" title="Link to this definition">#</a></dt>
+<dd><p>Start command.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>TypeError</strong> – </p></li>
+<li><p><a class="reference internal" href="spmi.utils.html#spmi.utils.metadata.MetaDataError" title="spmi.utils.metadata.MetaDataError"><strong>MetaDataError</strong></a> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spmi.core.manageables.task.TaskManageable.Backend.MetaDataHelper.id">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#spmi.core.manageables.task.TaskManageable.Backend.MetaDataHelper.id" title="Link to this definition">#</a></dt>
+<dd><p>ID of backend proces.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>TypeError</strong> – </p></li>
+<li><p><a class="reference internal" href="spmi.utils.html#spmi.utils.metadata.MetaDataError" title="spmi.utils.metadata.MetaDataError"><strong>MetaDataError</strong></a> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spmi.core.manageables.task.TaskManageable.Backend.MetaDataHelper.log_path">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">log_path</span></span><a class="headerlink" href="#spmi.core.manageables.task.TaskManageable.Backend.MetaDataHelper.log_path" title="Link to this definition">#</a></dt>
+<dd><p>Path to backend log file.
+<code class="docutils literal notranslate"><span class="pre">None</span></code> if there is no backend log file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>TypeError</strong> – </p></li>
+<li><p><a class="reference internal" href="spmi.utils.html#spmi.utils.metadata.MetaDataError" title="spmi.utils.metadata.MetaDataError"><strong>MetaDataError</strong></a> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[pathlib.Path,</span> <span class="pre">None]</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.core.manageables.task.TaskManageable.Backend.MetaDataHelper.reset">
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.manageables.task.TaskManageable.Backend.MetaDataHelper.reset" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spmi.core.manageables.task.TaskManageable.Backend.MetaDataHelper.type">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">type</span></span><a class="headerlink" href="#spmi.core.manageables.task.TaskManageable.Backend.MetaDataHelper.type" title="Link to this definition">#</a></dt>
+<dd><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>. Backend type.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.core.manageables.task.TaskManageable.Backend.get_backend_class">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_backend_class</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metadata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.manageables.task.TaskManageable.Backend.get_backend_class" title="Link to this definition">#</a></dt>
+<dd><p>Returns wrapper class by metadata</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.core.manageables.task.TaskManageable.Backend.is_active">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_active</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_metadata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.manageables.task.TaskManageable.Backend.is_active" title="Link to this definition">#</a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code>, if job is active.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>task_metadata</strong> (<a class="reference internal" href="#spmi.core.manageables.task.TaskManageable.MetaDataHelper" title="spmi.core.manageables.task.TaskManageable.MetaDataHelper"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TaskManageable.MetaDataHelper</span></code></a>) – Metadata.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="#spmi.core.manageables.task.BackendException" title="spmi.core.manageables.task.BackendException"><strong>BackendException</strong></a> – </p></li>
+<li><p><strong>TypeError</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.core.manageables.task.TaskManageable.Backend.kill">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">kill</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_metadata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.manageables.task.TaskManageable.Backend.kill" title="Link to this definition">#</a></dt>
+<dd><p>Kills wrapper process.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>task_metadata</strong> (<a class="reference internal" href="#spmi.core.manageables.task.TaskManageable.MetaDataHelper" title="spmi.core.manageables.task.TaskManageable.MetaDataHelper"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TaskManageable.MetaDataHelper</span></code></a>) – Metadata.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference internal" href="#spmi.core.manageables.task.BackendException" title="spmi.core.manageables.task.BackendException"><strong>BackendException</strong></a> – </p></li>
+<li><p><a class="reference internal" href="#spmi.core.manageables.task.BackendException" title="spmi.core.manageables.task.BackendException"><strong>BackendException</strong></a> – </p></li>
+<li><p><strong>TypeError</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.core.manageables.task.TaskManageable.Backend.submit">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">submit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_metadata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.manageables.task.TaskManageable.Backend.submit" title="Link to this definition">#</a></dt>
+<dd><p>Submits command.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>task_metadata</strong> (<a class="reference internal" href="#spmi.core.manageables.task.TaskManageable.MetaDataHelper" title="spmi.core.manageables.task.TaskManageable.MetaDataHelper"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TaskManageable.MetaDataHelper</span></code></a>) – Metadata.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>. ID of submitted task.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="#spmi.core.manageables.task.BackendException" title="spmi.core.manageables.task.BackendException"><strong>BackendException</strong></a> – </p></li>
+<li><p><strong>TypeError</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.core.manageables.task.TaskManageable.Backend.term">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">term</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_metadata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.manageables.task.TaskManageable.Backend.term" title="Link to this definition">#</a></dt>
+<dd><p>Terminates wrapper process.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>task_metadata</strong> (<a class="reference internal" href="#spmi.core.manageables.task.TaskManageable.MetaDataHelper" title="spmi.core.manageables.task.TaskManageable.MetaDataHelper"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TaskManageable.MetaDataHelper</span></code></a>) – Metadata.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference internal" href="#spmi.core.manageables.task.BackendException" title="spmi.core.manageables.task.BackendException"><strong>BackendException</strong></a> – </p></li>
+<li><p><a class="reference internal" href="#spmi.core.manageables.task.BackendException" title="spmi.core.manageables.task.BackendException"><strong>BackendException</strong></a> – </p></li>
+<li><p><strong>TypeError</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="spmi.core.manageables.task.TaskManageable.Cli">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Cli</span></span><a class="headerlink" href="#spmi.core.manageables.task.TaskManageable.Cli" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>CLI for wrapper.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.core.manageables.task.TaskManageable.Cli.command">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_metadata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.manageables.task.TaskManageable.Cli.command" title="Link to this definition">#</a></dt>
+<dd><p>Start command.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>task_metadata</strong> (<a class="reference internal" href="#spmi.core.manageables.task.TaskManageable.MetaDataHelper" title="spmi.core.manageables.task.TaskManageable.MetaDataHelper"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TaskManageable.MetaDataHelper</span></code></a>) – Metadata.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>TypeError</strong> – </p></li>
+<li><p><strong>ValueError</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.core.manageables.task.TaskManageable.Cli.from_args">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_args</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.manageables.task.TaskManageable.Cli.from_args" title="Link to this definition">#</a></dt>
+<dd><p>Load metadata from start command.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="spmi.core.manageables.task.TaskManageable.MetaDataHelper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MetaDataHelper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mutable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.manageables.task.TaskManageable.MetaDataHelper" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="spmi.core.html#spmi.core.manageable.Manageable.MetaDataHelper" title="spmi.core.manageable.Manageable.MetaDataHelper"><code class="xref py py-class docutils literal notranslate"><span class="pre">MetaDataHelper</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>meta</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[dict,</span> <span class="pre">pathlib.Path,</span> <span class="pre">None]</span></code>) – Meta dictionary. Empty <code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code> if <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>data</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[dict,</span> <span class="pre">pathlib.Path,</span> <span class="pre">None]</span></code>) – Data dictionary. Empty <code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code> if <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>metadata</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[dict,</span> <span class="pre">MetaData]</span></code>) – <code class="xref py py-class docutils literal notranslate"><span class="pre">MetaData</span></code> object.</p></li>
+<li><p><strong>mutable</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>) – Mutable flag.</p></li>
+<li><p><strong>copy</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>) – Copy flag. If <code class="docutils literal notranslate"><span class="pre">True</span></code>, deepcopies <code class="docutils literal notranslate"><span class="pre">meta</span></code>, <code class="docutils literal notranslate"><span class="pre">data</span></code> and <code class="docutils literal notranslate"><span class="pre">metadata</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can set meta and data or metadata flags at once</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>TypeError</strong> – </p></li>
+<li><p><strong>ValueError</strong> – </p></li>
+<li><p><a class="reference internal" href="spmi.utils.io.html#spmi.utils.io.io.IoException" title="spmi.utils.io.io.IoException"><strong>IoException</strong></a> – </p></li>
+<li><p><a class="reference internal" href="spmi.utils.html#spmi.utils.metadata.MetaDataError" title="spmi.utils.metadata.MetaDataError"><strong>MetaDataError</strong></a> – </p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="spmi.core.manageables.task.TaskManageable.MetaDataHelper.backend">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">backend</span></span><a class="headerlink" href="#spmi.core.manageables.task.TaskManageable.MetaDataHelper.backend" title="Link to this definition">#</a></dt>
+<dd><p>Backend data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – </p>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#spmi.core.manageables.task.TaskManageable.Backend.MetaDataHelper" title="spmi.core.manageables.task.TaskManageable.Backend.MetaDataHelper"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TaskManageable.Backend.MetaDataHelper</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spmi.core.manageables.task.TaskManageable.MetaDataHelper.common_backend">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">common_backend</span></span><a class="headerlink" href="#spmi.core.manageables.task.TaskManageable.MetaDataHelper.common_backend" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spmi.core.manageables.task.TaskManageable.MetaDataHelper.common_wrapper">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">common_wrapper</span></span><a class="headerlink" href="#spmi.core.manageables.task.TaskManageable.MetaDataHelper.common_wrapper" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.core.manageables.task.TaskManageable.MetaDataHelper.reset">
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.manageables.task.TaskManageable.MetaDataHelper.reset" title="Link to this definition">#</a></dt>
+<dd><p>Resets some values in case of restart.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="spmi.utils.html#spmi.utils.metadata.MetaDataError" title="spmi.utils.metadata.MetaDataError"><strong>MetaDataError</strong></a> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spmi.core.manageables.task.TaskManageable.MetaDataHelper.wrapper">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">wrapper</span></span><a class="headerlink" href="#spmi.core.manageables.task.TaskManageable.MetaDataHelper.wrapper" title="Link to this definition">#</a></dt>
+<dd><p>Wrapper data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – </p>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#spmi.core.manageables.task.TaskManageable.Wrapper.MetaDataHelper" title="spmi.core.manageables.task.TaskManageable.Wrapper.MetaDataHelper"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TaskManageable.Wrapper.MetaDataHelper</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="spmi.core.manageables.task.TaskManageable.Wrapper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Wrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.manageables.task.TaskManageable.Wrapper" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class which handles a command execution.</p>
+<p>Any realisation should be defined in <a class="reference internal" href="spmi.core.manageables.task_.wrappers.html#module-spmi.core.manageables.task_.wrappers" title="spmi.core.manageables.task_.wrappers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">spmi.core.manageables.task_.wrappers</span></code></a>
+package in own file.
+Its name should be written in PascalCase and ended with “Wrapper”.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="spmi.core.manageables.task.TaskManageable.Wrapper.MetaDataHelper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MetaDataHelper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">meta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mutable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.manageables.task.TaskManageable.Wrapper.MetaDataHelper" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="spmi.utils.html#spmi.utils.metadata.MetaDataNode" title="spmi.utils.metadata.MetaDataNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">MetaDataNode</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>meta</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[dict,</span> <span class="pre">None]</span></code>) – Meta dictionary. Empty if <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>data</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[dict,</span> <span class="pre">None]</span></code>) – Data dictionary. Empty if <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>metadata</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[dict,</span> <span class="pre">MetaDataNode]</span></code>) – <code class="xref py py-class docutils literal notranslate"><span class="pre">MetaDataNode</span></code> object.</p></li>
+<li><p><strong>mutable</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>) – Mutable flag.</p></li>
+<li><p><strong>copy</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>) – Copy flag. If <code class="docutils literal notranslate"><span class="pre">True</span></code>, deepcopies <code class="docutils literal notranslate"><span class="pre">meta</span></code>, <code class="docutils literal notranslate"><span class="pre">data</span></code> and <code class="docutils literal notranslate"><span class="pre">metadata</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can set meta and data or metadata flags at once</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>TypeError</strong> – </p></li>
+<li><p><strong>ValueError</strong> – </p></li>
+<li><p><a class="reference internal" href="spmi.utils.html#spmi.utils.metadata.IncorrectProperty" title="spmi.utils.metadata.IncorrectProperty"><strong>IncorrectProperty</strong></a> – </p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="spmi.core.manageables.task.TaskManageable.Wrapper.MetaDataHelper.command">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">command</span></span><a class="headerlink" href="#spmi.core.manageables.task.TaskManageable.Wrapper.MetaDataHelper.command" title="Link to this definition">#</a></dt>
+<dd><p>Wrapper type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spmi.core.manageables.task.TaskManageable.Wrapper.MetaDataHelper.exit_code">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">exit_code</span></span><a class="headerlink" href="#spmi.core.manageables.task.TaskManageable.Wrapper.MetaDataHelper.exit_code" title="Link to this definition">#</a></dt>
+<dd><p>Exit code of wrapped process.
+<code class="docutils literal notranslate"><span class="pre">None</span></code> if process hasn’t finished.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="spmi.utils.html#spmi.utils.metadata.MetaDataError" title="spmi.utils.metadata.MetaDataError"><strong>MetaDataError</strong></a> – </p></li>
+<li><p><strong>TypeError</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[int,</span> <span class="pre">None]</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spmi.core.manageables.task.TaskManageable.Wrapper.MetaDataHelper.mixed_stdout">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mixed_stdout</span></span><a class="headerlink" href="#spmi.core.manageables.task.TaskManageable.Wrapper.MetaDataHelper.mixed_stdout" title="Link to this definition">#</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if stdout and stderr are one file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="spmi.utils.html#spmi.utils.metadata.MetaDataError" title="spmi.utils.metadata.MetaDataError"><strong>MetaDataError</strong></a> – </p></li>
+<li><p><strong>TypeError</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spmi.core.manageables.task.TaskManageable.Wrapper.MetaDataHelper.process_pid">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">process_pid</span></span><a class="headerlink" href="#spmi.core.manageables.task.TaskManageable.Wrapper.MetaDataHelper.process_pid" title="Link to this definition">#</a></dt>
+<dd><p>PID of wrapped process.
+<code class="docutils literal notranslate"><span class="pre">None</span></code> if process hasn’t started.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="spmi.utils.html#spmi.utils.metadata.MetaDataError" title="spmi.utils.metadata.MetaDataError"><strong>MetaDataError</strong></a> – </p></li>
+<li><p><strong>TypeError</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[int,</span> <span class="pre">None]</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.core.manageables.task.TaskManageable.Wrapper.MetaDataHelper.reset">
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.manageables.task.TaskManageable.Wrapper.MetaDataHelper.reset" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spmi.core.manageables.task.TaskManageable.Wrapper.MetaDataHelper.stderr_path">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">stderr_path</span></span><a class="headerlink" href="#spmi.core.manageables.task.TaskManageable.Wrapper.MetaDataHelper.stderr_path" title="Link to this definition">#</a></dt>
+<dd><p>Path to wrapper stderr file.
+<code class="docutils literal notranslate"><span class="pre">None</span></code> if there is no wrapper stderr file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="spmi.utils.html#spmi.utils.metadata.MetaDataError" title="spmi.utils.metadata.MetaDataError"><strong>MetaDataError</strong></a> – </p></li>
+<li><p><strong>TypeError</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[pathlib.Path,</span> <span class="pre">None]</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spmi.core.manageables.task.TaskManageable.Wrapper.MetaDataHelper.stdin_path">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">stdin_path</span></span><a class="headerlink" href="#spmi.core.manageables.task.TaskManageable.Wrapper.MetaDataHelper.stdin_path" title="Link to this definition">#</a></dt>
+<dd><p>Path to wrapper stdin file.
+<code class="docutils literal notranslate"><span class="pre">None</span></code> if there is no wrapper stdin file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="spmi.utils.html#spmi.utils.metadata.MetaDataError" title="spmi.utils.metadata.MetaDataError"><strong>MetaDataError</strong></a> – </p></li>
+<li><p><strong>TypeError</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[pathlib.Path,</span> <span class="pre">None]</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spmi.core.manageables.task.TaskManageable.Wrapper.MetaDataHelper.stdout_path">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">stdout_path</span></span><a class="headerlink" href="#spmi.core.manageables.task.TaskManageable.Wrapper.MetaDataHelper.stdout_path" title="Link to this definition">#</a></dt>
+<dd><p>Path to backend stdout file.
+<code class="docutils literal notranslate"><span class="pre">None</span></code> if there is no backend stdout file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="spmi.utils.html#spmi.utils.metadata.MetaDataError" title="spmi.utils.metadata.MetaDataError"><strong>MetaDataError</strong></a> – </p></li>
+<li><p><strong>TypeError</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[pathlib.Path,</span> <span class="pre">None]</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spmi.core.manageables.task.TaskManageable.Wrapper.MetaDataHelper.type">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#spmi.core.manageables.task.TaskManageable.Wrapper.MetaDataHelper.type" title="Link to this definition">#</a></dt>
+<dd><p>Wrapper type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.core.manageables.task.TaskManageable.Wrapper.get_wrapper_class">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_wrapper_class</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metadata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.manageables.task.TaskManageable.Wrapper.get_wrapper_class" title="Link to this definition">#</a></dt>
+<dd><p>Returns wrapper class by metadata</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.core.manageables.task.TaskManageable.Wrapper.on_signal">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">on_signal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signum</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.manageables.task.TaskManageable.Wrapper.on_signal" title="Link to this definition">#</a></dt>
+<dd><p>Called on signal.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.core.manageables.task.TaskManageable.Wrapper.start">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.manageables.task.TaskManageable.Wrapper.start" title="Link to this definition">#</a></dt>
+<dd><p>Start wrapper.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.core.manageables.task.TaskManageable.destruct">
+<span class="sig-name descname"><span class="pre">destruct</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.manageables.task.TaskManageable.destruct" title="Link to this definition">#</a></dt>
+<dd><p>Free all resources (filesystem too).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="spmi.core.html#spmi.core.manageable.ManageableException" title="spmi.core.manageable.ManageableException"><strong>ManageableException</strong></a> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.core.manageables.task.TaskManageable.kill">
+<span class="sig-name descname"><span class="pre">kill</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.manageables.task.TaskManageable.kill" title="Link to this definition">#</a></dt>
+<dd><p>Kill this manageable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="spmi.core.html#spmi.core.manageable.ManageableException" title="spmi.core.manageable.ManageableException"><strong>ManageableException</strong></a> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.core.manageables.task.TaskManageable.start">
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.manageables.task.TaskManageable.start" title="Link to this definition">#</a></dt>
+<dd><p>Starts this manageable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="spmi.core.html#spmi.core.manageable.ManageableException" title="spmi.core.manageable.ManageableException"><strong>ManageableException</strong></a> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spmi.core.manageables.task.TaskManageable.status">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">status</span></span><a class="headerlink" href="#spmi.core.manageables.task.TaskManageable.status" title="Link to this definition">#</a></dt>
+<dd><p>Status of manageable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ManageableStatus</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.core.manageables.task.TaskManageable.status_string">
+<span class="sig-name descname"><span class="pre">status_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">align</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.manageables.task.TaskManageable.status_string" title="Link to this definition">#</a></dt>
+<dd><p>Returns status string of this manageable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>align</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code>) – Align.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.core.manageables.task.TaskManageable.term">
+<span class="sig-name descname"><span class="pre">term</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.manageables.task.TaskManageable.term" title="Link to this definition">#</a></dt>
+<dd><p>Terminate this manageable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="spmi.core.html#spmi.core.manageable.ManageableException" title="spmi.core.manageable.ManageableException"><strong>ManageableException</strong></a> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="spmi.core.manageables.task.TaskManageableException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spmi.core.manageables.task.</span></span><span class="sig-name descname"><span class="pre">TaskManageableException</span></span><a class="headerlink" href="#spmi.core.manageables.task.TaskManageableException" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="spmi.core.html#spmi.core.manageable.ManageableException" title="spmi.core.manageable.ManageableException"><code class="xref py py-class docutils literal notranslate"><span class="pre">ManageableException</span></code></a></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="spmi.core.manageables.task.WrapperException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spmi.core.manageables.task.</span></span><span class="sig-name descname"><span class="pre">WrapperException</span></span><a class="headerlink" href="#spmi.core.manageables.task.WrapperException" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#spmi.core.manageables.task.TaskManageableException" title="spmi.core.manageables.task.TaskManageableException"><code class="xref py py-class docutils literal notranslate"><span class="pre">TaskManageableException</span></code></a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spmi.core.manageables.task.set_signal_handlers">
+<span class="sig-prename descclassname"><span class="pre">spmi.core.manageables.task.</span></span><span class="sig-name descname"><span class="pre">set_signal_handlers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrapper</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.manageables.task.set_signal_handlers" title="Link to this definition">#</a></dt>
+<dd><p>Sets signal handlers.</p>
+</dd></dl>
+
+</section>
+<section id="module-spmi.core.manageables">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-spmi.core.manageables" title="Link to this heading">#</a></h2>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="spmi.core.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">spmi.core package</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="spmi.core.manageables.task_.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">spmi.core.manageables.task_ package</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#subpackages">Subpackages</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-spmi.core.manageables.task">spmi.core.manageables.task module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.BackendException"><code class="docutils literal notranslate"><span class="pre">BackendException</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable"><code class="docutils literal notranslate"><span class="pre">TaskManageable</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Backend"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Backend</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Backend.MetaDataHelper"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Backend.MetaDataHelper</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Backend.MetaDataHelper.command"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Backend.MetaDataHelper.command</span></code></a></li>
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Backend.MetaDataHelper.id"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Backend.MetaDataHelper.id</span></code></a></li>
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Backend.MetaDataHelper.log_path"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Backend.MetaDataHelper.log_path</span></code></a></li>
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Backend.MetaDataHelper.reset"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Backend.MetaDataHelper.reset()</span></code></a></li>
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Backend.MetaDataHelper.type"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Backend.MetaDataHelper.type</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Backend.get_backend_class"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Backend.get_backend_class()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Backend.is_active"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Backend.is_active()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Backend.kill"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Backend.kill()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Backend.submit"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Backend.submit()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Backend.term"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Backend.term()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Cli"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Cli</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Cli.command"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Cli.command()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Cli.from_args"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Cli.from_args()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.MetaDataHelper"><code class="docutils literal notranslate"><span class="pre">TaskManageable.MetaDataHelper</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.MetaDataHelper.backend"><code class="docutils literal notranslate"><span class="pre">TaskManageable.MetaDataHelper.backend</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.MetaDataHelper.common_backend"><code class="docutils literal notranslate"><span class="pre">TaskManageable.MetaDataHelper.common_backend</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.MetaDataHelper.common_wrapper"><code class="docutils literal notranslate"><span class="pre">TaskManageable.MetaDataHelper.common_wrapper</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.MetaDataHelper.reset"><code class="docutils literal notranslate"><span class="pre">TaskManageable.MetaDataHelper.reset()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.MetaDataHelper.wrapper"><code class="docutils literal notranslate"><span class="pre">TaskManageable.MetaDataHelper.wrapper</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Wrapper"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Wrapper</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Wrapper.MetaDataHelper"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Wrapper.MetaDataHelper</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Wrapper.MetaDataHelper.command"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Wrapper.MetaDataHelper.command</span></code></a></li>
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Wrapper.MetaDataHelper.exit_code"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Wrapper.MetaDataHelper.exit_code</span></code></a></li>
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Wrapper.MetaDataHelper.mixed_stdout"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Wrapper.MetaDataHelper.mixed_stdout</span></code></a></li>
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Wrapper.MetaDataHelper.process_pid"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Wrapper.MetaDataHelper.process_pid</span></code></a></li>
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Wrapper.MetaDataHelper.reset"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Wrapper.MetaDataHelper.reset()</span></code></a></li>
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Wrapper.MetaDataHelper.stderr_path"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Wrapper.MetaDataHelper.stderr_path</span></code></a></li>
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Wrapper.MetaDataHelper.stdin_path"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Wrapper.MetaDataHelper.stdin_path</span></code></a></li>
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Wrapper.MetaDataHelper.stdout_path"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Wrapper.MetaDataHelper.stdout_path</span></code></a></li>
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Wrapper.MetaDataHelper.type"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Wrapper.MetaDataHelper.type</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Wrapper.get_wrapper_class"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Wrapper.get_wrapper_class()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Wrapper.on_signal"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Wrapper.on_signal()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.Wrapper.start"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Wrapper.start()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.destruct"><code class="docutils literal notranslate"><span class="pre">TaskManageable.destruct()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.kill"><code class="docutils literal notranslate"><span class="pre">TaskManageable.kill()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.start"><code class="docutils literal notranslate"><span class="pre">TaskManageable.start()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.status"><code class="docutils literal notranslate"><span class="pre">TaskManageable.status</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.status_string"><code class="docutils literal notranslate"><span class="pre">TaskManageable.status_string()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageable.term"><code class="docutils literal notranslate"><span class="pre">TaskManageable.term()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.TaskManageableException"><code class="docutils literal notranslate"><span class="pre">TaskManageableException</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.WrapperException"><code class="docutils literal notranslate"><span class="pre">WrapperException</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageables.task.set_signal_handlers"><code class="docutils literal notranslate"><span class="pre">set_signal_handlers()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-spmi.core.manageables">Module contents</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Leonid Pilyugin
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2024, Leonid Pilyugin.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

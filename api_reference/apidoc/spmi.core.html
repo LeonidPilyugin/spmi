@@ -1,0 +1,1369 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>spmi.core package &#8212; SPMI 0.0.1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=a3416100" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../_static/documentation_options.js?v=e645c8fa"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api_reference/apidoc/spmi.core';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="spmi.core.manageables package" href="spmi.core.manageables.html" />
+    <link rel="prev" title="spmi package" href="spmi.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">SPMI 0.0.1 documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide.html">User guide</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../index.html">API reference</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="modules.html">spmi</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3 current active has-children"><a class="reference internal" href="spmi.html">spmi package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l4 current active"><a class="current reference internal" href="#">spmi.core package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="spmi.utils.html">spmi.utils package</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/api_reference/apidoc/spmi.core.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>spmi.core package</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#subpackages">Subpackages</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-spmi.core.manageable">spmi.core.manageable module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable"><code class="docutils literal notranslate"><span class="pre">Manageable</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.FileSystemHelper"><code class="docutils literal notranslate"><span class="pre">Manageable.FileSystemHelper</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.FileSystemHelper.DATA_FILENAME"><code class="docutils literal notranslate"><span class="pre">Manageable.FileSystemHelper.DATA_FILENAME</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.FileSystemHelper.META_FILENAME"><code class="docutils literal notranslate"><span class="pre">Manageable.FileSystemHelper.META_FILENAME</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.FileSystemHelper.data_path"><code class="docutils literal notranslate"><span class="pre">Manageable.FileSystemHelper.data_path()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.FileSystemHelper.data_pathes"><code class="docutils literal notranslate"><span class="pre">Manageable.FileSystemHelper.data_pathes()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.FileSystemHelper.destruct"><code class="docutils literal notranslate"><span class="pre">Manageable.FileSystemHelper.destruct()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.FileSystemHelper.from_directory"><code class="docutils literal notranslate"><span class="pre">Manageable.FileSystemHelper.from_directory()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.FileSystemHelper.is_correct_directory"><code class="docutils literal notranslate"><span class="pre">Manageable.FileSystemHelper.is_correct_directory()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.FileSystemHelper.meta_path"><code class="docutils literal notranslate"><span class="pre">Manageable.FileSystemHelper.meta_path()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.FileSystemHelper.meta_pathes"><code class="docutils literal notranslate"><span class="pre">Manageable.FileSystemHelper.meta_pathes()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.FileSystemHelper.register"><code class="docutils literal notranslate"><span class="pre">Manageable.FileSystemHelper.register()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.LoadHelper"><code class="docutils literal notranslate"><span class="pre">Manageable.LoadHelper</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.LoadHelper.from_descriptor"><code class="docutils literal notranslate"><span class="pre">Manageable.LoadHelper.from_descriptor()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.LoadHelper.from_directory_unknown"><code class="docutils literal notranslate"><span class="pre">Manageable.LoadHelper.from_directory_unknown()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.LoadHelper.load_manageable_class"><code class="docutils literal notranslate"><span class="pre">Manageable.LoadHelper.load_manageable_class()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.MetaDataHelper"><code class="docutils literal notranslate"><span class="pre">Manageable.MetaDataHelper</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.MetaDataHelper.comment"><code class="docutils literal notranslate"><span class="pre">Manageable.MetaDataHelper.comment</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.MetaDataHelper.finish_time"><code class="docutils literal notranslate"><span class="pre">Manageable.MetaDataHelper.finish_time</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.MetaDataHelper.id"><code class="docutils literal notranslate"><span class="pre">Manageable.MetaDataHelper.id</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.MetaDataHelper.m_data"><code class="docutils literal notranslate"><span class="pre">Manageable.MetaDataHelper.m_data</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.MetaDataHelper.path"><code class="docutils literal notranslate"><span class="pre">Manageable.MetaDataHelper.path</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.MetaDataHelper.prefered_suffix"><code class="docutils literal notranslate"><span class="pre">Manageable.MetaDataHelper.prefered_suffix</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.MetaDataHelper.reset"><code class="docutils literal notranslate"><span class="pre">Manageable.MetaDataHelper.reset()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.MetaDataHelper.start_time"><code class="docutils literal notranslate"><span class="pre">Manageable.MetaDataHelper.start_time</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.MetaDataHelper.type"><code class="docutils literal notranslate"><span class="pre">Manageable.MetaDataHelper.type</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.destruct"><code class="docutils literal notranslate"><span class="pre">Manageable.destruct()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.from_descriptor"><code class="docutils literal notranslate"><span class="pre">Manageable.from_descriptor()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.from_directory"><code class="docutils literal notranslate"><span class="pre">Manageable.from_directory()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.from_directory_unknown"><code class="docutils literal notranslate"><span class="pre">Manageable.from_directory_unknown()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.is_correct_directory"><code class="docutils literal notranslate"><span class="pre">Manageable.is_correct_directory()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.is_correct_meta_data"><code class="docutils literal notranslate"><span class="pre">Manageable.is_correct_meta_data()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.kill"><code class="docutils literal notranslate"><span class="pre">Manageable.kill()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.register"><code class="docutils literal notranslate"><span class="pre">Manageable.register()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.start"><code class="docutils literal notranslate"><span class="pre">Manageable.start()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.state"><code class="docutils literal notranslate"><span class="pre">Manageable.state</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.status"><code class="docutils literal notranslate"><span class="pre">Manageable.status</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.status_string"><code class="docutils literal notranslate"><span class="pre">Manageable.status_string()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.term"><code class="docutils literal notranslate"><span class="pre">Manageable.term()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.ManageableException"><code class="docutils literal notranslate"><span class="pre">ManageableException</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.ManageableStatus"><code class="docutils literal notranslate"><span class="pre">ManageableStatus</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.ManageableStatus.ACTIVE"><code class="docutils literal notranslate"><span class="pre">ManageableStatus.ACTIVE</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.ManageableStatus.INACTIVE"><code class="docutils literal notranslate"><span class="pre">ManageableStatus.INACTIVE</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.ManageableStatus.UNTRACKED"><code class="docutils literal notranslate"><span class="pre">ManageableStatus.UNTRACKED</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.manageable"><code class="docutils literal notranslate"><span class="pre">manageable()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-spmi.core.pool">spmi.core.pool module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.pool.Pool"><code class="docutils literal notranslate"><span class="pre">Pool</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.pool.Pool.FileSystemHelper"><code class="docutils literal notranslate"><span class="pre">Pool.FileSystemHelper</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.pool.Pool.FileSystemHelper.get_registered_manageables"><code class="docutils literal notranslate"><span class="pre">Pool.FileSystemHelper.get_registered_manageables()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.pool.Pool.FileSystemHelper.register"><code class="docutils literal notranslate"><span class="pre">Pool.FileSystemHelper.register()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.pool.Pool.find"><code class="docutils literal notranslate"><span class="pre">Pool.find()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.pool.Pool.manageables"><code class="docutils literal notranslate"><span class="pre">Pool.manageables</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.pool.Pool.register"><code class="docutils literal notranslate"><span class="pre">Pool.register()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.pool.PoolException"><code class="docutils literal notranslate"><span class="pre">PoolException</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-spmi.core">Module contents</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="spmi-core-package">
+<h1>spmi.core package<a class="headerlink" href="#spmi-core-package" title="Link to this heading">#</a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading">#</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="spmi.core.manageables.html">spmi.core.manageables package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="spmi.core.manageables.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="spmi.core.manageables.task_.html">spmi.core.manageables.task_ package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="spmi.core.manageables.task_.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="spmi.core.manageables.task_.html#module-spmi.core.manageables.task_">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="spmi.core.manageables.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spmi.core.manageables.html#module-spmi.core.manageables.task">spmi.core.manageables.task module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="spmi.core.manageables.html#spmi.core.manageables.task.BackendException"><code class="docutils literal notranslate"><span class="pre">BackendException</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="spmi.core.manageables.html#spmi.core.manageables.task.TaskManageable"><code class="docutils literal notranslate"><span class="pre">TaskManageable</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="spmi.core.manageables.html#spmi.core.manageables.task.TaskManageable.Backend"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Backend</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="spmi.core.manageables.html#spmi.core.manageables.task.TaskManageable.Cli"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Cli</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="spmi.core.manageables.html#spmi.core.manageables.task.TaskManageable.MetaDataHelper"><code class="docutils literal notranslate"><span class="pre">TaskManageable.MetaDataHelper</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="spmi.core.manageables.html#spmi.core.manageables.task.TaskManageable.Wrapper"><code class="docutils literal notranslate"><span class="pre">TaskManageable.Wrapper</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="spmi.core.manageables.html#spmi.core.manageables.task.TaskManageable.destruct"><code class="docutils literal notranslate"><span class="pre">TaskManageable.destruct()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="spmi.core.manageables.html#spmi.core.manageables.task.TaskManageable.kill"><code class="docutils literal notranslate"><span class="pre">TaskManageable.kill()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="spmi.core.manageables.html#spmi.core.manageables.task.TaskManageable.start"><code class="docutils literal notranslate"><span class="pre">TaskManageable.start()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="spmi.core.manageables.html#spmi.core.manageables.task.TaskManageable.status"><code class="docutils literal notranslate"><span class="pre">TaskManageable.status</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="spmi.core.manageables.html#spmi.core.manageables.task.TaskManageable.status_string"><code class="docutils literal notranslate"><span class="pre">TaskManageable.status_string()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="spmi.core.manageables.html#spmi.core.manageables.task.TaskManageable.term"><code class="docutils literal notranslate"><span class="pre">TaskManageable.term()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="spmi.core.manageables.html#spmi.core.manageables.task.TaskManageableException"><code class="docutils literal notranslate"><span class="pre">TaskManageableException</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="spmi.core.manageables.html#spmi.core.manageables.task.WrapperException"><code class="docutils literal notranslate"><span class="pre">WrapperException</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="spmi.core.manageables.html#spmi.core.manageables.task.set_signal_handlers"><code class="docutils literal notranslate"><span class="pre">set_signal_handlers()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="spmi.core.manageables.html#module-spmi.core.manageables">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">#</a></h2>
+</section>
+<section id="module-spmi.core.manageable">
+<span id="spmi-core-manageable-module"></span><h2>spmi.core.manageable module<a class="headerlink" href="#module-spmi.core.manageable" title="Link to this heading">#</a></h2>
+<p>Provides <a class="reference internal" href="#spmi.core.manageable.Manageable" title="spmi.core.manageable.Manageable"><code class="xref py py-class docutils literal notranslate"><span class="pre">Manageable</span></code></a>.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="spmi.core.manageable.Manageable">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spmi.core.manageable.</span></span><span class="sig-name descname"><span class="pre">Manageable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.manageable.Manageable" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This class describes object which can be managed by SPMI.</p>
+<p>Any realisation should be defined in <a class="reference internal" href="spmi.core.manageables.html#module-spmi.core.manageables" title="spmi.core.manageables"><code class="xref py py-mod docutils literal notranslate"><span class="pre">spmi.core.manageables</span></code></a>
+package in own file and decorated with <a class="reference internal" href="#spmi.core.manageable.manageable" title="spmi.core.manageable.manageable"><code class="xref py py-func docutils literal notranslate"><span class="pre">manageable()</span></code></a>. Its name
+should be written in PascalCase and ended with “Manageable”.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="spmi.core.manageable.Manageable.FileSystemHelper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">FileSystemHelper</span></span><a class="headerlink" href="#spmi.core.manageable.Manageable.FileSystemHelper" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Contains methods to work with filesystem.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spmi.core.manageable.Manageable.FileSystemHelper.DATA_FILENAME">
+<span class="sig-name descname"><span class="pre">DATA_FILENAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'data'</span></em><a class="headerlink" href="#spmi.core.manageable.Manageable.FileSystemHelper.DATA_FILENAME" title="Link to this definition">#</a></dt>
+<dd><p>name of data file (without extention)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spmi.core.manageable.Manageable.FileSystemHelper.META_FILENAME">
+<span class="sig-name descname"><span class="pre">META_FILENAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'meta'</span></em><a class="headerlink" href="#spmi.core.manageable.Manageable.FileSystemHelper.META_FILENAME" title="Link to this definition">#</a></dt>
+<dd><p>name of meta file (without extention)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.core.manageable.Manageable.FileSystemHelper.data_path">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">data_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.manageable.Manageable.FileSystemHelper.data_path" title="Link to this definition">#</a></dt>
+<dd><p>Returns path to data file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">pathlib.Path</span></code>) – Directory path.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pathlib.Path</span></code>.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spmi.core.manageable.ManageableException" title="spmi.core.manageable.ManageableException"><strong>ManageableException</strong></a> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.core.manageable.Manageable.FileSystemHelper.data_pathes">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">data_pathes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.manageable.Manageable.FileSystemHelper.data_pathes" title="Link to this definition">#</a></dt>
+<dd><p>Return all potential data pathes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">pathlib.Path</span></code>) – Directory path.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">pathlib.Path</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.core.manageable.Manageable.FileSystemHelper.destruct">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">destruct</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">manageable</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.manageable.Manageable.FileSystemHelper.destruct" title="Link to this definition">#</a></dt>
+<dd><p>Destructs manageable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>manageable</strong> (<a class="reference internal" href="#spmi.core.manageable.Manageable" title="spmi.core.manageable.Manageable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Manageable</span></code></a>) – Manageable to destruct.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>TypeError</strong> – </p></li>
+<li><p><a class="reference internal" href="#spmi.core.manageable.ManageableException" title="spmi.core.manageable.ManageableException"><strong>ManageableException</strong></a> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.core.manageable.Manageable.FileSystemHelper.from_directory">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_directory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.manageable.Manageable.FileSystemHelper.from_directory" title="Link to this definition">#</a></dt>
+<dd><p>Returns keyword arguments to create <a class="reference internal" href="#spmi.core.manageable.Manageable" title="spmi.core.manageable.Manageable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Manageable</span></code></a> object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">pathlib.Path</span></code>) – Path to directory.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Kwargs.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>TypeError</strong> – </p></li>
+<li><p><a class="reference internal" href="#spmi.core.manageable.ManageableException" title="spmi.core.manageable.ManageableException"><strong>ManageableException</strong></a> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.core.manageable.Manageable.FileSystemHelper.is_correct_directory">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_correct_directory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.manageable.Manageable.FileSystemHelper.is_correct_directory" title="Link to this definition">#</a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="docutils literal notranslate"><span class="pre">path</span></code> may be a directory
+where <a class="reference internal" href="#spmi.core.manageable.Manageable" title="spmi.core.manageable.Manageable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Manageable</span></code></a> registered.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">pathlib.Path</span></code>) – Path to directory.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>TypeError</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.core.manageable.Manageable.FileSystemHelper.meta_path">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">meta_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.manageable.Manageable.FileSystemHelper.meta_path" title="Link to this definition">#</a></dt>
+<dd><p>Returns path to meta file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">pathlib.Path</span></code>) – Directory path.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pathlib.Path</span></code>.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spmi.core.manageable.ManageableException" title="spmi.core.manageable.ManageableException"><strong>ManageableException</strong></a> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.core.manageable.Manageable.FileSystemHelper.meta_pathes">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">meta_pathes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.manageable.Manageable.FileSystemHelper.meta_pathes" title="Link to this definition">#</a></dt>
+<dd><p>Return all potential meta pathes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">pathlib.Path</span></code>) – Directory path.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">pathlib.Path</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.core.manageable.Manageable.FileSystemHelper.register">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">register</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">manageable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.manageable.Manageable.FileSystemHelper.register" title="Link to this definition">#</a></dt>
+<dd><p>Registeres manageable by path.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>manageable</strong> (<a class="reference internal" href="#spmi.core.manageable.Manageable" title="spmi.core.manageable.Manageable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Manageable</span></code></a>) – Manageable to register.</p></li>
+<li><p><strong>path</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">pathlib.Path</span></code>) – Path to use.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>TypeError</strong> – </p></li>
+<li><p><a class="reference internal" href="#spmi.core.manageable.ManageableException" title="spmi.core.manageable.ManageableException"><strong>ManageableException</strong></a> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="spmi.core.manageable.Manageable.LoadHelper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">LoadHelper</span></span><a class="headerlink" href="#spmi.core.manageable.Manageable.LoadHelper" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Abstract load helper.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.core.manageable.Manageable.LoadHelper.from_descriptor">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_descriptor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.manageable.Manageable.LoadHelper.from_descriptor" title="Link to this definition">#</a></dt>
+<dd><p>Loads detected manageable from descriptor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">pathlib.Path</span></code>) – Path to descriptor.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#spmi.core.manageable.Manageable" title="spmi.core.manageable.Manageable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Manageable</span></code></a>.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>TypeError</strong> – </p></li>
+<li><p><strong>NotImplementedError</strong> – </p></li>
+<li><p><a class="reference internal" href="spmi.utils.html#spmi.utils.metadata.MetaDataError" title="spmi.utils.metadata.MetaDataError"><strong>MetaDataError</strong></a> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.core.manageable.Manageable.LoadHelper.from_directory_unknown">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_directory_unknown</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.manageable.Manageable.LoadHelper.from_directory_unknown" title="Link to this definition">#</a></dt>
+<dd><p>Loads registered manageable from directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">pathlib.Path</span></code>) – Path to directory.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#spmi.core.manageable.Manageable" title="spmi.core.manageable.Manageable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Manageable</span></code></a>.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>TypeError</strong> – </p></li>
+<li><p><a class="reference internal" href="#spmi.core.manageable.ManageableException" title="spmi.core.manageable.ManageableException"><strong>ManageableException</strong></a> – </p></li>
+<li><p><strong>NotImplementedError</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.core.manageable.Manageable.LoadHelper.load_manageable_class">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load_manageable_class</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.manageable.Manageable.LoadHelper.load_manageable_class" title="Link to this definition">#</a></dt>
+<dd><p>Loads manageable class by name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – Classname.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">class</span></code>.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>TypeError</strong> – </p></li>
+<li><p><strong>NotImplementedError</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="spmi.core.manageable.Manageable.MetaDataHelper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MetaDataHelper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mutable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.manageable.Manageable.MetaDataHelper" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="spmi.utils.html#spmi.utils.metadata.MetaData" title="spmi.utils.metadata.MetaData"><code class="xref py py-class docutils literal notranslate"><span class="pre">MetaData</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>meta</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[dict,</span> <span class="pre">pathlib.Path,</span> <span class="pre">None]</span></code>) – Meta dictionary. Empty <code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code> if <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>data</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[dict,</span> <span class="pre">pathlib.Path,</span> <span class="pre">None]</span></code>) – Data dictionary. Empty <code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code> if <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>metadata</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[dict,</span> <span class="pre">MetaData]</span></code>) – <code class="xref py py-class docutils literal notranslate"><span class="pre">MetaData</span></code> object.</p></li>
+<li><p><strong>mutable</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>) – Mutable flag.</p></li>
+<li><p><strong>copy</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>) – Copy flag. If <code class="docutils literal notranslate"><span class="pre">True</span></code>, deepcopies <code class="docutils literal notranslate"><span class="pre">meta</span></code>, <code class="docutils literal notranslate"><span class="pre">data</span></code> and <code class="docutils literal notranslate"><span class="pre">metadata</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can set meta and data or metadata flags at once</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>TypeError</strong> – </p></li>
+<li><p><strong>ValueError</strong> – </p></li>
+<li><p><a class="reference internal" href="spmi.utils.io.html#spmi.utils.io.io.IoException" title="spmi.utils.io.io.IoException"><strong>IoException</strong></a> – </p></li>
+<li><p><a class="reference internal" href="spmi.utils.html#spmi.utils.metadata.MetaDataError" title="spmi.utils.metadata.MetaDataError"><strong>MetaDataError</strong></a> – </p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="spmi.core.manageable.Manageable.MetaDataHelper.comment">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">comment</span></span><a class="headerlink" href="#spmi.core.manageable.Manageable.MetaDataHelper.comment" title="Link to this definition">#</a></dt>
+<dd><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>. Comment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>KeyError</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spmi.core.manageable.Manageable.MetaDataHelper.finish_time">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">finish_time</span></span><a class="headerlink" href="#spmi.core.manageable.Manageable.MetaDataHelper.finish_time" title="Link to this definition">#</a></dt>
+<dd><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[None,</span> <span class="pre">datetime.datetime]</span></code>. Finish time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>TypeError</strong> – </p></li>
+<li><p><a class="reference internal" href="spmi.utils.html#spmi.utils.metadata.MetaDataError" title="spmi.utils.metadata.MetaDataError"><strong>MetaDataError</strong></a> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spmi.core.manageable.Manageable.MetaDataHelper.id">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#spmi.core.manageable.Manageable.MetaDataHelper.id" title="Link to this definition">#</a></dt>
+<dd><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>. ID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>KeyError</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spmi.core.manageable.Manageable.MetaDataHelper.m_data">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">m_data</span></span><a class="headerlink" href="#spmi.core.manageable.Manageable.MetaDataHelper.m_data" title="Link to this definition">#</a></dt>
+<dd><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code>. Manageable data.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spmi.core.manageable.Manageable.MetaDataHelper.path">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">path</span></span><a class="headerlink" href="#spmi.core.manageable.Manageable.MetaDataHelper.path" title="Link to this definition">#</a></dt>
+<dd><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pathlib.Path</span></code>. Path.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="spmi.utils.html#spmi.utils.metadata.MetaDataError" title="spmi.utils.metadata.MetaDataError"><strong>MetaDataError</strong></a> – </p></li>
+<li><p><strong>TypeError</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spmi.core.manageable.Manageable.MetaDataHelper.prefered_suffix">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">prefered_suffix</span></span><a class="headerlink" href="#spmi.core.manageable.Manageable.MetaDataHelper.prefered_suffix" title="Link to this definition">#</a></dt>
+<dd><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>. Prefered suffix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>TypeError</strong> – </p></li>
+<li><p><a class="reference internal" href="spmi.utils.html#spmi.utils.metadata.MetaDataError" title="spmi.utils.metadata.MetaDataError"><strong>MetaDataError</strong></a> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.core.manageable.Manageable.MetaDataHelper.reset">
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.manageable.Manageable.MetaDataHelper.reset" title="Link to this definition">#</a></dt>
+<dd><p>Resets some values in case of restart.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="spmi.utils.html#spmi.utils.metadata.MetaDataError" title="spmi.utils.metadata.MetaDataError"><strong>MetaDataError</strong></a> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spmi.core.manageable.Manageable.MetaDataHelper.start_time">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">start_time</span></span><a class="headerlink" href="#spmi.core.manageable.Manageable.MetaDataHelper.start_time" title="Link to this definition">#</a></dt>
+<dd><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[None,</span> <span class="pre">datetime.datetime]</span></code>. Start time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>TypeError</strong> – </p></li>
+<li><p><a class="reference internal" href="spmi.utils.html#spmi.utils.metadata.MetaDataError" title="spmi.utils.metadata.MetaDataError"><strong>MetaDataError</strong></a> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spmi.core.manageable.Manageable.MetaDataHelper.type">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">type</span></span><a class="headerlink" href="#spmi.core.manageable.Manageable.MetaDataHelper.type" title="Link to this definition">#</a></dt>
+<dd><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>. Type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.core.manageable.Manageable.destruct">
+<span class="sig-name descname"><span class="pre">destruct</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.manageable.Manageable.destruct" title="Link to this definition">#</a></dt>
+<dd><p>Free all resources (filesystem too).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spmi.core.manageable.ManageableException" title="spmi.core.manageable.ManageableException"><strong>ManageableException</strong></a> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.core.manageable.Manageable.from_descriptor">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_descriptor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.manageable.Manageable.from_descriptor" title="Link to this definition">#</a></dt>
+<dd><p>Loads detected manageable from descriptor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">pathlib.Path</span></code>) – Path to descriptor.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#spmi.core.manageable.Manageable" title="spmi.core.manageable.Manageable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Manageable</span></code></a>.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>TypeError</strong> – </p></li>
+<li><p><a class="reference internal" href="#spmi.core.manageable.ManageableException" title="spmi.core.manageable.ManageableException"><strong>ManageableException</strong></a> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.core.manageable.Manageable.from_directory">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_directory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.manageable.Manageable.from_directory" title="Link to this definition">#</a></dt>
+<dd><p>Loads registered manageable from directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">pathlib.Path</span></code>) – Path to directory.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#spmi.core.manageable.Manageable" title="spmi.core.manageable.Manageable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Manageable</span></code></a>.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>TypeError</strong> – </p></li>
+<li><p><a class="reference internal" href="#spmi.core.manageable.ManageableException" title="spmi.core.manageable.ManageableException"><strong>ManageableException</strong></a> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.core.manageable.Manageable.from_directory_unknown">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_directory_unknown</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.manageable.Manageable.from_directory_unknown" title="Link to this definition">#</a></dt>
+<dd><p>Loads registered manageable from directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">pathlib.Path</span></code>) – Path to directory.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#spmi.core.manageable.Manageable" title="spmi.core.manageable.Manageable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Manageable</span></code></a>.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>TypeError</strong> – </p></li>
+<li><p><a class="reference internal" href="#spmi.core.manageable.ManageableException" title="spmi.core.manageable.ManageableException"><strong>ManageableException</strong></a> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.core.manageable.Manageable.is_correct_directory">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_correct_directory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.manageable.Manageable.is_correct_directory" title="Link to this definition">#</a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if this manageable is registered.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">pathlib.Path</span></code>) – Path to directory.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>TypeError</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.core.manageable.Manageable.is_correct_meta_data">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_correct_meta_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.manageable.Manageable.is_correct_meta_data" title="Link to this definition">#</a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="docutils literal notranslate"><span class="pre">meta</span></code> and <code class="docutils literal notranslate"><span class="pre">data</span></code>
+may be <a class="reference internal" href="#spmi.core.manageable.Manageable" title="spmi.core.manageable.Manageable"><code class="xref py py-class docutils literal notranslate"><span class="pre">Manageable</span></code></a>’s meta and data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[dict,</span> <span class="pre">pathlib.Path]</span></code>) – Data.</p></li>
+<li><p><strong>meta</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Uinon[dict,</span> <span class="pre">pathlib.Path,</span> <span class="pre">None]</span></code>) – Meta.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>TypeError</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.core.manageable.Manageable.kill">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">kill</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.manageable.Manageable.kill" title="Link to this definition">#</a></dt>
+<dd><p>Kill this manageable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spmi.core.manageable.ManageableException" title="spmi.core.manageable.ManageableException"><strong>ManageableException</strong></a> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.core.manageable.Manageable.register">
+<span class="sig-name descname"><span class="pre">register</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.manageable.Manageable.register" title="Link to this definition">#</a></dt>
+<dd><p>Registers by path.</p>
+<p>To register a <a class="reference internal" href="#spmi.core.manageable.Manageable" title="spmi.core.manageable.Manageable"><code class="xref py py-class docutils literal notranslate"><span class="pre">Manageable</span></code></a> means to create
+directory and save there meta and data files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">pathlib.Path</span></code>) – Path where manageable
+should be registered.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference internal" href="#spmi.core.manageable.ManageableException" title="spmi.core.manageable.ManageableException"><strong>ManageableException</strong></a> – </p></li>
+<li><p><strong>TypeError</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.core.manageable.Manageable.start">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.manageable.Manageable.start" title="Link to this definition">#</a></dt>
+<dd><p>Starts this manageable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spmi.core.manageable.ManageableException" title="spmi.core.manageable.ManageableException"><strong>ManageableException</strong></a> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spmi.core.manageable.Manageable.state">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">state</span></span><a class="headerlink" href="#spmi.core.manageable.Manageable.state" title="Link to this definition">#</a></dt>
+<dd><p><a class="reference internal" href="#spmi.core.manageable.Manageable.MetaDataHelper" title="spmi.core.manageable.Manageable.MetaDataHelper"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Manageable.MetaDataHelper</span></code></a> state of this manageable.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spmi.core.manageable.Manageable.status">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">status</span></span><a class="headerlink" href="#spmi.core.manageable.Manageable.status" title="Link to this definition">#</a></dt>
+<dd><p>Status of manageable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spmi.core.manageable.ManageableStatus" title="spmi.core.manageable.ManageableStatus"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ManageableStatus</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.core.manageable.Manageable.status_string">
+<span class="sig-name descname"><span class="pre">status_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">align</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.manageable.Manageable.status_string" title="Link to this definition">#</a></dt>
+<dd><p>Returns status string of this manageable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>align</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code>) – Align.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.core.manageable.Manageable.term">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">term</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.manageable.Manageable.term" title="Link to this definition">#</a></dt>
+<dd><p>Terminate this manageable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spmi.core.manageable.ManageableException" title="spmi.core.manageable.ManageableException"><strong>ManageableException</strong></a> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="spmi.core.manageable.ManageableException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spmi.core.manageable.</span></span><span class="sig-name descname"><span class="pre">ManageableException</span></span><a class="headerlink" href="#spmi.core.manageable.ManageableException" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="spmi.utils.html#spmi.utils.exception.SpmiException" title="spmi.utils.exception.SpmiException"><code class="xref py py-class docutils literal notranslate"><span class="pre">SpmiException</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="spmi.core.manageable.ManageableStatus">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spmi.core.manageable.</span></span><span class="sig-name descname"><span class="pre">ManageableStatus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.manageable.ManageableStatus" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spmi.core.manageable.ManageableStatus.ACTIVE">
+<span class="sig-name descname"><span class="pre">ACTIVE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'active'</span></em><a class="headerlink" href="#spmi.core.manageable.ManageableStatus.ACTIVE" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spmi.core.manageable.ManageableStatus.INACTIVE">
+<span class="sig-name descname"><span class="pre">INACTIVE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'inactive'</span></em><a class="headerlink" href="#spmi.core.manageable.ManageableStatus.INACTIVE" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spmi.core.manageable.ManageableStatus.UNTRACKED">
+<span class="sig-name descname"><span class="pre">UNTRACKED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'untracked'</span></em><a class="headerlink" href="#spmi.core.manageable.ManageableStatus.UNTRACKED" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spmi.core.manageable.manageable">
+<span class="sig-prename descclassname"><span class="pre">spmi.core.manageable.</span></span><span class="sig-name descname"><span class="pre">manageable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.manageable.manageable" title="Link to this definition">#</a></dt>
+<dd><p>All manageables should be decorated with it.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Sets <code class="docutils literal notranslate"><span class="pre">__old_init__</span></code> attribute of class and
+<code class="docutils literal notranslate"><span class="pre">_metadata</span></code> and <code class="docutils literal notranslate"><span class="pre">_metadata._outer_object</span></code> of object.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>AttributeError</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-spmi.core.pool">
+<span id="spmi-core-pool-module"></span><h2>spmi.core.pool module<a class="headerlink" href="#module-spmi.core.pool" title="Link to this heading">#</a></h2>
+<p>Provides <a class="reference internal" href="#spmi.core.pool.Pool" title="spmi.core.pool.Pool"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pool</span></code></a>.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="spmi.core.pool.Pool">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spmi.core.pool.</span></span><span class="sig-name descname"><span class="pre">Pool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pm</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.pool.Pool" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A class which helps to manage Manageables.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">pathlib.Path</span></code>) – Path of pool root.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>TypeError</strong> – </p></li>
+<li><p><a class="reference internal" href="#spmi.core.pool.PoolException" title="spmi.core.pool.PoolException"><strong>PoolException</strong></a> – </p></li>
+<li><p><a class="reference internal" href="#spmi.core.manageable.ManageableException" title="spmi.core.manageable.ManageableException"><strong>ManageableException</strong></a> – </p></li>
+<li><p><a class="reference internal" href="spmi.utils.html#spmi.utils.metadata.MetaDataError" title="spmi.utils.metadata.MetaDataError"><strong>MetaDataError</strong></a> – </p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="spmi.core.pool.Pool.FileSystemHelper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">FileSystemHelper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.pool.Pool.FileSystemHelper" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Provides several methods to work with filesystem.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">pathlib.Path</span></code>) – Path where directory of manageables is placed.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">path</span></code> should exist and be a directory.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>TypeError</strong> – </p></li>
+<li><p><a class="reference internal" href="#spmi.core.pool.PoolException" title="spmi.core.pool.PoolException"><strong>PoolException</strong></a> – </p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.core.pool.Pool.FileSystemHelper.get_registered_manageables">
+<span class="sig-name descname"><span class="pre">get_registered_manageables</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.pool.Pool.FileSystemHelper.get_registered_manageables" title="Link to this definition">#</a></dt>
+<dd><p>Returns list of registered manageables.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <a class="reference internal" href="#spmi.core.manageable.Manageable" title="spmi.core.manageable.Manageable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spmi.core.manageable.Manageable</span></code></a>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.core.pool.Pool.FileSystemHelper.register">
+<span class="sig-name descname"><span class="pre">register</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">manageable</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.pool.Pool.FileSystemHelper.register" title="Link to this definition">#</a></dt>
+<dd><p>Registers a manageable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>manageable</strong> (<a class="reference internal" href="#spmi.core.manageable.Manageable" title="spmi.core.manageable.Manageable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spmi.core.manageable.Manageable</span></code></a>) – manageable to register.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>TypeError</strong> – </p></li>
+<li><p><a class="reference internal" href="#spmi.core.manageable.ManageableException" title="spmi.core.manageable.ManageableException"><strong>ManageableException</strong></a> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.core.pool.Pool.find">
+<span class="sig-name descname"><span class="pre">find</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pattern</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.pool.Pool.find" title="Link to this definition">#</a></dt>
+<dd><p>Return list of manageables corresponding to pattern.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>pattern</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – Pattern to find.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <a class="reference internal" href="#spmi.core.manageable.Manageable" title="spmi.core.manageable.Manageable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spmi.core.manageable.Manageable</span></code></a>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spmi.core.pool.Pool.manageables">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">manageables</span></span><a class="headerlink" href="#spmi.core.pool.Pool.manageables" title="Link to this definition">#</a></dt>
+<dd><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">Manageable</span></code>. Copy of list with registered manageables.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.core.pool.Pool.register">
+<span class="sig-name descname"><span class="pre">register</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">manageable</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.core.pool.Pool.register" title="Link to this definition">#</a></dt>
+<dd><p>Registers a detected manageable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>manageable</strong> (<a class="reference internal" href="#spmi.core.manageable.Manageable" title="spmi.core.manageable.Manageable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spmi.core.manageable.Manageable</span></code></a>) – detected manageable to register.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>TypeError</strong> – </p></li>
+<li><p><a class="reference internal" href="#spmi.core.manageable.ManageableException" title="spmi.core.manageable.ManageableException"><strong>ManageableException</strong></a> – </p></li>
+<li><p><a class="reference internal" href="#spmi.core.pool.PoolException" title="spmi.core.pool.PoolException"><strong>PoolException</strong></a> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="spmi.core.pool.PoolException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spmi.core.pool.</span></span><span class="sig-name descname"><span class="pre">PoolException</span></span><a class="headerlink" href="#spmi.core.pool.PoolException" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="spmi.utils.html#spmi.utils.exception.SpmiException" title="spmi.utils.exception.SpmiException"><code class="xref py py-class docutils literal notranslate"><span class="pre">SpmiException</span></code></a></p>
+</dd></dl>
+
+</section>
+<section id="module-spmi.core">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-spmi.core" title="Link to this heading">#</a></h2>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="spmi.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">spmi package</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="spmi.core.manageables.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">spmi.core.manageables package</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#subpackages">Subpackages</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-spmi.core.manageable">spmi.core.manageable module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable"><code class="docutils literal notranslate"><span class="pre">Manageable</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.FileSystemHelper"><code class="docutils literal notranslate"><span class="pre">Manageable.FileSystemHelper</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.FileSystemHelper.DATA_FILENAME"><code class="docutils literal notranslate"><span class="pre">Manageable.FileSystemHelper.DATA_FILENAME</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.FileSystemHelper.META_FILENAME"><code class="docutils literal notranslate"><span class="pre">Manageable.FileSystemHelper.META_FILENAME</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.FileSystemHelper.data_path"><code class="docutils literal notranslate"><span class="pre">Manageable.FileSystemHelper.data_path()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.FileSystemHelper.data_pathes"><code class="docutils literal notranslate"><span class="pre">Manageable.FileSystemHelper.data_pathes()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.FileSystemHelper.destruct"><code class="docutils literal notranslate"><span class="pre">Manageable.FileSystemHelper.destruct()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.FileSystemHelper.from_directory"><code class="docutils literal notranslate"><span class="pre">Manageable.FileSystemHelper.from_directory()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.FileSystemHelper.is_correct_directory"><code class="docutils literal notranslate"><span class="pre">Manageable.FileSystemHelper.is_correct_directory()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.FileSystemHelper.meta_path"><code class="docutils literal notranslate"><span class="pre">Manageable.FileSystemHelper.meta_path()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.FileSystemHelper.meta_pathes"><code class="docutils literal notranslate"><span class="pre">Manageable.FileSystemHelper.meta_pathes()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.FileSystemHelper.register"><code class="docutils literal notranslate"><span class="pre">Manageable.FileSystemHelper.register()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.LoadHelper"><code class="docutils literal notranslate"><span class="pre">Manageable.LoadHelper</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.LoadHelper.from_descriptor"><code class="docutils literal notranslate"><span class="pre">Manageable.LoadHelper.from_descriptor()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.LoadHelper.from_directory_unknown"><code class="docutils literal notranslate"><span class="pre">Manageable.LoadHelper.from_directory_unknown()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.LoadHelper.load_manageable_class"><code class="docutils literal notranslate"><span class="pre">Manageable.LoadHelper.load_manageable_class()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.MetaDataHelper"><code class="docutils literal notranslate"><span class="pre">Manageable.MetaDataHelper</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.MetaDataHelper.comment"><code class="docutils literal notranslate"><span class="pre">Manageable.MetaDataHelper.comment</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.MetaDataHelper.finish_time"><code class="docutils literal notranslate"><span class="pre">Manageable.MetaDataHelper.finish_time</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.MetaDataHelper.id"><code class="docutils literal notranslate"><span class="pre">Manageable.MetaDataHelper.id</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.MetaDataHelper.m_data"><code class="docutils literal notranslate"><span class="pre">Manageable.MetaDataHelper.m_data</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.MetaDataHelper.path"><code class="docutils literal notranslate"><span class="pre">Manageable.MetaDataHelper.path</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.MetaDataHelper.prefered_suffix"><code class="docutils literal notranslate"><span class="pre">Manageable.MetaDataHelper.prefered_suffix</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.MetaDataHelper.reset"><code class="docutils literal notranslate"><span class="pre">Manageable.MetaDataHelper.reset()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.MetaDataHelper.start_time"><code class="docutils literal notranslate"><span class="pre">Manageable.MetaDataHelper.start_time</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.MetaDataHelper.type"><code class="docutils literal notranslate"><span class="pre">Manageable.MetaDataHelper.type</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.destruct"><code class="docutils literal notranslate"><span class="pre">Manageable.destruct()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.from_descriptor"><code class="docutils literal notranslate"><span class="pre">Manageable.from_descriptor()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.from_directory"><code class="docutils literal notranslate"><span class="pre">Manageable.from_directory()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.from_directory_unknown"><code class="docutils literal notranslate"><span class="pre">Manageable.from_directory_unknown()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.is_correct_directory"><code class="docutils literal notranslate"><span class="pre">Manageable.is_correct_directory()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.is_correct_meta_data"><code class="docutils literal notranslate"><span class="pre">Manageable.is_correct_meta_data()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.kill"><code class="docutils literal notranslate"><span class="pre">Manageable.kill()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.register"><code class="docutils literal notranslate"><span class="pre">Manageable.register()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.start"><code class="docutils literal notranslate"><span class="pre">Manageable.start()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.state"><code class="docutils literal notranslate"><span class="pre">Manageable.state</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.status"><code class="docutils literal notranslate"><span class="pre">Manageable.status</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.status_string"><code class="docutils literal notranslate"><span class="pre">Manageable.status_string()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.Manageable.term"><code class="docutils literal notranslate"><span class="pre">Manageable.term()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.ManageableException"><code class="docutils literal notranslate"><span class="pre">ManageableException</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.ManageableStatus"><code class="docutils literal notranslate"><span class="pre">ManageableStatus</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.ManageableStatus.ACTIVE"><code class="docutils literal notranslate"><span class="pre">ManageableStatus.ACTIVE</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.ManageableStatus.INACTIVE"><code class="docutils literal notranslate"><span class="pre">ManageableStatus.INACTIVE</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.ManageableStatus.UNTRACKED"><code class="docutils literal notranslate"><span class="pre">ManageableStatus.UNTRACKED</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.manageable.manageable"><code class="docutils literal notranslate"><span class="pre">manageable()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-spmi.core.pool">spmi.core.pool module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.pool.Pool"><code class="docutils literal notranslate"><span class="pre">Pool</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.pool.Pool.FileSystemHelper"><code class="docutils literal notranslate"><span class="pre">Pool.FileSystemHelper</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.pool.Pool.FileSystemHelper.get_registered_manageables"><code class="docutils literal notranslate"><span class="pre">Pool.FileSystemHelper.get_registered_manageables()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.pool.Pool.FileSystemHelper.register"><code class="docutils literal notranslate"><span class="pre">Pool.FileSystemHelper.register()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.pool.Pool.find"><code class="docutils literal notranslate"><span class="pre">Pool.find()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.pool.Pool.manageables"><code class="docutils literal notranslate"><span class="pre">Pool.manageables</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.pool.Pool.register"><code class="docutils literal notranslate"><span class="pre">Pool.register()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.core.pool.PoolException"><code class="docutils literal notranslate"><span class="pre">PoolException</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-spmi.core">Module contents</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Leonid Pilyugin
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2024, Leonid Pilyugin.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
