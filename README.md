@@ -254,7 +254,7 @@ Cleaned 1 manageables
 
 SPMI uses regex to match IDs. To remove all loaded examples, execute
 ```sh
-$ spmi clean ''
+$ spmi clean '.*'
 [2024-07-13 18:46:38,954 - Spmi - INFO]
 Cleaning manageable "ping"
 [2024-07-13 18:46:38,962 - Spmi - INFO]
