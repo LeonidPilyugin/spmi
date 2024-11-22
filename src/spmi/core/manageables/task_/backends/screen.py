@@ -92,7 +92,7 @@ class ScreenBackend(TaskManageable.Backend):
         super().kill(task_metadata)
         #self._send(task_metadata, "quit")
         screen_id = task_metadata.backend.id
-        os.system(f"kill -9 {screen_id}")
+        os.system(f"kill -9 {task_metadata.wrapper.process_pid}")
 
     def is_active(self, task_metadata):
         super().is_active(task_metadata)
