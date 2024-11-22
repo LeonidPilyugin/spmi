@@ -1,0 +1,1260 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>spmi.utils package &#8212; SPMI 0.0.1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=a3416100" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../_static/documentation_options.js?v=e645c8fa"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api_reference/apidoc/spmi.utils';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="spmi.utils.io package" href="spmi.utils.io.html" />
+    <link rel="prev" title="spmi.core.manageables.task_.wrappers package" href="spmi.core.manageables.task_.wrappers.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">SPMI 0.0.1 documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide.html">User guide</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../index.html">API reference</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="modules.html">spmi</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3 current active has-children"><a class="reference internal" href="spmi.html">spmi package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="spmi.core.html">spmi.core package</a></li>
+<li class="toctree-l4 current active"><a class="current reference internal" href="#">spmi.utils package</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/api_reference/apidoc/spmi.utils.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>spmi.utils package</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#subpackages">Subpackages</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-spmi.utils.exception">spmi.utils.exception module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.exception.SpmiException"><code class="docutils literal notranslate"><span class="pre">SpmiException</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-spmi.utils.load">spmi.utils.load module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.load.load_class_from_package"><code class="docutils literal notranslate"><span class="pre">load_class_from_package()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-spmi.utils.logger">spmi.utils.logger module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.logger.Logger"><code class="docutils literal notranslate"><span class="pre">Logger</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.logger.Logger.DefaultFormatter"><code class="docutils literal notranslate"><span class="pre">Logger.DefaultFormatter</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.logger.Logger.DefaultFormatter.FORMATS"><code class="docutils literal notranslate"><span class="pre">Logger.DefaultFormatter.FORMATS</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.logger.Logger.DefaultFormatter.bold_red"><code class="docutils literal notranslate"><span class="pre">Logger.DefaultFormatter.bold_red</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.logger.Logger.DefaultFormatter.format"><code class="docutils literal notranslate"><span class="pre">Logger.DefaultFormatter.format()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.logger.Logger.DefaultFormatter.format_str"><code class="docutils literal notranslate"><span class="pre">Logger.DefaultFormatter.format_str</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.logger.Logger.DefaultFormatter.green"><code class="docutils literal notranslate"><span class="pre">Logger.DefaultFormatter.green</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.logger.Logger.DefaultFormatter.grey"><code class="docutils literal notranslate"><span class="pre">Logger.DefaultFormatter.grey</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.logger.Logger.DefaultFormatter.red"><code class="docutils literal notranslate"><span class="pre">Logger.DefaultFormatter.red</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.logger.Logger.DefaultFormatter.reset"><code class="docutils literal notranslate"><span class="pre">Logger.DefaultFormatter.reset</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.logger.Logger.DefaultFormatter.yellow"><code class="docutils literal notranslate"><span class="pre">Logger.DefaultFormatter.yellow</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.logger.Logger.basic_config"><code class="docutils literal notranslate"><span class="pre">Logger.basic_config()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.logger.Logger.critical"><code class="docutils literal notranslate"><span class="pre">Logger.critical()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.logger.Logger.debug"><code class="docutils literal notranslate"><span class="pre">Logger.debug()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.logger.Logger.error"><code class="docutils literal notranslate"><span class="pre">Logger.error()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.logger.Logger.info"><code class="docutils literal notranslate"><span class="pre">Logger.info()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.logger.Logger.log_level"><code class="docutils literal notranslate"><span class="pre">Logger.log_level()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.logger.Logger.warning"><code class="docutils literal notranslate"><span class="pre">Logger.warning()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-spmi.utils.metadata">spmi.utils.metadata module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.metadata.IncorrectProperty"><code class="docutils literal notranslate"><span class="pre">IncorrectProperty</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.metadata.MetaData"><code class="docutils literal notranslate"><span class="pre">MetaData</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.metadata.MetaData.blocking_dump"><code class="docutils literal notranslate"><span class="pre">MetaData.blocking_dump()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.metadata.MetaData.blocking_load"><code class="docutils literal notranslate"><span class="pre">MetaData.blocking_load()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.metadata.MetaData.data_path"><code class="docutils literal notranslate"><span class="pre">MetaData.data_path</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.metadata.MetaData.dump"><code class="docutils literal notranslate"><span class="pre">MetaData.dump()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.metadata.MetaData.is_correct_meta_data"><code class="docutils literal notranslate"><span class="pre">MetaData.is_correct_meta_data()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.metadata.MetaData.load"><code class="docutils literal notranslate"><span class="pre">MetaData.load()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.metadata.MetaData.meta_path"><code class="docutils literal notranslate"><span class="pre">MetaData.meta_path</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.metadata.MetaData.state"><code class="docutils literal notranslate"><span class="pre">MetaData.state</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.metadata.MetaDataError"><code class="docutils literal notranslate"><span class="pre">MetaDataError</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.metadata.MetaDataNode"><code class="docutils literal notranslate"><span class="pre">MetaDataNode</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.metadata.MetaDataNode.check_properties"><code class="docutils literal notranslate"><span class="pre">MetaDataNode.check_properties()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.metadata.MetaDataNode.data"><code class="docutils literal notranslate"><span class="pre">MetaDataNode.data</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.metadata.MetaDataNode.meta"><code class="docutils literal notranslate"><span class="pre">MetaDataNode.meta</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.metadata.MetaDataNode.mutable"><code class="docutils literal notranslate"><span class="pre">MetaDataNode.mutable</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.metadata.dontcheck"><code class="docutils literal notranslate"><span class="pre">dontcheck()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-spmi.utils.pattern">spmi.utils.pattern module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.pattern.PatternMatcher"><code class="docutils literal notranslate"><span class="pre">PatternMatcher</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.pattern.PatternMatcher.is_pattern"><code class="docutils literal notranslate"><span class="pre">PatternMatcher.is_pattern()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.pattern.PatternMatcher.match"><code class="docutils literal notranslate"><span class="pre">PatternMatcher.match()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.pattern.RegexPatternMatcher"><code class="docutils literal notranslate"><span class="pre">RegexPatternMatcher</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.pattern.RegexPatternMatcher.is_pattern"><code class="docutils literal notranslate"><span class="pre">RegexPatternMatcher.is_pattern()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.pattern.RegexPatternMatcher.match"><code class="docutils literal notranslate"><span class="pre">RegexPatternMatcher.match()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.pattern.SimplePatternMatcher"><code class="docutils literal notranslate"><span class="pre">SimplePatternMatcher</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.pattern.SimplePatternMatcher.is_pattern"><code class="docutils literal notranslate"><span class="pre">SimplePatternMatcher.is_pattern()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.pattern.SimplePatternMatcher.match"><code class="docutils literal notranslate"><span class="pre">SimplePatternMatcher.match()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-spmi.utils">Module contents</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="spmi-utils-package">
+<h1>spmi.utils package<a class="headerlink" href="#spmi-utils-package" title="Link to this heading">#</a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading">#</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="spmi.utils.io.html">spmi.utils.io package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="spmi.utils.io.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="spmi.utils.io.ios.html">spmi.utils.io.ios package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="spmi.utils.io.ios.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="spmi.utils.io.ios.html#module-spmi.utils.io.ios.jsonio">spmi.utils.io.ios.jsonio module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="spmi.utils.io.ios.html#module-spmi.utils.io.ios.tomlio">spmi.utils.io.ios.tomlio module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="spmi.utils.io.ios.html#module-spmi.utils.io.ios.yamlio">spmi.utils.io.ios.yamlio module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="spmi.utils.io.ios.html#module-spmi.utils.io.ios">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="spmi.utils.io.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spmi.utils.io.html#module-spmi.utils.io.io">spmi.utils.io.io module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="spmi.utils.io.html#spmi.utils.io.io.Io"><code class="docutils literal notranslate"><span class="pre">Io</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="spmi.utils.io.html#spmi.utils.io.io.Io.blocking_dump"><code class="docutils literal notranslate"><span class="pre">Io.blocking_dump()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="spmi.utils.io.html#spmi.utils.io.io.Io.blocking_load"><code class="docutils literal notranslate"><span class="pre">Io.blocking_load()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="spmi.utils.io.html#spmi.utils.io.io.Io.copy"><code class="docutils literal notranslate"><span class="pre">Io.copy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="spmi.utils.io.html#spmi.utils.io.io.Io.dump"><code class="docutils literal notranslate"><span class="pre">Io.dump()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="spmi.utils.io.html#spmi.utils.io.io.Io.get_io"><code class="docutils literal notranslate"><span class="pre">Io.get_io()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="spmi.utils.io.html#spmi.utils.io.io.Io.has_io"><code class="docutils literal notranslate"><span class="pre">Io.has_io()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="spmi.utils.io.html#spmi.utils.io.io.Io.load"><code class="docutils literal notranslate"><span class="pre">Io.load()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="spmi.utils.io.html#spmi.utils.io.io.Io.path"><code class="docutils literal notranslate"><span class="pre">Io.path</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="spmi.utils.io.html#spmi.utils.io.io.IoException"><code class="docutils literal notranslate"><span class="pre">IoException</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="spmi.utils.io.html#module-spmi.utils.io">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">#</a></h2>
+</section>
+<section id="module-spmi.utils.exception">
+<span id="spmi-utils-exception-module"></span><h2>spmi.utils.exception module<a class="headerlink" href="#module-spmi.utils.exception" title="Link to this heading">#</a></h2>
+<p>Provides <a class="reference internal" href="#spmi.utils.exception.SpmiException" title="spmi.utils.exception.SpmiException"><code class="xref py py-class docutils literal notranslate"><span class="pre">SpmiException</span></code></a> class.</p>
+<dl class="py exception">
+<dt class="sig sig-object py" id="spmi.utils.exception.SpmiException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spmi.utils.exception.</span></span><span class="sig-name descname"><span class="pre">SpmiException</span></span><a class="headerlink" href="#spmi.utils.exception.SpmiException" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Base SPMI exception.</p>
+</dd></dl>
+
+</section>
+<section id="module-spmi.utils.load">
+<span id="spmi-utils-load-module"></span><h2>spmi.utils.load module<a class="headerlink" href="#module-spmi.utils.load" title="Link to this heading">#</a></h2>
+<p>Provides functions to load modules.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="spmi.utils.load.load_class_from_package">
+<span class="sig-prename descclassname"><span class="pre">spmi.utils.load.</span></span><span class="sig-name descname"><span class="pre">load_class_from_package</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">classname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">package</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.utils.load.load_class_from_package" title="Link to this definition">#</a></dt>
+<dd><p>Loads class from package by name.</p>
+<p>Iterates throw <code class="docutils literal notranslate"><span class="pre">package</span></code> modules and returns a class
+by <code class="docutils literal notranslate"><span class="pre">classname</span></code> if finds it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>classname</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – Classname.</p></li>
+<li><p><strong>package</strong> (<em>Python package</em>) – Package.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">class</span></code>.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>TypeError</strong> – </p></li>
+<li><p><strong>NotImplementedError</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-spmi.utils.logger">
+<span id="spmi-utils-logger-module"></span><h2>spmi.utils.logger module<a class="headerlink" href="#module-spmi.utils.logger" title="Link to this heading">#</a></h2>
+<p>Provides <a class="reference internal" href="#spmi.utils.logger.Logger" title="spmi.utils.logger.Logger"><code class="xref py py-class docutils literal notranslate"><span class="pre">Logger</span></code></a>.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="spmi.utils.logger.Logger">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spmi.utils.logger.</span></span><span class="sig-name descname"><span class="pre">Logger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.utils.logger.Logger" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Provides logging methods.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – Logger name.</p>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="spmi.utils.logger.Logger.DefaultFormatter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DefaultFormatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datefmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'%'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">defaults</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.utils.logger.Logger.DefaultFormatter" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Formatter</span></code></p>
+<p>Default logger formatter.</p>
+<p>Initialize the formatter with specified format strings.</p>
+<p>Initialize the formatter either with the specified format string, or a
+default as described above. Allow for specialized date formatting with
+the optional datefmt argument. If datefmt is omitted, you get an
+ISO8601-like (or RFC 3339-like) format.</p>
+<p>Use a style parameter of ‘%’, ‘{’ or ‘$’ to specify that you want to
+use one of %-formatting, <code class="xref py py-meth docutils literal notranslate"><span class="pre">str.format()</span></code> (<code class="docutils literal notranslate"><span class="pre">{}</span></code>) formatting or
+<code class="xref py py-class docutils literal notranslate"><span class="pre">string.Template</span></code> formatting in your format string.</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 3.2: </span>Added the <code class="docutils literal notranslate"><span class="pre">style</span></code> parameter.</p>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spmi.utils.logger.Logger.DefaultFormatter.FORMATS">
+<span class="sig-name descname"><span class="pre">FORMATS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{10:</span> <span class="pre">'\x1b[38;20m[%(asctime)s</span> <span class="pre">-</span> <span class="pre">%(name)s</span> <span class="pre">-</span> <span class="pre">%(levelname)s]\n%(message)s\x1b[0m',</span> <span class="pre">20:</span> <span class="pre">'\x1b[32;20m[%(asctime)s</span> <span class="pre">-</span> <span class="pre">%(name)s</span> <span class="pre">-</span> <span class="pre">%(levelname)s]\n%(message)s\x1b[0m',</span> <span class="pre">30:</span> <span class="pre">'\x1b[33;20m[%(asctime)s</span> <span class="pre">-</span> <span class="pre">%(name)s</span> <span class="pre">-</span> <span class="pre">%(levelname)s]\n%(message)s\x1b[0m',</span> <span class="pre">40:</span> <span class="pre">'\x1b[31;20m[%(asctime)s</span> <span class="pre">-</span> <span class="pre">%(name)s</span> <span class="pre">-</span> <span class="pre">%(levelname)s]\n%(message)s\x1b[0m',</span> <span class="pre">50:</span> <span class="pre">'\x1b[31;1m[%(asctime)s</span> <span class="pre">-</span> <span class="pre">%(name)s</span> <span class="pre">-</span> <span class="pre">%(levelname)s]\n%(message)s\x1b[0m'}</span></em><a class="headerlink" href="#spmi.utils.logger.Logger.DefaultFormatter.FORMATS" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spmi.utils.logger.Logger.DefaultFormatter.bold_red">
+<span class="sig-name descname"><span class="pre">bold_red</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'\x1b[31;1m'</span></em><a class="headerlink" href="#spmi.utils.logger.Logger.DefaultFormatter.bold_red" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.utils.logger.Logger.DefaultFormatter.format">
+<span class="sig-name descname"><span class="pre">format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.utils.logger.Logger.DefaultFormatter.format" title="Link to this definition">#</a></dt>
+<dd><p>Format the specified record as text.</p>
+<p>The record’s attribute dictionary is used as the operand to a
+string formatting operation which yields the returned string.
+Before formatting the dictionary, a couple of preparatory steps
+are carried out. The message attribute of the record is computed
+using LogRecord.getMessage(). If the formatting string uses the
+time (as determined by a call to usesTime(), formatTime() is
+called to format the event time. If there is exception information,
+it is formatted using formatException() and appended to the message.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spmi.utils.logger.Logger.DefaultFormatter.format_str">
+<span class="sig-name descname"><span class="pre">format_str</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'[%(asctime)s</span> <span class="pre">-</span> <span class="pre">%(name)s</span> <span class="pre">-</span> <span class="pre">%(levelname)s]\n%(message)s'</span></em><a class="headerlink" href="#spmi.utils.logger.Logger.DefaultFormatter.format_str" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spmi.utils.logger.Logger.DefaultFormatter.green">
+<span class="sig-name descname"><span class="pre">green</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'\x1b[32;20m'</span></em><a class="headerlink" href="#spmi.utils.logger.Logger.DefaultFormatter.green" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spmi.utils.logger.Logger.DefaultFormatter.grey">
+<span class="sig-name descname"><span class="pre">grey</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'\x1b[38;20m'</span></em><a class="headerlink" href="#spmi.utils.logger.Logger.DefaultFormatter.grey" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spmi.utils.logger.Logger.DefaultFormatter.red">
+<span class="sig-name descname"><span class="pre">red</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'\x1b[31;20m'</span></em><a class="headerlink" href="#spmi.utils.logger.Logger.DefaultFormatter.red" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spmi.utils.logger.Logger.DefaultFormatter.reset">
+<span class="sig-name descname"><span class="pre">reset</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'\x1b[0m'</span></em><a class="headerlink" href="#spmi.utils.logger.Logger.DefaultFormatter.reset" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spmi.utils.logger.Logger.DefaultFormatter.yellow">
+<span class="sig-name descname"><span class="pre">yellow</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'\x1b[33;20m'</span></em><a class="headerlink" href="#spmi.utils.logger.Logger.DefaultFormatter.yellow" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.utils.logger.Logger.basic_config">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">basic_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loglevel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'INFO'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.utils.logger.Logger.basic_config" title="Link to this definition">#</a></dt>
+<dd><p>Sets up logging basic config.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>loglevel</strong> – <code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code> log level.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.utils.logger.Logger.critical">
+<span class="sig-name descname"><span class="pre">critical</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.utils.logger.Logger.critical" title="Link to this definition">#</a></dt>
+<dd><p>Critical a message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>msg</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – message to show.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.utils.logger.Logger.debug">
+<span class="sig-name descname"><span class="pre">debug</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.utils.logger.Logger.debug" title="Link to this definition">#</a></dt>
+<dd><p>Debug a message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>msg</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – message to show.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.utils.logger.Logger.error">
+<span class="sig-name descname"><span class="pre">error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.utils.logger.Logger.error" title="Link to this definition">#</a></dt>
+<dd><p>Error a message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>msg</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – message to show.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.utils.logger.Logger.info">
+<span class="sig-name descname"><span class="pre">info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.utils.logger.Logger.info" title="Link to this definition">#</a></dt>
+<dd><p>Info a message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>msg</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – message to show.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.utils.logger.Logger.log_level">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">log_level</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#spmi.utils.logger.Logger.log_level" title="Link to this definition">#</a></dt>
+<dd><p>Returns global log level.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.utils.logger.Logger.warning">
+<span class="sig-name descname"><span class="pre">warning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.utils.logger.Logger.warning" title="Link to this definition">#</a></dt>
+<dd><p>Warning a message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>msg</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – message to show.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-spmi.utils.metadata">
+<span id="spmi-utils-metadata-module"></span><h2>spmi.utils.metadata module<a class="headerlink" href="#module-spmi.utils.metadata" title="Link to this heading">#</a></h2>
+<p>Provides <code class="xref py py-class docutils literal notranslate"><span class="pre">Metadata</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">SubDict</span></code>.</p>
+<dl class="py exception">
+<dt class="sig sig-object py" id="spmi.utils.metadata.IncorrectProperty">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spmi.utils.metadata.</span></span><span class="sig-name descname"><span class="pre">IncorrectProperty</span></span><a class="headerlink" href="#spmi.utils.metadata.IncorrectProperty" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#spmi.utils.metadata.MetaDataError" title="spmi.utils.metadata.MetaDataError"><code class="xref py py-class docutils literal notranslate"><span class="pre">MetaDataError</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="spmi.utils.metadata.MetaData">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spmi.utils.metadata.</span></span><span class="sig-name descname"><span class="pre">MetaData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mutable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.utils.metadata.MetaData" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#spmi.utils.metadata.MetaDataNode" title="spmi.utils.metadata.MetaDataNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">MetaDataNode</span></code></a></p>
+<p>Provides property and file access to meta and data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>meta</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[dict,</span> <span class="pre">pathlib.Path,</span> <span class="pre">None]</span></code>) – Meta dictionary. Empty <code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code> if <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>data</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[dict,</span> <span class="pre">pathlib.Path,</span> <span class="pre">None]</span></code>) – Data dictionary. Empty <code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code> if <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>metadata</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[dict,</span> <span class="pre">MetaData]</span></code>) – <a class="reference internal" href="#spmi.utils.metadata.MetaData" title="spmi.utils.metadata.MetaData"><code class="xref py py-class docutils literal notranslate"><span class="pre">MetaData</span></code></a> object.</p></li>
+<li><p><strong>mutable</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>) – Mutable flag.</p></li>
+<li><p><strong>copy</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>) – Copy flag. If <code class="docutils literal notranslate"><span class="pre">True</span></code>, deepcopies <code class="docutils literal notranslate"><span class="pre">meta</span></code>, <code class="docutils literal notranslate"><span class="pre">data</span></code> and <code class="docutils literal notranslate"><span class="pre">metadata</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can set meta and data or metadata flags at once</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>TypeError</strong> – </p></li>
+<li><p><strong>ValueError</strong> – </p></li>
+<li><p><a class="reference internal" href="spmi.utils.io.html#spmi.utils.io.io.IoException" title="spmi.utils.io.io.IoException"><strong>IoException</strong></a> – </p></li>
+<li><p><a class="reference internal" href="#spmi.utils.metadata.MetaDataError" title="spmi.utils.metadata.MetaDataError"><strong>MetaDataError</strong></a> – </p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.utils.metadata.MetaData.blocking_dump">
+<span class="sig-name descname"><span class="pre">blocking_dump</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#spmi.utils.metadata.MetaData.blocking_dump" title="Link to this definition">#</a></dt>
+<dd><p>Blocks and dumps meta and data.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Should be mutable.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="#spmi.utils.metadata.MetaDataError" title="spmi.utils.metadata.MetaDataError"><strong>MetaDataError</strong></a> – </p></li>
+<li><p><a class="reference internal" href="spmi.utils.io.html#spmi.utils.io.io.IoException" title="spmi.utils.io.io.IoException"><strong>IoException</strong></a> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.utils.metadata.MetaData.blocking_load">
+<span class="sig-name descname"><span class="pre">blocking_load</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#spmi.utils.metadata.MetaData.blocking_load" title="Link to this definition">#</a></dt>
+<dd><p>Blocks and loads meta and data from files.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Should be mutable.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="#spmi.utils.metadata.MetaDataError" title="spmi.utils.metadata.MetaDataError"><strong>MetaDataError</strong></a> – </p></li>
+<li><p><a class="reference internal" href="spmi.utils.io.html#spmi.utils.io.io.IoException" title="spmi.utils.io.io.IoException"><strong>IoException</strong></a> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spmi.utils.metadata.MetaData.data_path">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">data_path</span></span><a class="headerlink" href="#spmi.utils.metadata.MetaData.data_path" title="Link to this definition">#</a></dt>
+<dd><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[pathlib.Path,</span> <span class="pre">None]</span></code>. Path to data file. <code class="docutils literal notranslate"><span class="pre">None</span></code> if not exist.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="#spmi.utils.metadata.MetaDataError" title="spmi.utils.metadata.MetaDataError"><strong>MetaDataError</strong></a> – </p></li>
+<li><p><strong>TypeError</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.utils.metadata.MetaData.dump">
+<span class="sig-name descname"><span class="pre">dump</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#spmi.utils.metadata.MetaData.dump" title="Link to this definition">#</a></dt>
+<dd><p>Dumps meta and data.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Should be mutable.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="#spmi.utils.metadata.MetaDataError" title="spmi.utils.metadata.MetaDataError"><strong>MetaDataError</strong></a> – </p></li>
+<li><p><a class="reference internal" href="spmi.utils.io.html#spmi.utils.io.io.IoException" title="spmi.utils.io.io.IoException"><strong>IoException</strong></a> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.utils.metadata.MetaData.is_correct_meta_data">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_correct_meta_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.utils.metadata.MetaData.is_correct_meta_data" title="Link to this definition">#</a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if meta and data may be meta and data of manageable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[dict,</span> <span class="pre">Pathlib.path]</span></code>) – Data.</p></li>
+<li><p><strong>meta</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Uinon[dict,</span> <span class="pre">Pathlib.path]</span></code>) – Meta.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>TypeError</strong> – </p></li>
+<li><p><a class="reference internal" href="spmi.utils.io.html#spmi.utils.io.io.IoException" title="spmi.utils.io.io.IoException"><strong>IoException</strong></a> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.utils.metadata.MetaData.load">
+<span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#spmi.utils.metadata.MetaData.load" title="Link to this definition">#</a></dt>
+<dd><p>Loads meta and data from files.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Should be mutable.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="#spmi.utils.metadata.MetaDataError" title="spmi.utils.metadata.MetaDataError"><strong>MetaDataError</strong></a> – </p></li>
+<li><p><a class="reference internal" href="spmi.utils.io.html#spmi.utils.io.io.IoException" title="spmi.utils.io.io.IoException"><strong>IoException</strong></a> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spmi.utils.metadata.MetaData.meta_path">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">meta_path</span></span><a class="headerlink" href="#spmi.utils.metadata.MetaData.meta_path" title="Link to this definition">#</a></dt>
+<dd><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[pathlib.Path,</span> <span class="pre">None]</span></code>. Path to meta file. <code class="docutils literal notranslate"><span class="pre">None</span></code> if not exist.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="#spmi.utils.metadata.MetaDataError" title="spmi.utils.metadata.MetaDataError"><strong>MetaDataError</strong></a> – </p></li>
+<li><p><strong>TypeError</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spmi.utils.metadata.MetaData.state">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">state</span></span><a class="headerlink" href="#spmi.utils.metadata.MetaData.state" title="Link to this definition">#</a></dt>
+<dd><p><a class="reference internal" href="#spmi.utils.metadata.MetaData" title="spmi.utils.metadata.MetaData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MetaData</span></code></a> Copies self to immutable object of <code class="docutils literal notranslate"><span class="pre">self.__class__</span></code>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="spmi.utils.metadata.MetaDataError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spmi.utils.metadata.</span></span><span class="sig-name descname"><span class="pre">MetaDataError</span></span><a class="headerlink" href="#spmi.utils.metadata.MetaDataError" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#spmi.utils.exception.SpmiException" title="spmi.utils.exception.SpmiException"><code class="xref py py-class docutils literal notranslate"><span class="pre">SpmiException</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="spmi.utils.metadata.MetaDataNode">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spmi.utils.metadata.</span></span><span class="sig-name descname"><span class="pre">MetaDataNode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">meta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mutable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.utils.metadata.MetaDataNode" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Provides property access to <code class="docutils literal notranslate"><span class="pre">meta</span></code> and <code class="docutils literal notranslate"><span class="pre">data</span></code> dictionaries.</p>
+<p><code class="docutils literal notranslate"><span class="pre">data</span></code> is immutable dictionary, <code class="docutils literal notranslate"><span class="pre">meta</span></code> is mutable.
+If <code class="docutils literal notranslate"><span class="pre">mutable</span></code> flag is set to <code class="docutils literal notranslate"><span class="pre">False</span></code>, <code class="docutils literal notranslate"><span class="pre">meta</span></code> become immutable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>meta</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[dict,</span> <span class="pre">None]</span></code>) – Meta dictionary. Empty if <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>data</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[dict,</span> <span class="pre">None]</span></code>) – Data dictionary. Empty if <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>metadata</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[dict,</span> <span class="pre">MetaDataNode]</span></code>) – <a class="reference internal" href="#spmi.utils.metadata.MetaDataNode" title="spmi.utils.metadata.MetaDataNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">MetaDataNode</span></code></a> object.</p></li>
+<li><p><strong>mutable</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>) – Mutable flag.</p></li>
+<li><p><strong>copy</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>) – Copy flag. If <code class="docutils literal notranslate"><span class="pre">True</span></code>, deepcopies <code class="docutils literal notranslate"><span class="pre">meta</span></code>, <code class="docutils literal notranslate"><span class="pre">data</span></code> and <code class="docutils literal notranslate"><span class="pre">metadata</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can set meta and data or metadata flags at once</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>TypeError</strong> – </p></li>
+<li><p><strong>ValueError</strong> – </p></li>
+<li><p><a class="reference internal" href="#spmi.utils.metadata.IncorrectProperty" title="spmi.utils.metadata.IncorrectProperty"><strong>IncorrectProperty</strong></a> – </p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.utils.metadata.MetaDataNode.check_properties">
+<span class="sig-name descname"><span class="pre">check_properties</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#spmi.utils.metadata.MetaDataNode.check_properties" title="Link to this definition">#</a></dt>
+<dd><p>Raises <a class="reference internal" href="#spmi.utils.metadata.IncorrectProperty" title="spmi.utils.metadata.IncorrectProperty"><code class="xref py py-class docutils literal notranslate"><span class="pre">IncorrectProperty</span></code></a> exception if properties are incorrect..</p>
+<p>Iterates throw all properties and tries to get them or
+set with default value if. Skips properties which are
+wrapped with <a class="reference internal" href="#spmi.utils.metadata.dontcheck" title="spmi.utils.metadata.dontcheck"><code class="xref py py-func docutils literal notranslate"><span class="pre">dontcheck()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spmi.utils.metadata.IncorrectProperty" title="spmi.utils.metadata.IncorrectProperty"><strong>IncorrectProperty</strong></a> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spmi.utils.metadata.MetaDataNode.data">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">data</span></span><a class="headerlink" href="#spmi.utils.metadata.MetaDataNode.data" title="Link to this definition">#</a></dt>
+<dd><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code>. Data dictionary.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Returns deepcopy.</p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spmi.utils.metadata.MetaDataNode.meta">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">meta</span></span><a class="headerlink" href="#spmi.utils.metadata.MetaDataNode.meta" title="Link to this definition">#</a></dt>
+<dd><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code>. Meta dictionary.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If immutable, returns deepcopy.</p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spmi.utils.metadata.MetaDataNode.mutable">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mutable</span></span><a class="headerlink" href="#spmi.utils.metadata.MetaDataNode.mutable" title="Link to this definition">#</a></dt>
+<dd><p>True if this object is mutable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spmi.utils.metadata.dontcheck">
+<span class="sig-prename descclassname"><span class="pre">spmi.utils.metadata.</span></span><span class="sig-name descname"><span class="pre">dontcheck</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prop</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.utils.metadata.dontcheck" title="Link to this definition">#</a></dt>
+<dd><p>Decorate properties you don’t want to check.</p>
+<p>Some properties of <a class="reference internal" href="#spmi.utils.metadata.MetaData" title="spmi.utils.metadata.MetaData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MetaData</span></code></a> may be incorrect
+to check on creation (e.g. <a class="reference internal" href="#spmi.utils.metadata.MetaData.state" title="spmi.utils.metadata.MetaData.state"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MetaData.state</span></code></a>
+creates a <a class="reference internal" href="#spmi.utils.metadata.MetaData" title="spmi.utils.metadata.MetaData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MetaData</span></code></a> which will call this property
+again if it is not wrapped by this decorator). Wrap
+these properties with <code class="docutils literal notranslate"><span class="pre">&#64;dontcheck</span></code> to prevent their
+check on <a class="reference internal" href="#spmi.utils.metadata.MetaData" title="spmi.utils.metadata.MetaData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MetaData</span></code></a> creation.</p>
+<dl class="simple">
+<dt>Rasies:</dt><dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeError</span></code>
+<code class="xref py py-class docutils literal notranslate"><span class="pre">AttributeError</span></code></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><a class="reference internal" href="#spmi.utils.metadata.dontcheck" title="spmi.utils.metadata.dontcheck"><code class="xref py py-func docutils literal notranslate"><span class="pre">dontcheck()</span></code></a> sets <code class="docutils literal notranslate"><span class="pre">_spmi_metadata_dontcheck</span></code> attribute of
+<code class="docutils literal notranslate"><span class="pre">fget</span></code> function.</p>
+</div>
+<p class="rubric">Example</p>
+<p>A get-only property:</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="nd">@dontcheck</span>
+<span class="nd">@property</span>
+<span class="k">def</span> <span class="nf">example_property1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span>
+</pre></div>
+</div>
+<p>A get and set property:</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="nd">@dontcheck</span>
+<span class="nd">@property</span>
+<span class="k">def</span> <span class="nf">example_property2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span>
+
+<span class="nd">@example_property2</span><span class="o">.</span><span class="n">setter</span>
+<span class="k">def</span> <span class="nf">example_property2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+<section id="module-spmi.utils.pattern">
+<span id="spmi-utils-pattern-module"></span><h2>spmi.utils.pattern module<a class="headerlink" href="#module-spmi.utils.pattern" title="Link to this heading">#</a></h2>
+<p>Provides <a class="reference internal" href="#spmi.utils.pattern.PatternMatcher" title="spmi.utils.pattern.PatternMatcher"><code class="xref py py-class docutils literal notranslate"><span class="pre">PatternMatcher</span></code></a>.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="spmi.utils.pattern.PatternMatcher">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spmi.utils.pattern.</span></span><span class="sig-name descname"><span class="pre">PatternMatcher</span></span><a class="headerlink" href="#spmi.utils.pattern.PatternMatcher" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Provides methods to match pattern strings.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.utils.pattern.PatternMatcher.is_pattern">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_pattern</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.utils.pattern.PatternMatcher.is_pattern" title="Link to this definition">#</a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="docutils literal notranslate"><span class="pre">string</span></code> is pattern.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>string</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – String to check.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.utils.pattern.PatternMatcher.match">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">match</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pattern</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.utils.pattern.PatternMatcher.match" title="Link to this definition">#</a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="docutils literal notranslate"><span class="pre">string</span></code> matches <code class="docutils literal notranslate"><span class="pre">pattern</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pattern</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – Pattern.</p></li>
+<li><p><strong>string</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – String.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>TypeError</strong> – </p></li>
+<li><p><strong>ValueError</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="spmi.utils.pattern.RegexPatternMatcher">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spmi.utils.pattern.</span></span><span class="sig-name descname"><span class="pre">RegexPatternMatcher</span></span><a class="headerlink" href="#spmi.utils.pattern.RegexPatternMatcher" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#spmi.utils.pattern.PatternMatcher" title="spmi.utils.pattern.PatternMatcher"><code class="xref py py-class docutils literal notranslate"><span class="pre">PatternMatcher</span></code></a></p>
+<p>Regex pattern matcher.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.utils.pattern.RegexPatternMatcher.is_pattern">
+<span class="sig-name descname"><span class="pre">is_pattern</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.utils.pattern.RegexPatternMatcher.is_pattern" title="Link to this definition">#</a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="docutils literal notranslate"><span class="pre">string</span></code> is pattern.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>string</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – String to check.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.utils.pattern.RegexPatternMatcher.match">
+<span class="sig-name descname"><span class="pre">match</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pattern</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.utils.pattern.RegexPatternMatcher.match" title="Link to this definition">#</a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="docutils literal notranslate"><span class="pre">string</span></code> matches <code class="docutils literal notranslate"><span class="pre">pattern</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pattern</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – Pattern.</p></li>
+<li><p><strong>string</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – String.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>TypeError</strong> – </p></li>
+<li><p><strong>ValueError</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="spmi.utils.pattern.SimplePatternMatcher">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spmi.utils.pattern.</span></span><span class="sig-name descname"><span class="pre">SimplePatternMatcher</span></span><a class="headerlink" href="#spmi.utils.pattern.SimplePatternMatcher" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#spmi.utils.pattern.PatternMatcher" title="spmi.utils.pattern.PatternMatcher"><code class="xref py py-class docutils literal notranslate"><span class="pre">PatternMatcher</span></code></a></p>
+<p>Simple pattern matcher.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.utils.pattern.SimplePatternMatcher.is_pattern">
+<span class="sig-name descname"><span class="pre">is_pattern</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.utils.pattern.SimplePatternMatcher.is_pattern" title="Link to this definition">#</a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="docutils literal notranslate"><span class="pre">string</span></code> is pattern.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>string</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – String to check.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spmi.utils.pattern.SimplePatternMatcher.match">
+<span class="sig-name descname"><span class="pre">match</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pattern</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spmi.utils.pattern.SimplePatternMatcher.match" title="Link to this definition">#</a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="docutils literal notranslate"><span class="pre">string</span></code> matches <code class="docutils literal notranslate"><span class="pre">pattern</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pattern</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – Pattern.</p></li>
+<li><p><strong>string</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – String.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>TypeError</strong> – </p></li>
+<li><p><strong>ValueError</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-spmi.utils">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-spmi.utils" title="Link to this heading">#</a></h2>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="spmi.core.manageables.task_.wrappers.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">spmi.core.manageables.task_.wrappers package</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="spmi.utils.io.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">spmi.utils.io package</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#subpackages">Subpackages</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-spmi.utils.exception">spmi.utils.exception module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.exception.SpmiException"><code class="docutils literal notranslate"><span class="pre">SpmiException</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-spmi.utils.load">spmi.utils.load module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.load.load_class_from_package"><code class="docutils literal notranslate"><span class="pre">load_class_from_package()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-spmi.utils.logger">spmi.utils.logger module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.logger.Logger"><code class="docutils literal notranslate"><span class="pre">Logger</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.logger.Logger.DefaultFormatter"><code class="docutils literal notranslate"><span class="pre">Logger.DefaultFormatter</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.logger.Logger.DefaultFormatter.FORMATS"><code class="docutils literal notranslate"><span class="pre">Logger.DefaultFormatter.FORMATS</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.logger.Logger.DefaultFormatter.bold_red"><code class="docutils literal notranslate"><span class="pre">Logger.DefaultFormatter.bold_red</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.logger.Logger.DefaultFormatter.format"><code class="docutils literal notranslate"><span class="pre">Logger.DefaultFormatter.format()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.logger.Logger.DefaultFormatter.format_str"><code class="docutils literal notranslate"><span class="pre">Logger.DefaultFormatter.format_str</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.logger.Logger.DefaultFormatter.green"><code class="docutils literal notranslate"><span class="pre">Logger.DefaultFormatter.green</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.logger.Logger.DefaultFormatter.grey"><code class="docutils literal notranslate"><span class="pre">Logger.DefaultFormatter.grey</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.logger.Logger.DefaultFormatter.red"><code class="docutils literal notranslate"><span class="pre">Logger.DefaultFormatter.red</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.logger.Logger.DefaultFormatter.reset"><code class="docutils literal notranslate"><span class="pre">Logger.DefaultFormatter.reset</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.logger.Logger.DefaultFormatter.yellow"><code class="docutils literal notranslate"><span class="pre">Logger.DefaultFormatter.yellow</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.logger.Logger.basic_config"><code class="docutils literal notranslate"><span class="pre">Logger.basic_config()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.logger.Logger.critical"><code class="docutils literal notranslate"><span class="pre">Logger.critical()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.logger.Logger.debug"><code class="docutils literal notranslate"><span class="pre">Logger.debug()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.logger.Logger.error"><code class="docutils literal notranslate"><span class="pre">Logger.error()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.logger.Logger.info"><code class="docutils literal notranslate"><span class="pre">Logger.info()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.logger.Logger.log_level"><code class="docutils literal notranslate"><span class="pre">Logger.log_level()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.logger.Logger.warning"><code class="docutils literal notranslate"><span class="pre">Logger.warning()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-spmi.utils.metadata">spmi.utils.metadata module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.metadata.IncorrectProperty"><code class="docutils literal notranslate"><span class="pre">IncorrectProperty</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.metadata.MetaData"><code class="docutils literal notranslate"><span class="pre">MetaData</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.metadata.MetaData.blocking_dump"><code class="docutils literal notranslate"><span class="pre">MetaData.blocking_dump()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.metadata.MetaData.blocking_load"><code class="docutils literal notranslate"><span class="pre">MetaData.blocking_load()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.metadata.MetaData.data_path"><code class="docutils literal notranslate"><span class="pre">MetaData.data_path</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.metadata.MetaData.dump"><code class="docutils literal notranslate"><span class="pre">MetaData.dump()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.metadata.MetaData.is_correct_meta_data"><code class="docutils literal notranslate"><span class="pre">MetaData.is_correct_meta_data()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.metadata.MetaData.load"><code class="docutils literal notranslate"><span class="pre">MetaData.load()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.metadata.MetaData.meta_path"><code class="docutils literal notranslate"><span class="pre">MetaData.meta_path</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.metadata.MetaData.state"><code class="docutils literal notranslate"><span class="pre">MetaData.state</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.metadata.MetaDataError"><code class="docutils literal notranslate"><span class="pre">MetaDataError</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.metadata.MetaDataNode"><code class="docutils literal notranslate"><span class="pre">MetaDataNode</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.metadata.MetaDataNode.check_properties"><code class="docutils literal notranslate"><span class="pre">MetaDataNode.check_properties()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.metadata.MetaDataNode.data"><code class="docutils literal notranslate"><span class="pre">MetaDataNode.data</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.metadata.MetaDataNode.meta"><code class="docutils literal notranslate"><span class="pre">MetaDataNode.meta</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.metadata.MetaDataNode.mutable"><code class="docutils literal notranslate"><span class="pre">MetaDataNode.mutable</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.metadata.dontcheck"><code class="docutils literal notranslate"><span class="pre">dontcheck()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-spmi.utils.pattern">spmi.utils.pattern module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.pattern.PatternMatcher"><code class="docutils literal notranslate"><span class="pre">PatternMatcher</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.pattern.PatternMatcher.is_pattern"><code class="docutils literal notranslate"><span class="pre">PatternMatcher.is_pattern()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.pattern.PatternMatcher.match"><code class="docutils literal notranslate"><span class="pre">PatternMatcher.match()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.pattern.RegexPatternMatcher"><code class="docutils literal notranslate"><span class="pre">RegexPatternMatcher</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.pattern.RegexPatternMatcher.is_pattern"><code class="docutils literal notranslate"><span class="pre">RegexPatternMatcher.is_pattern()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.pattern.RegexPatternMatcher.match"><code class="docutils literal notranslate"><span class="pre">RegexPatternMatcher.match()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.pattern.SimplePatternMatcher"><code class="docutils literal notranslate"><span class="pre">SimplePatternMatcher</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.pattern.SimplePatternMatcher.is_pattern"><code class="docutils literal notranslate"><span class="pre">SimplePatternMatcher.is_pattern()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spmi.utils.pattern.SimplePatternMatcher.match"><code class="docutils literal notranslate"><span class="pre">SimplePatternMatcher.match()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-spmi.utils">Module contents</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Leonid Pilyugin
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2024, Leonid Pilyugin.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

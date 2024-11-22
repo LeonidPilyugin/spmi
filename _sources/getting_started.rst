@@ -1,0 +1,275 @@
+Getting started
+===============
+
+
+What is SPMI
+------------
+
+SPMI (Simple Process Management Interface) is a Python package which provides an application and library to start and manage processes via different process managers (now `GNU Screen <https://www.gnu.org/software/screen/>`_ is supported and I am going to add `SLURM <https://slurm.schedmd.com/overview.html>`_ support).
+
+.. Important::
+
+    Only UNIX-like systems are supported.
+
+
+Installation
+------------
+
+Clone git repository
+
+.. code-block:: console
+
+    $ git clone https://github.com/LeonidPilyugin/spmi
+    $ cd spmi
+
+Switch to last version
+
+.. code-block:: console
+
+    $ git checkout v0.0.1
+
+Install dependencies
+
+.. code-block:: console
+
+    $ pip install -r requirements.txt
+
+If you want to build documentation, install its dependencies
+
+.. code-block:: console
+
+    $ pip install -r build-doc-requirements.txt
+
+Add ``spmi/src`` to ``$PYTHONPATH`` variable and create link to ``spmi/src/app.py``
+
+.. code-block:: console
+
+    $ ln -s $PWD/src/spmi/app.py ~/.local/bin/spmi
+
+Basic tutorial
+--------------
+
+To start a new process, you need to create a descriptor file. SPMI supports 3 types of descriptor files: JSON, TOML and YAML. There are some examples for each format in ``examples`` folder.
+
+Descritor ``cal.toml``:
+
+.. code-block:: TOML
+
+    [task]
+    id = "cal"
+    comment = "Prints calendar to stdout."
+
+    [task.backend]
+    type = "screen"
+
+    [task.wrapper]
+    type = "default"
+    command = "cal"
+    mixed_stdout = true
+
+Read :ref:`descriptor-section-label` to learn about descriptor structure.
+
+Before starting a new process, ensure that GNU Screen is installed
+
+.. code-block:: console
+
+    $ screen -v
+    Screen version 4.09.01 (GNU) 20-Aug-23
+
+Load descriptor to SPMI
+
+.. code-block:: console
+
+    $ spmi load cal.toml
+    [2024-07-13 18:21:00,240 - Spmi - INFO]
+    Loaded 1 manageable
+
+View list of tasks
+
+.. code-block:: console
+
+    $ spmi list
+    [2024-07-13 18:21:55,432 - Spmi - INFO]
+    Registered 1 manageable
+    ID        ACTIVE    COMMENT
+    cal       inactive  Prints calendar to stdout.
+
+Start ``cal`` task
+
+.. code-block:: console
+
+    $ spmi start cal
+    [2024-07-13 18:24:48,337 - Spmi - INFO]
+    Starting manageable "cal"
+    [2024-07-13 18:24:48,344 - Spmi - INFO]
+    Started 1 manageables
+
+And view its status
+
+.. code-block:: console
+
+    $ spmi status cal
+    cal (task) - Prints calendar to stdout.
+          Active: inactive since 2024-07-13 18:24:49 (0:01:03 ago)
+            Path: "/home/leonid/.spmi/cal"
+    Backend type: screen
+      Backend ID: 74870
+    Wrapper type: default
+         Command: cal
+             PID: 74915
+       Exit code: 0
+
+    7  8  9 10 11 12 13
+    14 15 16 17 18 19 20
+    21 22 23 24 25 26 27
+    28 29 30 31
+
+
+    [2024-07-13 18:25:52,255 - Spmi - INFO]
+    Showed 1 manageables
+
+Next, load ``ping.toml`` example
+
+.. code-block:: console
+
+    $ spmi load ping.toml
+    [2024-07-13 18:32:20,105 - Spmi - INFO]
+    Loaded 1 manageable
+
+And start it
+
+.. code-block:: console
+
+    $ spmi start ping
+    [2024-07-13 18:33:12,546 - Spmi - INFO]
+    Starting manageable "ping"
+    [2024-07-13 18:33:12,554 - Spmi - INFO]
+    Started 1 manageables
+
+If you do instructions fast, you may see that this task is active
+
+.. code-block:: console
+
+    $ spmi status ping
+    ping (task) - Pinges localhost 10 times.
+          Active: active since 2024-07-13 18:33:12 (0:00:01 ago)
+            Path: "/home/leonid/.spmi/ping"
+    Backend type: screen
+      Backend ID: 75810
+    Wrapper type: default
+         Command: ping -c 10 -i 1 localhost
+             PID: 75855
+
+    PING localhost (::1) 56 data bytes
+    64 bytes from localhost (::1): icmp_seq=1 ttl=64 time=0.011 ms
+    64 bytes from localhost (::1): icmp_seq=2 ttl=64 time=0.034 ms
+
+    [2024-07-13 18:33:13,794 - Spmi - INFO]
+    Showed 1 manageables
+
+If you don't, start ``echo.toml`` example
+
+.. code-block:: console
+
+    $ spmi status echo
+    echo (task) - A forever echo command.
+          Active: active since 2024-07-13 18:36:49 (0:00:44 ago)
+            Path: "/home/leonid/.spmi/echo"
+    Backend type: screen
+      Backend ID: 76113
+    Wrapper type: default
+         Command: cat -
+             PID: 76158
+
+
+
+    [2024-07-13 18:37:33,406 - Spmi - INFO]
+    Showed 1 manageables
+
+SPMI allows you to communicate with started process (but now only write a single line to its stdin)
+
+.. code-block:: console
+
+    $ spmi connect echo
+    Hello
+
+View status again
+
+.. code-block:: console
+
+    $ spmi status echo
+    echo (task) - A forever echo command.
+          Active: active since 2024-07-13 18:36:49 (0:03:46 ago)
+            Path: "/home/leonid/.spmi/echo"
+    Backend type: screen
+      Backend ID: 76113
+    Wrapper type: default
+         Command: cat -
+             PID: 76158
+
+    Hello
+
+    [2024-07-13 18:40:35,153 - Spmi - INFO]
+    Showed 1 manageables
+
+``cat -`` printed your line to stdout! Also you can see that screen is in ``screen -ls``
+
+.. code-block:: console
+
+    $ screen -ls
+            76113.SPMI screen echo   (Detached)
+    1 Socket in /run/screens/S-leonid.
+
+Next, stop ``echo`` task
+
+.. code-block:: console
+
+    $ spmi stop echo
+    [2024-07-13 18:42:04,887 - Spmi - INFO]
+    Stopping manageable "echo"
+    [2024-07-13 18:42:04,894 - Spmi - INFO]
+    Stopped 1 manageables
+
+And look at its status one more time
+
+.. code-block:: console
+
+    $ spmi status echo
+    echo (task) - A forever echo command.
+          Active: inactive since 2024-07-13 18:42:05 (0:00:54 ago)
+            Path: "/home/leonid/.spmi/echo"
+    Backend type: screen
+      Backend ID: 76113
+    Wrapper type: default
+         Command: cat -
+             PID: 76158
+       Exit code: -2
+
+    first
+
+    [2024-07-13 18:42:59,899 - Spmi - INFO]
+    Showed 1 manageables
+
+
+To remove task, you don't want to use, execute ``spmi clean``
+
+.. code-block:: console
+
+    $ spmi clean cal
+    [2024-07-13 18:44:26,503 - Spmi - INFO]
+    Cleaning manageable "cal"
+    [2024-07-13 18:44:26,510 - Spmi - INFO]
+    Cleaned 1 manageables
+
+SPMI uses regex to match IDs. To remove all loaded examples, execute
+
+.. code-block:: console
+
+    $ spmi clean '.*'
+    [2024-07-13 18:46:38,954 - Spmi - INFO]
+    Cleaning manageable "ping"
+    [2024-07-13 18:46:38,962 - Spmi - INFO]
+    Cleaning manageable "echo"
+    [2024-07-13 18:46:38,969 - Spmi - INFO]
+    Cleaned 2 manageables
+
